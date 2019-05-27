@@ -44,7 +44,7 @@ def circle_and_elipse():
         circle_im.t = circle(circle_im.t, 20)
         # circle_im = gaussian(circle_im)
         cp.DispImage(circle_im, title='Target')
-        circle_im.set_size((64, 64))
+        circle_im.set_size((512, 512))
 
         # Create the ellipse image
         ellipse_im = cc.Image((256, 256), device=device)

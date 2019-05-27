@@ -38,6 +38,15 @@ def ResampleToSize(Im, size=None, mode=None, scale=None, align_corners=True):
         else:
             im = im.unsqueeze(0).unsqueeze(0)
         out = _resample(im)
+        # Need to deal with the origin and the spacing now that the image has been resized
+        out_grid = cc.Grid(
+            out.size(),
+            spacing=(Im.size / torch.tensor(out.size(), device=Im.device).float()) * Im.spacing,
+            origin=Im.origin,
+            device=Im.device,
+            dtype=Im.type,
+            requires_grad=Im.requires_grad
+        )
 
     elif type(Im).__name__ == 'Field':
         if Im.is_3d():
@@ -51,14 +60,15 @@ def ResampleToSize(Im, size=None, mode=None, scale=None, align_corners=True):
             out = _resample(im)
             out = out.permute(1, 2, 0)
 
-    # Need to deal with the origin and the spacing now that the image has been resized
-    out_grid = cc.Grid(
-        out.size(),
-        spacing=(Im.size / torch.tensor(out.size(), device=Im.device).float()) * Im.spacing,
-        origin=Im.origin,
-        device=Im.device,
-        dtype=Im.type,
-        requires_grad=Im.requires_grad
-    )
+        # Need to deal with the origin and the spacing now that the image has been resized
+        out_grid = cc.Grid(
+            out.size()[:-1],
+            spacing=(Im.size / torch.tensor(out.size()[:-1], device=Im.device).float()) * Im.spacing,
+            origin=Im.origin,
+            device=Im.device,
+            dtype=Im.type,
+            requires_grad=Im.requires_grad
+        )
 
-    return cc.Image(out, out_grid)
+    return type(Im)(out, out_grid)
+
