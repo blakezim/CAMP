@@ -43,7 +43,7 @@ class Field:
         self.type = self.grid.dtype
         self.requires_grad = self.grid.requires_grad
         self.set_identity_(self.size)
-        self.to(self.device)
+        self.to_(self.device)
         self.to_type_(self.type)
 
         if len(self.t.shape) == 4:
@@ -88,12 +88,12 @@ class Field:
 
         if self.am_3d:
             self.t = self.t.permute(-1, 0, 1, 2)
-            self.t = self.t.unsqueeze(0)
+            self.t = self.t.view(1, *self.t.size())
             self.t = F.interpolate(self.t, size=size, mode=mode, align_corners=True).squeeze()
             self.t = self.t.permute(1, 2, 3, 0)
         else:
             self.t = self.t.permute(-1, 0, 1)
-            self.t = self.t.unsqueeze(0)
+            self.t = self.t.view(1, *self.t.size())
             self.t = F.interpolate(self.t, size=size, mode=mode, align_corners=True).squeeze()
             self.t = self.t.permute(1, 2, 0)
 
@@ -146,14 +146,13 @@ class Field:
             else:
                 pass
 
-    def to(self, device):
+    def to_(self, device):
         for attr, val in self.__dict__.items():
             if type(val).__name__ in ['Tensor', 'Grid']:
                 self.__setattr__(attr, val.to(device))
             else:
                 pass
         self.device = device
-        return self
 
     def is_3d(self):
         return self.am_3d

@@ -1,8 +1,12 @@
 import torch
-import Classes as cc
-# from Operators import GaussianFilter as co
-import Plotting as cp
+from Core import *
+from Operators import *
 
+import matplotlib
+matplotlib.use('qt5agg')
+
+import matplotlib.pyplot as plt
+plt.ion()
 
 
 def circle(Im, R, center=None, val=1.0):
@@ -12,7 +16,7 @@ def circle(Im, R, center=None, val=1.0):
     if center is None:
         center = [(Im.size(0) - 1) / 2.0, (Im.size(1) - 1) / 2.0]
     Im = (val * ((x - center[0]) ** 2 + (y - center[1]) ** 2 < R ** 2)).to(Im.device).double()
-    return Im
+    return Im.float()
 
 
 def ellipse(Im, A, B, center=None, val=1.0):
@@ -38,19 +42,22 @@ def circle_and_elipse():
 
         # Gaussian blur object for the images
         # gaussian = f.GaussianSmoothing(1, 7, 1).to(device)
+        test = Gaussian(1, 5, 2, device=device, dim=2)
 
         # Create the circle image
-        circle_im = cc.Image((256, 256), device=device)
+        circle_im = Image((256, 256), device=device)
         circle_im.t = circle(circle_im.t, 20)
         # circle_im = gaussian(circle_im)
-        cp.DispImage(circle_im, title='Target')
-        circle_im.set_size((512, 512))
+        Display.DispImage(circle_im, title='Target')
+        gauss_filt = test(circle_im)
+        Display.DispImage(gauss_filt, title='Filtered')
+        circle_im.set_size_((512, 512))
 
         # Create the ellipse image
-        ellipse_im = cc.Image((256, 256), device=device)
+        ellipse_im = Image((256, 256), device=device)
         ellipse_im.t = ellipse(ellipse_im.t, 15, 45)
         # ellipse_im = gaussian(ellipse_im)
-        cp.DispImage(ellipse_im, title='Source')
+        Display.DispImage(ellipse_im, title='Source')
 
 
         # test = co.GaussianSmoothing(3, 5, 0.1, dim=3)

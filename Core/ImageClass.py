@@ -35,7 +35,7 @@ class Image:
         self.device = self.grid.device
         self.type = self.grid.dtype
         self.requires_grad = self.grid.requires_grad
-        self.to(self.device)
+        self.to_(self.device)
         self.to_type_(self.type)
 
         # Need to know if the image is color or not - Could probably clean this up in some way
@@ -61,9 +61,10 @@ class Image:
     def set_size_(self, size):
 
         if self.color:
-            self.t = self.t.unsqueeze(0)
+            self.t = self.t.view(1, *self.t.size())
+            # self.t = self.t.unsqueeze(0)
         else:
-            self.t = self.t.unsqueeze(0).unsqueeze(0)
+            self.t = self.t.view(1, 1, *self.t.size())
 
         if self.am_3d:
             mode = 'trilinear'
@@ -77,14 +78,13 @@ class Image:
         self.grid.set_size(size)
         self.size = self.grid.size
 
-    def to(self, device):
+    def to_(self, device):
         for attr, val in self.__dict__.items():
             if type(val).__name__ in ['Tensor', 'Grid']:
                 self.__setattr__(attr, val.to(device))
             else:
                 pass
         self.device = device
-        return self
 
     def to_type_(self, new_type):
         for attr, val in self.__dict__.items():

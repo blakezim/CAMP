@@ -1,6 +1,7 @@
 import numpy as np
-import Classes as cc
-import scipy.interpolate as interp
+# import Classes as cc
+from . import *
+# import scipy.interpolate as interp
 
 
 class DisplayException(Exception):
@@ -95,7 +96,7 @@ def ExtractImageSlice(Image, dim, sliceIdx, color):
     elif type(Image).__name__ == 'Image':
         im = Image.t.clone()  # Make sure we don't mess with the original tensor
         # Need a function to return a new Image with proper origin and spacing
-        return cc.Image(im)
+        return Image(im)
 
 
 def GetAspect(Image, dim='z', color=False, axis='default', retFloat=True):

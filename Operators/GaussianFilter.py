@@ -18,21 +18,23 @@ class Gaussian(nn.Module):
             Default value is 2 (spatial).
     """
 
-    def __init__(self, channels, kernel_size, sigma, dim=2):
+    def __init__(self, channels, kernel_size, sigma, device='cpu', dtype=torch.float32, dim=2):
         super(Gaussian, self).__init__()
-
-        self.padding = (kernel_size // 2, kernel_size // 2)
 
         if isinstance(kernel_size, numbers.Number):
             kernel_size = [kernel_size] * dim
         if isinstance(sigma, numbers.Number):
             sigma = [sigma] * dim
 
-        # The gaussian kernel is the product of the
-        # gaussian function of each dimension.
+        self.padding = []
+        self.padding += [x // 2 for x in kernel_size]
+        self.padding = tuple(self.padding)
+
+        # The gaussian kernel is the product of the gaussian function of each dimension.
+        # Because these are small, don't care about doing meshgrid
         kernel = 1
         meshgrids = torch.meshgrid(
-            [torch.arange(size, dtype=torch.float64) for size in kernel_size]
+            [torch.arange(size, dtype=torch.float32, device=device) for size in kernel_size]
         )
 
         for size, std, mgrid in zip(kernel_size, sigma, meshgrids):
@@ -47,6 +49,7 @@ class Gaussian(nn.Module):
         kernel = kernel.view(1, 1, *kernel.size())
         kernel = kernel.repeat(channels, *[1] * (kernel.dim() - 1))
 
+        # I think this sets the weights to the kernel we created
         self.register_buffer('weight', kernel)
         self.groups = channels
 
@@ -60,8 +63,17 @@ class Gaussian(nn.Module):
             raise RuntimeError(
                 'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
             )
+        self.to(device)
+        self.type(dtype)
 
-    def forward(self, im):
+    def to_(self, device):
+        for attr, val in self.__dict__.items():
+            if type(val).__name__ in ['Tensor', 'Grid']:
+                self.__setattr__(attr, val.to(device))
+            else:
+                pass
+
+    def forward(self, x):
         """
         Apply gaussian filter to input.
         Arguments:
@@ -69,11 +81,29 @@ class Gaussian(nn.Module):
         Returns:
             filtered (torch.Tensor): Filtered output.
         """
-        im.t = im.t.unsqueeze(0)
-        if im.color:
-            im.t = self.conv(im.t, weight=self.weight, groups=self.groups, padding=self.padding)
-        else:
-            im.t = self.conv(im.t.unsqueeze(0), weight=self.weight, groups=self.groups, padding=self.padding)
-            im.t = im.t.squeeze()
 
-        return im
+        if type(x).__name__ == 'Image':
+            # Clone the input
+            out = x.t.clone()
+            if x.color:
+                out = out.view(1, *out.shape)
+            else:
+                out = out.view(1, 1, *out.shape)
+            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze()
+
+        elif type(x).__name__ == 'Field':
+            # Clone the input
+            out = x.t.clone()
+            if x.is_3d():
+                out = out.permute(-1, 0, 1, 2)
+                out = out.view(1, *out.shape)
+                out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze()
+                out = out.permute(1, 2, 3, 0)
+            else:
+                out = out.permute(-1, 0, 1)
+                out = out.view(1, *out.shape)
+                out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze()
+                out = out.permute(1, 2, 0)
+
+        return type(x)(out, x.grid)
+
