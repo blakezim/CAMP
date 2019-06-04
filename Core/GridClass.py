@@ -59,14 +59,16 @@ class Grid:
                                        requires_grad=self.requires_grad,
                                        device=self.device)
 
-    def to(self, device):
+    def to_(self, device):
         for attr, val in self.__dict__.items():
             if type(val).__name__ == 'Tensor':
                 self.__setattr__(attr, val.to(device))
             else:
                 pass
         self.device = device
-        return self
+
+    def to_type_(self):
+        raise NotImplementedError
 
     def copy(self):
         return self.__copy__()

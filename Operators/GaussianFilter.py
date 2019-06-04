@@ -71,13 +71,6 @@ class Gaussian(nn.Module):
         gauss = gauss.type(dtype)
         return gauss
 
-    def to_(self, device):
-        for attr, val in self.__dict__.items():
-            if type(val).__name__ in ['Tensor', 'Grid']:
-                self.__setattr__(attr, val.to(device))
-            else:
-                pass
-
     def forward(self, x):
         """
         Apply gaussian filter to input.
