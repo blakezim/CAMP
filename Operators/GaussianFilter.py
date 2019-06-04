@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class GaussianSmoothing(nn.Module):
+class Gaussian(nn.Module):
     """
     Apply gaussian smoothing on a 1d, 2d or 3d tensor. Filtering is performed seperately for each channel in the input
     using a depthwise convolution.
@@ -19,7 +19,7 @@ class GaussianSmoothing(nn.Module):
     """
 
     def __init__(self, channels, kernel_size, sigma, dim=2):
-        super(GaussianSmoothing, self).__init__()
+        super(Gaussian, self).__init__()
 
         self.padding = (kernel_size // 2, kernel_size // 2)
 

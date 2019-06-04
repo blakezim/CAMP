@@ -2,15 +2,5 @@ __pycache__/
 .idea/
 *.py[doc]
 *.xml
-VNet/output/*
-VNet/runs/*
-VNet/output
-VNet/runs
-VNet/goodRuns
-VNet/goodRuns/*
-VNet/__pycache__/
-VNet/__pycache__/*
-VNet/vNetModel/__pycache__/
-VNet/vNetModel/__pycache__/*
 __pycache__/*
 __pycache__

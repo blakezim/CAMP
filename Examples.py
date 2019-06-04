@@ -1,6 +1,6 @@
 import torch
 import Classes as cc
-import Functions as cf
+# from Operators import GaussianFilter as co
 import Plotting as cp
 
 
@@ -52,6 +52,8 @@ def circle_and_elipse():
         # ellipse_im = gaussian(ellipse_im)
         cp.DispImage(ellipse_im, title='Source')
 
+
+        # test = co.GaussianSmoothing(3, 5, 0.1, dim=3)
     #     # Set the origin of one of the images so we can test resample world
     #     ellipse_im.set_origin([50, 0])
     #     test = ellipse_im.copy()
