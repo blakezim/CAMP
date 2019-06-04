@@ -18,7 +18,7 @@ class Gaussian(nn.Module):
             Default value is 2 (spatial).
     """
 
-    def __init__(self, channels, kernel_size, sigma, device='cpu', dtype=torch.float32, dim=2):
+    def __init__(self, channels, kernel_size, sigma, dim=2):
         super(Gaussian, self).__init__()
 
         if isinstance(kernel_size, numbers.Number):
@@ -34,7 +34,7 @@ class Gaussian(nn.Module):
         # Because these are small, don't care about doing meshgrid
         kernel = 1
         meshgrids = torch.meshgrid(
-            [torch.arange(size, dtype=torch.float32, device=device) for size in kernel_size]
+            [torch.arange(size, dtype=torch.float32) for size in kernel_size]
         )
 
         for size, std, mgrid in zip(kernel_size, sigma, meshgrids):
@@ -63,8 +63,13 @@ class Gaussian(nn.Module):
             raise RuntimeError(
                 'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
             )
-        self.to(device)
-        self.type(dtype)
+
+    @staticmethod
+    def Create(channels, kernel_size, sigma, device='cpu', dtype=torch.float32, dim=2):
+        gauss = Gaussian(channels, kernel_size, sigma, dim)
+        gauss = gauss.to(device)
+        gauss = gauss.type(dtype)
+        return gauss
 
     def to_(self, device):
         for attr, val in self.__dict__.items():

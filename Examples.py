@@ -42,7 +42,7 @@ def circle_and_elipse():
 
         # Gaussian blur object for the images
         # gaussian = f.GaussianSmoothing(1, 7, 1).to(device)
-        test = Gaussian(1, 5, 2, device=device, dim=2)
+        test = Gaussian.Create(1, 5, 2, device=device, dim=2)
 
         # Create the circle image
         circle_im = Image((256, 256), device=device)
