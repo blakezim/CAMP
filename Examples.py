@@ -45,6 +45,9 @@ def circle_and_elipse():
 
         gauss_filt = test(circle_im)
 
+        grad = Gradient.Create(1, device=device)
+
+        test = grad(circle_im)
 
         #
         Display.DispImage(circle_im, title='Target')

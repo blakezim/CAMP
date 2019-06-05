@@ -1,2 +1,4 @@
 from .GaussianFilter import *
-__all__ = ['Gaussian']
+from .LaplacianFilter import *
+from .GradientFilter import *
+__all__ = ['Gaussian', 'Laplacian', 'Gradient']

@@ -25,7 +25,6 @@ class Field(Grid):
                 )
             self.data = tensor.clone()
 
-
     @staticmethod
     def FromGrid(grid, tensor=None, ftype='HField', space='real'):
         return Field(grid.size, grid.spacing, grid.origin, grid.device,
