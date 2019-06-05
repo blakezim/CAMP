@@ -82,7 +82,12 @@ class Gaussian(nn.Module):
 
         if type(x).__name__ in ['Image', 'Field']:
             out = x.clone()
-            out = self.conv(out.data, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
+            out.data = self.conv(
+                out.data.view(1, *out.data.shape),
+                weight=self.weight,
+                groups=self.groups,
+                padding=self.padding
+            ).squeeze(0)
             return out
 
         elif type(x).__name__ == 'Tensor':

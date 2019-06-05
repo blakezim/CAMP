@@ -10,15 +10,15 @@ class Image(Grid):
         super(Image, self).__init__(size, spacing, origin, device=device, dtype=dtype, requires_grad=requires_grad)
 
         if tensor is None:
-            self.data = torch.zeros([channels] + list(size),
+            self.data = torch.zeros([channels] + self.size.int().tolist(),
                                     dtype=dtype,
                                     requires_grad=requires_grad,
                                     device=device)
         else:
-            if list(tensor.size()) != [channels] + list(size):
+            if list(tensor.size()) != [channels] + self.size.int().tolist():
                 raise RuntimeError(
                     'Tensor.size() and [channels] + size do not match:'
-                    f' Tensor Size: {list(tensor.size())[1:]}, Grid Size: {list(size)}\n'
+                    f' Tensor Size: {list(tensor.size())[1:]}, Grid Size: {self.size.int().tolist()}\n'
                     'Tensor shape must be [Channels,  optionally (Z), X, Y] '
                 )
             self.data = tensor.clone()

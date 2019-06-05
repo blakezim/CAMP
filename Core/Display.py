@@ -27,21 +27,21 @@ def GetSliceIndex(Image, dim):
 
     if dim == 'z':
         if Image.isColor():
-            return Image.t.size()[1] // 2
+            return Image.data.size()[1] // 2
         else:
-            return Image.t.size()[0] // 2
+            return Image.data.size()[0] // 2
 
     if dim == 'x':
         if Image.isColor():
-            return Image.t.size()[2] // 2
+            return Image.data.size()[2] // 2
         else:
-            return Image.t.size()[1] // 2
+            return Image.data.size()[1] // 2
 
     if dim == 'y':
         if Image.isColor():
-            return Image.t.size()[3] // 2
+            return Image.data.size()[3] // 2
         else:
-            return Image.t.size()[2] // 2
+            return Image.data.size()[2] // 2
 
 
 def ExtractImageSlice(Image, dim, sliceIdx, color):
@@ -52,19 +52,19 @@ def ExtractImageSlice(Image, dim, sliceIdx, color):
             if color:
                 return im.size[1] // 2
             else:
-                return Image.t.size()[0] // 2
+                return Image.data.size()[0] // 2
 
         if dim == 'x':
             if color:
-                return Image.t.size()[2] // 2
+                return Image.data.size()[2] // 2
             else:
-                return Image.t.size()[1] // 2
+                return Image.data.size()[1] // 2
 
         if dim == 'y':
             if color:
-                return Image.t.size()[3] // 2
+                return Image.data.size()[3] // 2
             else:
-                return Image.t.size()[2] // 2
+                return Image.data.size()[2] // 2
 
     def _get_slice(im, dim, sliceIdx, color):
         if not sliceIdx:
@@ -94,7 +94,7 @@ def ExtractImageSlice(Image, dim, sliceIdx, color):
         return _get_slice(im, dim, sliceIdx, color)
 
     elif type(Image).__name__ == 'Image':
-        im = Image.t.clone()  # Make sure we don't mess with the original tensor
+        im = Image.data.clone()  # Make sure we don't mess with the original tensor
         # Need a function to return a new Image with proper origin and spacing
         return Image(im)
 
@@ -104,9 +104,9 @@ def GetAspect(Image, dim='z', color=False, axis='default', retFloat=True):
     off-dimension'''
 
     if color:
-        imsz = list(Image.t.size()[1:])
+        imsz = list(Image.data.size()[1:])
     else:
-        imsz = list(Image.t.size())
+        imsz = list(Image.data.size())
 
     if color:
         # aspect is always (displayed) height spacing/width spacing
@@ -231,16 +231,12 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
 
     # Check what type was passed and make sure we are working with a tensor
     if type(Image).__name__ == 'Tensor':
-        im = Image.clone()  # Make sure we don't mess with the original tensor
+        im = Image.clone().squeeze()  # Make sure we don't mess with the original tensor
         aspect = 1.0  # If the input is a tensor, nothing is know about the spacing, so aspect is determined by size
 
     elif type(Image).__name__ == 'Image':
-        im = Image.t.clone()  # Make sure we don't mess with the original tensor
+        im = Image.data.clone().squeeze()  # Make sure we don't mess with the original tensor
         aspect = GetAspect(Image, dim=dim, axis=axis, retFloat=True, color=color)
-
-    # If the Tensor is 3D, then we need to extract the slice
-    if _is_3d(im, color):
-        im = ExtractImageSlice(Image, dim, sliceIdx)
 
     im = im.to('cpu').detach()  # Make sure that the tensor is on the CPU and detached
 

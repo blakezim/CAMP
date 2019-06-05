@@ -12,23 +12,18 @@ plt.ion()
 def circle(Im, R, center=None, val=1.0):
     """Creates Image3D circle with radius and center
     using index values for x, y"""
-    x, y = torch.meshgrid(torch.arange(0, Im.size(0)), torch.arange(0, Im.size(1)))
+    x, y = torch.meshgrid(torch.arange(0, Im.size[0]), torch.arange(0, Im.size[1]))
     if center is None:
-        center = [(Im.size(0) - 1) / 2.0, (Im.size(1) - 1) / 2.0]
-    Im = (val * ((x - center[0]) ** 2 + (y - center[1]) ** 2 < R ** 2)).to(Im.device).double()
-    return Im.float()
+        center = [(Im.size[0] - 1) / 2.0, (Im.size[1] - 1) / 2.0]
+    Im.data = (val * ((x - center[0]) ** 2 + (y - center[1]) ** 2 < R ** 2)).to(Im.device).float().unsqueeze(0)
 
 
 def ellipse(Im, A, B, center=None, val=1.0):
-    x, y = torch.meshgrid(torch.arange(0, Im.size(0)), torch.arange(0, Im.size(1)))
-    x = x.double()
-    y = y.double()
+    x, y = torch.meshgrid(torch.arange(0, Im.size[0]), torch.arange(0, Im.size[1]))
     if center is None:
-        center = [(Im.size(0) - 1) / 2.0, (Im.size(1) - 1) / 2.0]
-    Im = (val * ((((x - center[0]) ** 2) / (A ** 2) +
-                 ((y - center[1]) ** 2) / (B ** 2)) < 1)).to(Im.device).double()
-
-    return Im
+        center = [(Im.size[0] - 1) / 2.0, (Im.size[1] - 1) / 2.0]
+    Im.data = (val * ((((x - center[0]) ** 2) / (A ** 2) +
+               ((y - center[1]) ** 2) / (B ** 2)) < 1)).to(Im.device).float().unsqueeze(0)
 
 
 def circle_and_elipse():
@@ -42,17 +37,18 @@ def circle_and_elipse():
 
         # Gaussian blur object for the images
         # gaussian = f.GaussianSmoothing(1, 7, 1).to(device)
-        # test = Gaussian.Create(1, 5, 2, device=device, dim=2)
-
-        test = Field((256, 256), device=device)
+        test = Gaussian.Create(1, 5, 2, device=device, dim=2)
 
         # Create the circle image
         circle_im = Image((256, 256), device=device)
-        test = circle_im.copy()
-        circle_im.data = circle(circle_im.data, 20)
-        # circle_im = gaussian(circle_im)
-        Display.DispImage(circle_im, title='Target')
+        circle(circle_im, 20)
+
         gauss_filt = test(circle_im)
+
+
+        #
+        Display.DispImage(circle_im, title='Target')
+
         Display.DispImage(gauss_filt, title='Filtered')
         circle_im.set_size_((512, 512))
 
