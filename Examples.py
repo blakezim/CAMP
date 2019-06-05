@@ -42,11 +42,14 @@ def circle_and_elipse():
 
         # Gaussian blur object for the images
         # gaussian = f.GaussianSmoothing(1, 7, 1).to(device)
-        test = Gaussian.Create(1, 5, 2, device=device, dim=2)
+        # test = Gaussian.Create(1, 5, 2, device=device, dim=2)
+
+        test = Field((256, 256), device=device)
 
         # Create the circle image
         circle_im = Image((256, 256), device=device)
-        circle_im.t = circle(circle_im.t, 20)
+        test = circle_im.copy()
+        circle_im.data = circle(circle_im.data, 20)
         # circle_im = gaussian(circle_im)
         Display.DispImage(circle_im, title='Target')
         gauss_filt = test(circle_im)
@@ -58,7 +61,6 @@ def circle_and_elipse():
         ellipse_im.t = ellipse(ellipse_im.t, 15, 45)
         # ellipse_im = gaussian(ellipse_im)
         Display.DispImage(ellipse_im, title='Source')
-
 
         # test = co.GaussianSmoothing(3, 5, 0.1, dim=3)
     #     # Set the origin of one of the images so we can test resample world

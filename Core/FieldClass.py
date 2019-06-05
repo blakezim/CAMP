@@ -1,169 +1,127 @@
-import sys
 import torch
 import torch.nn.functional as F
 
 from .GridClass import Grid
 
 
-class Field:
+class Field(Grid):
 
-    def __init__(self, info, grid=None, requires_grad=False,
-                 device='cpu', dtype=torch.float32, ftype='HField', space='real'):
-        super(Field, self).__init__()
+    def __init__(self, size, spacing=None, origin=None, device='cpu', dtype=torch.float32, requires_grad=False,
+                 tensor=None, ftype='HField', space='real'):
+        super(Field, self).__init__(size, spacing, origin, device=device, dtype=dtype, requires_grad=requires_grad)
 
-        self.field_type_str = ftype
+        self.field_type = ftype
         self.space = space
 
-        if type(info).__name__ in ['Size', 'list', 'tuple']:
+        if tensor is None:
+            self.data = self._get_identity(size)
 
-            if grid is None:
-                self.grid = Grid(info, device=device, dtype=dtype, requires_grad=requires_grad)
-            else:
-                self.grid = grid.copy()
-
-            # self.set_identity_(self.grid.size)
-
-        elif type(info).__name__ == 'Grid':
-            self.grid = info.copy()
-            # self.set_identity_(info.size)
-
-        elif type(info).__name__ == 'Tensor':
-            self.t = info.clone()
-            if grid is None:
-                self.grid = Grid(info.size(), device=device, dtype=dtype, requires_grad=requires_grad)
-            else:
-                self.grid = grid.copy()
         else:
-            sys.exit('Unknown info type for type Image. Please input type: Size, list, tuple, Grid, or Tensor.')
+            if list(tensor.size()) != [len(size)] + list(size):
+                raise RuntimeError(
+                    'Tensor.size() and [len(size)] + list(size) do not match:'
+                    f' Tensor Size: {list(tensor.size())}, Grid Size: {[len(size)] + list(size)}\n'
+                    'Tensor shape must be [(Z,Y,X),  optionally (Z), X, Y] '
+                )
+            self.data = tensor.clone()
 
-        self.size = self.grid.size
-        self.spacing = self.grid.spacing
-        self.origin = self.grid.origin
-        self.device = self.grid.device
-        self.type = self.grid.dtype
-        self.requires_grad = self.grid.requires_grad
-        self.set_identity_(self.size)
-        self.to_(self.device)
-        self.to_type_(self.type)
 
-        if len(self.t.shape) == 4:
-            self.am_3d = True
-        else:
-            self.am_3d = False
+    @staticmethod
+    def FromGrid(grid, tensor=None, ftype='HField', space='real'):
+        return Field(grid.size, grid.spacing, grid.origin, grid.device,
+                     grid.dtype, grid.requires_grad, tensor, ftype, space)
 
-    def _get_identity(self, shape):
+    def _get_identity(self, size):
         """Assuming z, x, y"""
-        vecs = [torch.linspace(-1, 1, shape[x]) for x in range(0, len(shape))]
+        vecs = [torch.linspace(-1, 1, size[x]) for x in range(0, len(size))]
         grids = torch.meshgrid(vecs)
-        grids = [grid.unsqueeze(-1) for grid in grids]
+        grids = [grid.view(1, *grid.shape) for grid in grids]
 
         # Need to flip the x and y dimension as per affine grid
         grids[-2], grids[-1] = grids[-1], grids[-2]
 
-        field = torch.cat(grids, -1)
+        field = torch.cat(grids, 0)
         field = field.to(self.device)
 
         if self.space == 'real':
-            field = (((field + 1) * (self.size.float() / 2)) * self.spacing) + self.origin
+            field += 1
+            field *= ((self.size / 2) * self.spacing).view(*self.size.shape, *([1] * len(self.size)))
+            field += self.origin.view(*self.size.shape, *([1] * len(self.size)))
+            # This is a fancy way to expand the attributes to be the correct shape
 
         return field
 
-    def set_identity_(self, shape):
-        self.t = self._get_identity(shape)
+    def set_identity(self):
+        self.data = self._get_identity(self.size)
 
-    def set_spacing_(self, spacing):
-        self.grid.set_spacing(spacing)
-        self.spacing = self.grid.spacing
+    def set_size(self, size):
+        old_size = self.size
+        super(Field, self).set_size(size)
 
-    def set_origin_(self, origin):
-        self.grid.set_origin(origin)
-        self.origin = self.grid.origin
+        self.data = self.data.view(1, *self.data.size())
 
-    def set_size_(self, size):
-
-        if self.am_3d:
+        if len(self.size) == 3:
             mode = 'trilinear'
         else:
             mode = 'bilinear'
 
-        if self.am_3d:
-            self.t = self.t.permute(-1, 0, 1, 2)
-            self.t = self.t.view(1, *self.t.size())
-            self.t = F.interpolate(self.t, size=size, mode=mode, align_corners=True).squeeze()
-            self.t = self.t.permute(1, 2, 3, 0)
-        else:
-            self.t = self.t.permute(-1, 0, 1)
-            self.t = self.t.view(1, *self.t.size())
-            self.t = F.interpolate(self.t, size=size, mode=mode, align_corners=True).squeeze()
-            self.t = self.t.permute(1, 2, 0)
+        self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
 
-        new_spacing = (self.size / torch.tensor(self.t.size()[:-1], device=self.t.device).float()) * self.spacing
-        self.set_spacing_(new_spacing)
-        self.grid.set_size(size)
-        self.size = self.grid.size
+        new_spacing = (old_size / self.size[1:]) * self.spacing
+        self.set_spacing(new_spacing)
 
-    def field_type(self):
-        return self.field_type_str
+    def to_v_field(self):
 
-    def to_v_field_(self):
-
-        if self.field_type_str == 'VField':
+        if self.field_type == 'VField':
             print('This field is already a vector field')
         else:
             identity = self._get_identity(self.t.shape)
-            self.t -= identity
-            self.field_type_str = 'VField'
+            self.data -= identity
+            self.field_type = 'VField'
 
-    def to_h_field_(self):
+    def to_h_field(self):
 
-        if self.field_type_str == 'HField':
+        if self.field_type == 'HField':
             print('This field is already a lookup field')
         else:
             identity = self._get_identity(self.t.shape)
-            self.t += identity
-            self.field_type_str = 'HField'
+            self.data += identity
+            self.field_type = 'HField'
 
-    def to_real_(self):
+    def to_real(self):
 
         if self.space == 'real':
             print('This field is already in real space')
         else:
-            self.t = (((self.t + 1) * (self.size.float() / 2)) * self.spacing) + self.origin
-            self.field_type_str = 'real'
+            self.data += 1
+            self.data *= ((self.size / 2) * self.spacing).view(*self.size.shape, *([1] * len(self.size)))
+            self.data += self.origin.view(*self.size.shape, *([1] * len(self.size)))
 
-    def to_index_(self):
+            self.space = 'real'
+
+    def to_index(self):
 
         if self.space == 'index':
             print('This field is already in index space')
         else:
-            self.t = (((self.t - self.origin) / self.spacing) / (self.size.float() / 2)) - 1
-            self.field_type_str = 'index'
-
-    def to_type_(self, new_type):
-        for attr, val in self.__dict__.items():
-            if type(val).__name__ == 'Tensor':
-                self.__setattr__(attr, val.type(new_type))
-            else:
-                pass
+            self.data -= self.origin.view(*self.size.shape, *([1] * len(self.size)))
+            self.data /= (self.spacing * (self.size / 2)).view(*self.size.shape, *([1] * len(self.size)))
+            self.data -= 1
+            self.space = 'index'
 
     def to_(self, device):
-        for attr, val in self.__dict__.items():
-            if type(val).__name__ in ['Tensor', 'Grid']:
-                self.__setattr__(attr, val.to(device))
-            else:
-                pass
-        self.device = device
+        super(Field, self).to_(device)
+        self.data = self.data.to(device)
 
-    def is_3d(self):
-        return self.am_3d
+    def to_type_(self, new_type):
+        super(Field, self).to_type_(new_type)
+        self.data = self.data.to(new_type)
 
     def copy(self):
         return self.__copy__()
 
     def __copy__(self):
-        new_field = type(self)(self.t.shape)
-        new_field.__dict__.update(self.__dict__)
-        return new_field
+        return self.FromGrid(self, self.data, ftype=self.field_type, space=self.space)
 
     def __str__(self):
         return f"Field Object - Size: {self.size}  Spacing: {self.spacing}  Origin: {self.origin}"

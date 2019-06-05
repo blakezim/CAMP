@@ -11,9 +11,9 @@ class Grid:
         self.requires_grad = requires_grad
 
         if type(size).__name__ == 'Tensor':
-            self.size = size.clone().type(torch.int)
+            self.size = size.clone()
         else:
-            self.size = torch.tensor(size, dtype=torch.int, requires_grad=requires_grad, device=device)
+            self.size = torch.tensor(size, dtype=dtype, requires_grad=requires_grad, device=device)
 
         if spacing is None:
             self.spacing = torch.ones(len(size), dtype=dtype, requires_grad=requires_grad, device=device)
@@ -67,8 +67,13 @@ class Grid:
                 pass
         self.device = device
 
-    def to_type_(self):
-        raise NotImplementedError
+    def to_type_(self, new_type):
+        for attr, val in self.__dict__.items():
+            if type(val).__name__ == 'Tensor':
+                self.__setattr__(attr, val.type(new_type))
+            else:
+                pass
+        self.dtype = new_type
 
     def copy(self):
         return self.__copy__()
