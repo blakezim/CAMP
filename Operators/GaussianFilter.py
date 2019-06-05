@@ -79,29 +79,19 @@ class Gaussian(nn.Module):
         Returns:
             filtered (torch.Tensor): Filtered output.
         """
-
-        if type(x).__name__ == 'Image':
-            # Clone the input
-            out = x.t.clone()
-            if x.color:
-                out = out.view(1, *out.shape)
-            else:
-                out = out.view(1, 1, *out.shape)
-            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze()
-
-        elif type(x).__name__ == 'Field':
-            # Clone the input
-            out = x.t.clone()
-            if x.is_3d():
-                out = out.permute(-1, 0, 1, 2)
-                out = out.view(1, *out.shape)
-                out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze()
-                out = out.permute(1, 2, 3, 0)
-            else:
-                out = out.permute(-1, 0, 1)
-                out = out.view(1, *out.shape)
-                out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze()
-                out = out.permute(1, 2, 0)
-
-        return type(x)(out, x.grid)
-
+        if type(x).__name__ in ['Image', 'Field']:
+            out = x.data.clone()
+            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
+            if type(x).__name__ == 'Image':
+                return type(x).FromGrid(x, out, out.shape[0])
+            if type(x).__name__ == 'Field':
+                return type(x).FromGrid(x, out, x.field_type, x.space)
+        elif type(x).__name__ == 'Tensor':
+            out = x.clone()
+            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
+            return out
+        else:
+            raise RuntimeError(
+                'Data type not understood for Gaussian Filter:'
+                f' Received type: {type(x).__name__}.  Must be type: [Image, Field, Tensor]'
+            )
