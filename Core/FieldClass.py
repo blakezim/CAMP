@@ -117,7 +117,7 @@ class Field(Grid):
         super(Field, self).to_type_(new_type)
         self.data = self.data.to(new_type)
 
-    def copy(self):
+    def clone(self):
         return self.__copy__()
 
     def __copy__(self):

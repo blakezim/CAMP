@@ -79,13 +79,12 @@ class Gaussian(nn.Module):
         Returns:
             filtered (torch.Tensor): Filtered output.
         """
+
         if type(x).__name__ in ['Image', 'Field']:
-            out = x.data.clone()
-            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
-            if type(x).__name__ == 'Image':
-                return type(x).FromGrid(x, out, out.shape[0])
-            if type(x).__name__ == 'Field':
-                return type(x).FromGrid(x, out, x.field_type, x.space)
+            out = x.clone()
+            out = self.conv(out.data, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
+            return out
+
         elif type(x).__name__ == 'Tensor':
             out = x.clone()
             out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
