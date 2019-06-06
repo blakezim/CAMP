@@ -10,23 +10,8 @@ class Gradient(nn.Module):
         self.padding = tuple([1] * dim)
         kernel = self._create_filters(dim)
 
-        # Reshape to depthwise convolutional weight
         kernel = kernel.unsqueeze(1)
-        # kernel = kernel.repeat(channels, *[1] * (kernel.dim() - 1))
 
-        # if dim == 2:
-        #     x, y = self._create_filters(dim)
-        #     self.sobel_filt = nn.Conv2d(1, dim, (3, 3), stride=1, bias=False)
-        #     self.sobel_filt.weight[0] = x.float()
-        #     self.sobel_filt.weight[1] = y.float()
-        #
-        # elif dim == 3:
-        #     z, x, y = self._create_filters(dim)
-        #     self.sobel_filt = nn.Conv3d(1, dim, (3, 3, 3), stride=1, padding=1, bias=False)
-        #     self.sobel_filt.requires_grad = requires_grad
-        #     self.sobel_filt.weight[0] = z
-        #     self.sobel_filt.weight[1] = x.float()
-        #     self.sobel_filt.weight[2] = y.float()
         self.register_buffer('weight', kernel)
         self.groups = channels * dim
 
@@ -90,28 +75,3 @@ class Gradient(nn.Module):
                 'Data type not understood for Gaussian Filter:'
                 f' Received type: {type(x).__name__}.  Must be type: [Image, Field, Tensor]'
             )
-
-
-
-# def GetFilters(dim=2, filter='prewitt'):
-#
-#     base = torch.tensor([1, 0, -1])
-#
-#     if filter == 'sobel':
-#         avg = torch.tensor([0, 1, 0])
-#     elif filter == 'scharr':
-#         avg = torch.tensor([3, 10, 3])
-#     elif filter == 'prewitt':
-#         avg = torch.tensor([1, 1, 1])
-#
-#     x = torch.ger(avg, base)
-#     y = torch.ger(base, avg)
-#
-#     if dim == 2:
-#         return x, y
-#
-#     if dim == 3:
-#         x = torch.mul(x.unsqueeze(0), avg.unsqueeze(1).unsqueeze(2))
-#         y = torch.mul(y.unsqueeze(0), avg.unsqueeze(1).unsqueeze(2))
-#         z = torch.mul(torch.ger(avg, avg).unsqueeze(0), base.unsqueeze(1).unsqueeze(2))
-#         return z, x, y

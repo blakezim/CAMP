@@ -52,6 +52,9 @@ class Image(Grid):
         super(Image, self).to_type_(new_type)
         self.data = self.data.to(new_type)
 
+    def shape(self):
+        return self.data.shape
+
     def clone(self):
         return self.__copy__()
 
