@@ -1,10 +1,11 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 
+from ._BaseFilter import Filter
 
-class Gradient(nn.Module):
-    def __init__(self, channels, dim=2):
+
+class Gradient(Filter):
+    def __init__(self, dim=2):
         super(Gradient, self).__init__()
 
         self.padding = tuple([1] * dim)
@@ -13,7 +14,7 @@ class Gradient(nn.Module):
         kernel = kernel.unsqueeze(1)
 
         self.register_buffer('weight', kernel)
-        self.groups = channels * dim
+        # self.groups = channels * dim
 
         if dim == 1:
             self.conv = F.conv1d
@@ -27,8 +28,8 @@ class Gradient(nn.Module):
             )
 
     @staticmethod
-    def Create(channels, dim=2, device='cpu', dtype=torch.float32):
-        grad = Gradient(channels, dim)
+    def Create(dim=2, device='cpu', dtype=torch.float32):
+        grad = Gradient(dim)
         grad = grad.to(device)
         grad = grad.type(dtype)
         return grad

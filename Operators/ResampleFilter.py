@@ -2,7 +2,15 @@ import sys
 import torch
 import torch.nn.functional as F
 
-import Classes as cc
+from ._BaseFilter import Filter
+
+
+class Resample(Filter):
+    def __init__(self):
+        super(Filter, self).__init__()
+
+    def forward(self, x):
+        raise NotImplementedError
 
 
 def ResampleToSize(Im, size=None, mode=None, scale=None, align_corners=True):

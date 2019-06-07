@@ -1,11 +1,12 @@
 import math
 import torch
 import numbers
-import torch.nn as nn
 import torch.nn.functional as F
 
+from ._BaseFilter import Filter
 
-class Gaussian(nn.Module):
+
+class Gaussian(Filter):
     """
     Apply gaussian smoothing on a 1d, 2d or 3d tensor. Filtering is performed seperately for each channel in the input
     using a depthwise convolution.

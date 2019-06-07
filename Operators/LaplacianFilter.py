@@ -1,10 +1,11 @@
 import math
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 
+from ._BaseFilter import Filter
 
-class Laplacian(nn.Module):
+
+class Laplacian(Filter):
     def __init__(self, size, dim=2, gamma=0.001, alpha=1.0, incompresible=False, device='cpu'):
         super(Laplacian, self).__init__()
 
