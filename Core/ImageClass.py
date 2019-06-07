@@ -28,7 +28,8 @@ class Image(Grid):
         return Image(grid.size, grid.spacing, grid.origin, grid.device,
                      grid.dtype, grid.requires_grad, tensor, channels)
 
-    def set_size(self, size):
+    # Should I make this inplace?
+    def set_size(self, size, inplace=True):
         old_size = self.size
         super(Image, self).set_size(size)
 
@@ -39,10 +40,24 @@ class Image(Grid):
         else:
             mode = 'bilinear'
 
-        self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+        if inplace:
+            self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size[1:]) * self.spacing
+            self.set_spacing(new_spacing)
 
-        new_spacing = (old_size / self.size[1:]) * self.spacing
-        self.set_spacing(new_spacing)
+        else:
+            out_data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size[1:]) * self.spacing
+            return Image(
+                size=size,
+                spacing=new_spacing,
+                origin=self.origin,
+                device=self.device,
+                dtype=self.dtype,
+                requires_grad=self.dtype,
+                tensor=out_data,
+                channels=out_data.shape[0]
+            )
 
     def to_(self, device):
         super(Image, self).to_(device)

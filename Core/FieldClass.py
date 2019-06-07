@@ -53,7 +53,7 @@ class Field(Grid):
     def set_identity(self):
         self.data = self._get_identity(self.size)
 
-    def set_size(self, size):
+    def set_size(self, size, inplace=True):
         old_size = self.size
         super(Field, self).set_size(size)
 
@@ -64,10 +64,25 @@ class Field(Grid):
         else:
             mode = 'bilinear'
 
-        self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+        if inplace:
+            self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size[1:]) * self.spacing
+            self.set_spacing(new_spacing)
 
-        new_spacing = (old_size / self.size[1:]) * self.spacing
-        self.set_spacing(new_spacing)
+        else:
+            out_data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size[1:]) * self.spacing
+            return Field(
+                size=size,
+                spacing=new_spacing,
+                origin=self.origin,
+                device=self.device,
+                dtype=self.dtype,
+                requires_grad=self.dtype,
+                tensor=out_data,
+                ftype=self.field_type,
+                space=self.space
+            )
 
     def to_v_field(self):
 
