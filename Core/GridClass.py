@@ -11,9 +11,9 @@ class Grid:
         self.requires_grad = requires_grad
 
         if type(size).__name__ == 'Tensor':
-            self.size = size.clone()
+            self.size = size.clone().type(torch.float32)
         else:
-            self.size = torch.tensor(size, dtype=dtype, requires_grad=requires_grad, device=device)
+            self.size = torch.tensor(size, dtype=torch.float32, requires_grad=requires_grad, device=device)
 
         if spacing is None:
             self.spacing = torch.ones(len(size), dtype=dtype, requires_grad=requires_grad, device=device)
