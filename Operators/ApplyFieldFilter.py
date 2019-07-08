@@ -7,7 +7,7 @@ from ._BaseFilter import Filter
 
 
 class ApplyField(Filter):
-    def __init__(self, h_field, interp_mode='linear', pad_mode='zeros', apply_space='real'):
+    def __init__(self, h_field, interp_mode='linear', pad_mode='border', apply_space='real'):
         super(ApplyField, self).__init__()
 
         self.interpolation_mode = interp_mode

@@ -1,6 +1,5 @@
 import math
 import torch
-import torch.nn.functional as F
 
 from ._BaseFilter import Filter
 
@@ -30,10 +29,10 @@ class Laplacian(Filter):
     def forward(self, grads):
 
         # Take the fourier transform of the data
-        fft = torch.rfft(grads.double(), signal_ndim=2, normalized=False, onesided=False)
-        for g in range(0, 2):
-            for c in range(0, 2):
-                fft[g, :, :, c] = fft[g, :, :, c] * self.H.double()
-        # fft *= self.H.double()
+        fft = torch.rfft(grads, signal_ndim=2, normalized=False, onesided=False)
+        # for g in range(0, 2):
+        #     for c in range(0, 2):
+        #         fft[g, :, :, c] = fft[g, :, :, c] * self.H.double()
+        fft *= self.H
         grads = torch.irfft(fft, signal_ndim=2, normalized=False, onesided=False)
         return grads.float()
