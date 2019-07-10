@@ -84,7 +84,7 @@ class Field(Grid):
                 space=self.space
             )
 
-    def to_v_field(self):
+    def to_v_field_(self):
 
         if self.field_type == 'VField':
             print('This field is already a vector field')
@@ -93,7 +93,7 @@ class Field(Grid):
             self.data -= identity
             self.field_type = 'VField'
 
-    def to_h_field(self):
+    def to_h_field_(self):
 
         if self.field_type == 'HField':
             print('This field is already a lookup field')
@@ -102,7 +102,7 @@ class Field(Grid):
             self.data += identity
             self.field_type = 'HField'
 
-    def to_real(self):
+    def to_real_(self):
 
         if self.space == 'real':
             print('This field is already in real space')
@@ -113,7 +113,7 @@ class Field(Grid):
 
             self.space = 'real'
 
-    def to_index(self):
+    def to_index_(self):
 
         if self.space == 'index':
             print('This field is already in index space')
