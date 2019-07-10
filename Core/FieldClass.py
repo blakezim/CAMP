@@ -142,37 +142,37 @@ class Field(Grid):
         return self.__copy__()
 
     def __add__(self, other):
-        if type(other).__name__ == ['Image', 'Field']:
+        if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data + other.data, self.data.shape[0])
         else:
             return self.FromGrid(self, self.data + other, self.data.shape[0])
 
     def __sub__(self, other):
-        if type(other).__name__ == ['Image', 'Field']:
+        if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data - other.data, self.data.shape[0])
         else:
             return self.FromGrid(self, self.data - other, self.data.shape[0])
 
     def __mul__(self, other):
-        if type(other).__name__ == ['Image', 'Field']:
+        if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data * other.data, self.data.shape[0])
         else:
             return self.FromGrid(self, self.data * other, self.data.shape[0])
 
     def __truediv__(self, other):
-        if type(other).__name__ == ['Image', 'Field']:
+        if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data / other.data, self.data.shape[0])
         else:
             return self.FromGrid(self, self.data / other, self.data.shape[0])
 
     def __floordiv__(self, other):
-        if type(other).__name__ == ['Image', 'Field']:
+        if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data // other.data, self.data.shape[0])
         else:
             return self.FromGrid(self, self.data // other, self.data.shape[0])
 
     def __pow__(self, other):
-        if type(other).__name__ == ['Image', 'Field']:
+        if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data ** other.data, self.data.shape[0])
         else:
             return self.FromGrid(self, self.data ** other, self.data.shape[0])
