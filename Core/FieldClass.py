@@ -32,7 +32,11 @@ class Field(Grid):
 
     def _get_identity(self, size):
         """Assuming z, x, y"""
-        vecs = [torch.linspace(-1, 1, size[x]) for x in range(0, len(size))]
+
+        if type(size).__name__ == 'Tensor':
+            size = size.tolist()
+
+        vecs = [torch.linspace(-1, 1, int(size[x])) for x in range(0, len(size))]
         grids = torch.meshgrid(vecs)
         grids = [grid.view(1, *grid.shape) for grid in grids]
 
@@ -138,22 +142,40 @@ class Field(Grid):
         return self.__copy__()
 
     def __add__(self, other):
-        return self.FromGrid(self, self.data + other.data, self.data.shape[0])
+        if type(other).__name__ == ['Image', 'Field']:
+            return self.FromGrid(self, self.data + other.data, self.data.shape[0])
+        else:
+            return self.FromGrid(self, self.data + other, self.data.shape[0])
 
     def __sub__(self, other):
-        return self.FromGrid(self, self.data - other.data, self.data.shape[0])
+        if type(other).__name__ == ['Image', 'Field']:
+            return self.FromGrid(self, self.data - other.data, self.data.shape[0])
+        else:
+            return self.FromGrid(self, self.data - other, self.data.shape[0])
 
     def __mul__(self, other):
-        return self.FromGrid(self, self.data * other.data, self.data.shape[0])
+        if type(other).__name__ == ['Image', 'Field']:
+            return self.FromGrid(self, self.data * other.data, self.data.shape[0])
+        else:
+            return self.FromGrid(self, self.data * other, self.data.shape[0])
 
     def __truediv__(self, other):
-        return self.FromGrid(self, self.data / other.data, self.data.shape[0])
+        if type(other).__name__ == ['Image', 'Field']:
+            return self.FromGrid(self, self.data / other.data, self.data.shape[0])
+        else:
+            return self.FromGrid(self, self.data / other, self.data.shape[0])
 
     def __floordiv__(self, other):
-        return self.FromGrid(self, self.data // other.data, self.data.shape[0])
+        if type(other).__name__ == ['Image', 'Field']:
+            return self.FromGrid(self, self.data // other.data, self.data.shape[0])
+        else:
+            return self.FromGrid(self, self.data // other, self.data.shape[0])
 
     def __pow__(self, other):
-        return self.FromGrid(self, self.data ** other.data, self.data.shape[0])
+        if type(other).__name__ == ['Image', 'Field']:
+            return self.FromGrid(self, self.data ** other.data, self.data.shape[0])
+        else:
+            return self.FromGrid(self, self.data ** other, self.data.shape[0])
 
     def __copy__(self):
         return self.FromGrid(self, self.data, ftype=self.field_type, space=self.space)
