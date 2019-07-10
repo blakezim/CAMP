@@ -1,6 +1,6 @@
 import torch
 from Core import *
-from Operators import *
+from ImageOperators import *
 
 import matplotlib
 matplotlib.use('qt5agg')

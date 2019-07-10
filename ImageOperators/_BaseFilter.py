@@ -7,3 +7,7 @@ class Filter(nn.Module):
 
     def forward(self, x):
         return x
+
+    @staticmethod
+    def c1():
+        return False
