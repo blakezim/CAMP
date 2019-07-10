@@ -6,9 +6,9 @@ from Core.GridClass import Grid
 from ._BaseFilter import Filter
 
 
-class ApplyField(Filter):
+class ApplyHField(Filter):
     def __init__(self, h_field, interp_mode='linear', pad_mode='border', apply_space='real'):
-        super(ApplyField, self).__init__()
+        super(ApplyHField, self).__init__()
 
         self.interpolation_mode = interp_mode
         self.padding_mode = pad_mode
