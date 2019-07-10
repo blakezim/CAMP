@@ -1,4 +1,10 @@
 from .GaussianFilter import *
-from .LaplacianFilter import *
+from .InverseLaplacianFilter import *
 from .GradientFilter import *
-__all__ = ['Gaussian', 'Laplacian', 'Gradient']
+from .ResampleWorldFilter import *
+__all__ = [
+    'Gaussian',
+    'InverseLaplacian',
+    'Gradient',
+    'ResampleWorld'
+]
