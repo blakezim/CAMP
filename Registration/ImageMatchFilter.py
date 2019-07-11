@@ -9,7 +9,7 @@ from ._BaseMatchFilter import Filter
 
 class IterativeMatch(Filter):
     def __init__(self, source, target, similarity, regularization=None, smoothing=None, step_size=0.001,
-                 regularization_weight=0.1):
+                 regularization_weight=0.1, device='cpu'):
         super(IterativeMatch, self).__init__(source, target, similarity, regularization, smoothing)
 
         if not type(source).__name__ == 'Image':
@@ -22,19 +22,19 @@ class IterativeMatch(Filter):
                 f'Only type "Image" for target is accepted, got {type(target).__name__}'
             )
 
-        if not source.size == target.size:
+        if not any([source.size[x].item() == target.size[x].item() for x in range(len(source.size))]):
             raise RuntimeError(
                 f'Images must have the same size - Target Size: {target.size}, Source Size: {source.size}'
             )
 
         self.moving = source.clone()  # Clone the source so we don't mess with the original image
-        self.field = Field(source.size)
+        self.field = Field(source.size, device=device)
         self.step_size = step_size
         self.reg_weight = regularization_weight
         self.initial_energy = self.energy()
 
     def energy(self):
-        energy = self.similarity(self.target - self.moving).sum()
+        energy = self.similarity(self.target, self.moving).sum()
 
         if self.regularization:
             energy += self.reg_weight * self.regularization(self.field).sum()
@@ -43,13 +43,13 @@ class IterativeMatch(Filter):
 
     def update(self, update_field):
         # Apply the step size to the update field
-        update_field = self.step_size * update_field
+        update_field = update_field * self.step_size
 
         # Change the stored field to a vector field and subtract the update field
         self.field.to_v_field_()
         self.field = self.field - update_field
 
-        # Change the feild back to an h field and apply to the moving image
+        # Change the field back to an h field and apply to the moving image
         self.field.to_h_field_()
         self.moving = ApplyHField(self.field)(self.source)
 
