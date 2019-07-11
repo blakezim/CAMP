@@ -32,7 +32,7 @@ class ResampleWorld(Filter):
         stop = 1 + (bottom_right_difference * grid_step_size)
         shape = self.grid.size
 
-        grid_bases = [torch.linspace(start[x], stop[x], shape[x]) for x in range(0, len(shape))]
+        grid_bases = [torch.linspace(start[x], stop[x], int(shape[x])) for x in range(0, len(shape))]
         grids = torch.meshgrid(grid_bases)
         grids = [grid.unsqueeze(-1) for grid in grids]  # So we can concatenate
 
@@ -47,7 +47,7 @@ class ResampleWorld(Filter):
     def forward(self, x):
 
         if self.interpolation_mode == 'linear':
-            if len(x.shape[1:]) == 3:
+            if len(x.size[1:]) == 3:
                 interp_mode = 'trilinear'
             else:
                 interp_mode = 'bilinear'
