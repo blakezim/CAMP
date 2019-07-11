@@ -93,7 +93,7 @@ class Field(Grid):
         if self.field_type == 'VField':
             print('This field is already a vector field')
         else:
-            identity = self._get_identity(self.t.shape)
+            identity = self._get_identity(self.size)
             self.data -= identity
             self.field_type = 'VField'
 
@@ -102,7 +102,7 @@ class Field(Grid):
         if self.field_type == 'HField':
             print('This field is already a lookup field')
         else:
-            identity = self._get_identity(self.t.shape)
+            identity = self._get_identity(self.size)
             self.data += identity
             self.field_type = 'HField'
 

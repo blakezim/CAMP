@@ -94,6 +94,9 @@ class Image(Grid):
         else:
             return self.FromGrid(self, self.data * other, (self.data * other).shape[0])
 
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
     def __truediv__(self, other):
         if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data / other.data, (self.data / other.data).shape[0])
