@@ -7,7 +7,7 @@ from ._BaseFilter import Filter
 
 
 class InverseLaplacian(Filter):
-    def __init__(self, size, gamma=0.001, alpha=1.0, incompresible=False, device='cpu'):
+    def __init__(self, size, gamma=0.001, alpha=1.0, incompresible=False):
         super(InverseLaplacian, self).__init__()
 
         self.incompressible = incompresible
@@ -27,14 +27,24 @@ class InverseLaplacian(Filter):
         cos_grids = torch.cat(cos_grids, 0)
 
         # Sum the cosine grids and add the center term
-        self.H = (-2 * len(size)) + cos_grids.sum(0)
-        self.H = -(self.H * alpha) + gamma
-        self.H = self.H.reciprocal().to(device)
+        H = (-2 * len(size)) + cos_grids.sum(0)
+        H = -(H * alpha) + gamma
+        H = H.reciprocal()
+        H = H.view(1, *H.shape, 1)
+
+        self.register_buffer('H', H)
 
         # if dim == 2:
         #     self.H = -4 + 2 * torch.cos((2 * math.pi * self.grids[0]) / (size[0])) + \
         #              2 * torch.cos((2 * math.pi * self.grids[1]) / (size[1]))
         #     self.H = self.H
+
+    @staticmethod
+    def Create(size, gamma=0.001, alpha=1.0, incompresible=False, device='cpu', dtype=torch.float32):
+        lap = InverseLaplacian(size, gamma, alpha, incompresible)
+        lap = lap.to(device)
+        lap = lap.type(dtype)
+        return lap
 
     def forward(self, x):
 
@@ -58,9 +68,5 @@ class InverseLaplacian(Filter):
 
         # Inverse fourier transform
         out.data = torch.irfft(fft, signal_ndim=2, normalized=False, onesided=False)
-
-        # for g in range(0, 2):
-        #     for c in range(0, 2):
-        #         fft[g, :, :, c] = fft[g, :, :, c] * self.H.double()
 
         return out
