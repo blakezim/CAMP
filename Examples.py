@@ -32,7 +32,7 @@ def circle_and_elipse():
     with torch.no_grad():
         alpha = 1.0
         gamma = 0.001
-        step = 0.001
+        step = 0.1
 
         device = 'cuda:1'
 
@@ -54,7 +54,12 @@ def circle_and_elipse():
         Display.DispImage(circle_im, title='Target')
 
         # Create the smoothing operator
-        smoothing = InverseLaplacian.Create(circle_im.size, device=device)
+        smoothing = InverseLaplacian.Create(
+            circle_im.size,
+            device=device,
+            alpha=alpha,
+            gamma=gamma
+        )
 
         # Create the matching term
         similarity = L2(dim=2, device=device)
@@ -66,54 +71,23 @@ def circle_and_elipse():
             similarity=similarity,
             regularization=None,
             smoothing=smoothing,
-            device=device
+            device=device,
+            step_size=step
         )
 
-        matcher.step()
+        energy = [matcher.initial_energy.item()]
+        print(f'Iteration: 0   Energy: {matcher.initial_energy.item()}')
+        for i in range(1, 100):
 
-        print("you're done")
+            energy.append(matcher.step().item())
 
-        # test = co.GaussianSmoothing(3, 5, 0.1, dim=3)
-    #     # Set the origin of one of the images so we can test resample world
-    #     ellipse_im.set_origin([50, 0])
-    #     test = ellipse_im.copy()
-    #
-    #     # f.ResampleWorld()
-    #
-    #     # Create the h field
-    #     h = cc.Field(ellipse_im.t.size())
-    #     h.to_device_('cuda:1')
-    #
-    #     test = h.copy()
-    #
-    #     match = energy.ImageMatch(ellipse_im, circle_im, h, device=device)
-    #
-    #     # Calculate the energy in the beginning
-    #     e = []
-    #     e.append(match.image_energy().item())
-    #     print(f'Iteration: 0  Energy: {e[-1]}')
-    #
-    #     for itr in range(1, 2001):
-    #
-    #         # Do a step in the gradient direction
-    #         e.append(match.step().item())
-    #
-    #         print(f'Iteration: {itr}  Energy: {e[-1]}')
-    #
-    # plot.EnergyPlot([e])
-    #
-    # field = match.get_field()
-    # image = match.get_image()
-    # field.h = (field.h + 1.0) * 255.0 / 2
+            print(f'Iteration: {i}   Energy: {energy[-1]}')
 
-    # temp = field.h[:,:,0].clone()
-    # field.h[:,:,0] = field.h[:,:,1].clone()
-    # field.h[:,:,1] = temp
-    #
-    # plot.DispImage(image, title='Deformed Image')
-    # plot.DispHGrid(field, title='Deformation Grid')
-    #
-    # print('Done')
+        # Get the image from the matcher
+        def_image = matcher.get_image()
+        Display.DispImage(def_image, title='Moving')
+
+        print('All Done')
 
 
 if __name__ == '__main__':
