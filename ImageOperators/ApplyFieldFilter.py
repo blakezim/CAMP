@@ -13,8 +13,19 @@ class ApplyHField(Filter):
         self.interpolation_mode = interp_mode
         self.padding_mode = pad_mode
         self.apply_space = apply_space
-        self.field = h_field.data.permute(torch.arange(1, len(h_field.size) + 1), 0)
-        self.field = self.field.view(1, *self.field.shape)
+
+        field = h_field.data.permute(torch.arange(1, len(h_field.size) + 1), 0)
+        field = field.view(1, *field.shape)
+
+        # Add the field to the register_buffer
+        self.register_buffer('field', field)
+
+    @staticmethod
+    def Create(h_field, interp_mode='linear', pad_mode='border', apply_space='real', device='cpu', dtype=torch.float32):
+        app = ApplyHField(h_field, interp_mode, pad_mode, apply_space)
+        app = app.to(device)
+        app = app.type(dtype)
+        return app
 
     def to_input_index(self, x):
         field = self.field.clone()
