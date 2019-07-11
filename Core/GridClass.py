@@ -11,7 +11,7 @@ class Grid:
         self.requires_grad = requires_grad
 
         if type(size).__name__ == 'Tensor':
-            self.size = size.clone().type(torch.float32)
+            self.size = size.clone().type(self.dtype).to(self.device)
         else:
             self.size = torch.tensor(size, dtype=torch.float32, requires_grad=requires_grad, device=device)
 
@@ -19,7 +19,7 @@ class Grid:
             self.spacing = torch.ones(len(size), dtype=dtype, requires_grad=requires_grad, device=device)
         else:
             if type(spacing).__name__ == 'Tensor':
-                self.spacing = spacing.clone()
+                self.spacing = spacing.clone().type(self.dtype).to(self.device)
             else:
                 self.spacing = torch.tensor(spacing, dtype=dtype, requires_grad=requires_grad, device=device)
 
@@ -28,7 +28,7 @@ class Grid:
             self.origin = torch.tensor(origin, dtype=dtype, requires_grad=requires_grad, device=device)
         else:
             if type(origin).__name__ == 'Tensor':
-                self.origin = origin.clone()
+                self.origin = origin.clone().type(self.dtype).to(self.device)
             else:
                 self.origin = torch.tensor(origin, dtype=dtype, requires_grad=requires_grad, device=device)
 

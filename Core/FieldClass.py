@@ -33,7 +33,9 @@ class Field(Grid):
     def _get_identity(self, size):
         """Assuming z, x, y"""
 
+        # Need to make sure the size is on the right device
         if type(size).__name__ == 'Tensor':
+            size = size.to(self.device)
             size = size.tolist()
 
         vecs = [torch.linspace(-1, 1, int(size[x])) for x in range(0, len(size))]
