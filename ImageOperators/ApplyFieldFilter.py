@@ -14,35 +14,45 @@ class ApplyHField(Filter):
         self.padding_mode = pad_mode
         self.apply_space = apply_space
 
-        field = h_field.data.permute(torch.arange(1, len(h_field.size) + 1), 0)
-        field = field.view(1, *field.shape)
-
         # Add the field to the register_buffer
-        self.register_buffer('field', field)
+        self.field = h_field
 
     @staticmethod
     def Create(h_field, interp_mode='linear', pad_mode='border', apply_space='real', device='cpu', dtype=torch.float32):
         app = ApplyHField(h_field, interp_mode, pad_mode, apply_space)
         app = app.to(device)
         app = app.type(dtype)
+
+        # Can't add Field and Images to the register buffer, so we need to make sure they are on the right device
+        for attr, val in app.__dict__.items():
+            if type(val).__name__ in ['Field', 'Image']:
+                val.to_(device)
+            else:
+                pass
+
         return app
 
     def to_input_index(self, x):
         field = self.field.clone()
-        if self.h_field.space == 'index' and self.apply_space == 'real':
+        if self.field.space == 'index' and self.apply_space == 'real':
             field.to_real_()
 
-        if self.h_field.space == 'real' and self.apply_space == 'index':
+        if self.field.space == 'real' and self.apply_space == 'index':
             field.to_index_()
 
-        t = (((field - x.origin) / x.spacing) / (x.size / 2)) - 1
+        field = field - x.origin.view(*x.size.shape, *([1] * len(x.size)))
+        field = field / (x.spacing * (x.size / 2)).view(*x.size.shape, *([1] * len(x.size)))
+        field = field - 1
 
-        return t.view(1, *t.shape)
+        field = field.data.permute(torch.arange(1, len(field.shape())).tolist() + [0])
+        field = field.data.view(1, *field.shape)
+
+        return field
 
     def forward(self, x):
 
         if self.interpolation_mode == 'linear':
-            if len(x.shape[1:]) == 3:
+            if len(x.shape()[1:]) == 3:
                 interp_mode = 'trilinear'
             else:
                 interp_mode = 'bilinear'
@@ -64,57 +74,10 @@ class ApplyHField(Filter):
 
         # Make the grid have the index values of the input
         resample_field = self.to_input_index(x)
+
         out.data = F.grid_sample(out.data.view(1, *out.data.shape),
                                  resample_field,
                                  mode=interp_mode,
                                  padding_mode=self.padding_mode).squeeze(0)
 
         return out
-
-
-#
-# def apply_h_real(Input, H_Field, mode=None, align_corners=True):
-#     # need to beef up names and consierations for what can be passed into functions
-#
-#     def to_grid_index():
-#         field = H_Field.t.clone()
-#         if H_Field.apply_space == 'index':
-#             field.to_real_()
-#
-#         t = (((field - Input.origin) / Input.spacing) / (Input.size.float() / 2)) - 1
-#
-#         return t.unsqueeze(0)
-#
-#     if not mode:
-#         if Input.is_3d():
-#             mode = 'trilinear'
-#         else:
-#             mode = 'bilinear'
-#
-#     field = to_grid_index()
-#
-#     if type(Input).__name__ == 'Image':
-#         im = Input.t.clone()  # Make sure we don't mess with the original tensor
-#         if Input.is_3d():
-#             im = im.unsqueeze(0)
-#         else:
-#             im = im.unsqueeze(0).unsqueeze(0)
-#
-#     elif type(Input).__name__ == 'Field':
-#         im = Input.t.clone()  # Make sure we don't mess with the original tensor
-#         if Input.is_3d():
-#             im = im.permute(-1, 0, 1, 2)
-#             im = im.unsqueeze(0)
-#         else:
-#             im = im.permute(-1, 0, 1)
-#             im = im.unsqueeze(0)
-#     #     if Input.is_3d():
-#     #         field = field.permute(-1, 0, 1, 2)
-#     #         field = field.unsqueeze(0)
-#     #     else:
-#     #         field = field.permute(-1, 0, 1)
-#     #         field = field.unsqueeze(0)
-#
-#     resampled = F.grid_sample(im.float(), field.float()).squeeze()
-#
-#     return Image(resampled)
