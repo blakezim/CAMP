@@ -1,6 +1,7 @@
 import torch
 from Core import *
 from ImageOperators import *
+from Registration import *
 
 import matplotlib
 matplotlib.use('qt5agg')
@@ -31,35 +32,46 @@ def circle_and_elipse():
     with torch.no_grad():
         alpha = 1.0
         gamma = 0.001
-        # step = 0.001
+        step = 0.001
 
         device = 'cuda:1'
 
         # Gaussian blur object for the images
-        # gaussian = f.GaussianSmoothing(1, 7, 1).to(device)
-        test = Gaussian.Create(1, 5, 2, device=device, dim=2)
+        gauss_filt = Gaussian.Create(1, 5, 2, device=device, dim=2)
 
         # Create the circle image
         circle_im = Image((256, 256), device=device)
         circle(circle_im, 20)
-
-        gauss_filt = test(circle_im)
-
-        grad = Gradient.Create(device=device)
-
-        test = grad(circle_im)
-
-        #
-        Display.DispImage(circle_im, title='Target')
-
-        Display.DispImage(gauss_filt, title='Filtered')
-        circle_im.set_size_((512, 512))
+        circle_im = gauss_filt(circle_im)
 
         # Create the ellipse image
         ellipse_im = Image((256, 256), device=device)
-        ellipse_im.t = ellipse(ellipse_im.t, 15, 45)
-        # ellipse_im = gaussian(ellipse_im)
+        ellipse(ellipse_im, 15, 45)
+        ellipse_im = gauss_filt(ellipse_im)
+
+        # Display the images
         Display.DispImage(ellipse_im, title='Source')
+        Display.DispImage(circle_im, title='Target')
+
+        # Create the smoothing operator
+        smoothing = InverseLaplacian.Create(circle_im.size, device=device)
+
+        # Create the matching term
+        similarity = L2(dim=2, device=device)
+
+        # Now make the registration object
+        matcher = IterativeMatch(
+            source=ellipse_im,
+            target=circle_im,
+            similarity=similarity,
+            regularization=None,
+            smoothing=smoothing,
+            device=device
+        )
+
+        matcher.step()
+
+        print("you're done")
 
         # test = co.GaussianSmoothing(3, 5, 0.1, dim=3)
     #     # Set the origin of one of the images so we can test resample world
