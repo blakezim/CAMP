@@ -37,7 +37,7 @@ def circle_and_elipse():
         device = 'cuda:1'
 
         # Gaussian blur object for the images
-        gauss_filt = Gaussian.Create(1, 5, 2, device=device, dim=2)
+        gauss_filt = Gaussian.Create(1, 5, 1, device=device, dim=2)
 
         # Create the circle image
         circle_im = Image((256, 256), device=device)
@@ -55,10 +55,12 @@ def circle_and_elipse():
 
         # Create the smoothing operator
         smoothing = InverseLaplacian.Create(
-            circle_im.size,
+            circle_im,
             device=device,
             alpha=alpha,
-            gamma=gamma
+            beta=0.0,
+            gamma=gamma,
+            incompresible=True
         )
 
         # Create the matching term
@@ -77,7 +79,7 @@ def circle_and_elipse():
 
         energy = [matcher.initial_energy.item()]
         print(f'Iteration: 0   Energy: {matcher.initial_energy.item()}')
-        for i in range(1, 100):
+        for i in range(1, 1000):
 
             energy.append(matcher.step().item())
 
