@@ -54,7 +54,7 @@ def circle_and_elipse():
         Display.DispImage(circle_im, title='Target')
 
         # Create the smoothing operator
-        smoothing = InverseLaplacian.Create(
+        smoothing = FluidKernel.Create(
             circle_im,
             device=device,
             alpha=alpha,
