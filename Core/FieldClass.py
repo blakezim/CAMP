@@ -149,11 +149,29 @@ class Field(Grid):
         else:
             return self.FromGrid(self, self.data + other, (self.data + other).shape[0])
 
+    def __radd__(self, other):
+        if type(other).__name__ in ['Image', 'Field']:
+            return self.FromGrid(self, other.data + self.data, (other.data + self.data).shape[0])
+        else:
+            return self.FromGrid(self, other + self.data, (other + self.data).shape[0])
+
+    def __iadd__(self, other):
+        return self.__add__(other)
+
     def __sub__(self, other):
         if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data - other.data, (self.data - other.data).shape[0])
         else:
             return self.FromGrid(self, self.data - other, (self.data - other).shape[0])
+
+    def __rsub__(self, other):
+        if type(other).__name__ in ['Image', 'Field']:
+            return self.FromGrid(self, other.data - self.data, (other.data - self.data).shape[0])
+        else:
+            return self.FromGrid(self, other - self.data, (other - self.data).shape[0])
+
+    def __isub__(self, other):
+        return self.__sub__(other)
 
     def __mul__(self, other):
         if type(other).__name__ in ['Image', 'Field']:
@@ -161,11 +179,29 @@ class Field(Grid):
         else:
             return self.FromGrid(self, self.data * other, (self.data * other).shape[0])
 
+    def __rmul__(self, other):
+        if type(other).__name__ in ['Image', 'Field']:
+            return self.FromGrid(self, other.data * self.data, (other.data * self.data).shape[0])
+        else:
+            return self.FromGrid(self, other * self.data, (other * self.data).shape[0])
+
+    def __imul__(self, other):
+        return self.__mul__(other)
+
     def __truediv__(self, other):
         if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data / other.data, (self.data / other.data).shape[0])
         else:
             return self.FromGrid(self, self.data / other, (self.data / other).shape[0])
+
+    def __rtruediv__(self, other):
+        if type(other).__name__ in ['Image', 'Field']:
+            return self.FromGrid(self, other.data / self.data, (other.data / self.data).shape[0])
+        else:
+            return self.FromGrid(self, other / self.data, (other / self.data).shape[0])
+
+    def __itruediv__(self, other):
+        return self.__truediv__(other)
 
     def __floordiv__(self, other):
         if type(other).__name__ in ['Image', 'Field']:
@@ -173,11 +209,29 @@ class Field(Grid):
         else:
             return self.FromGrid(self, self.data // other, (self.data // other).shape[0])
 
+    def __rfloordiv__(self, other):
+        if type(other).__name__ in ['Image', 'Field']:
+            return self.FromGrid(self, other.data // self.data, (other.data // self.data).shape[0])
+        else:
+            return self.FromGrid(self, other // self.data, (other // self.data).shape[0])
+
+    def __ifloordiv__(self, other):
+        return self.__floordiv__(other)
+
     def __pow__(self, other):
         if type(other).__name__ in ['Image', 'Field']:
             return self.FromGrid(self, self.data ** other.data, (self.data ** other.data).shape[0])
         else:
             return self.FromGrid(self, self.data ** other, (self.data ** other).shape[0])
+
+    def __rpow__(self, other):
+        if type(other).__name__ in ['Image', 'Field']:
+            return self.FromGrid(self, other.data ** self.data, (other.data ** self.data).shape[0])
+        else:
+            return self.FromGrid(self, other ** self.data, (other ** self.data).shape[0])
+
+    def __ipow__(self, other):
+        return self.__pow__(other)
 
     def __copy__(self):
         return self.FromGrid(self, self.data, ftype=self.field_type, space=self.space)
