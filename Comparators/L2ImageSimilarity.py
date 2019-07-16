@@ -4,9 +4,9 @@ from ImageOperators.GradientFilter import Gradient
 from ._BaseFilter import Filter
 
 
-class L2(Filter):
+class L2Similarity(Filter):
     def __init__(self, dim=2, device='cpu', dtype=torch.float32):
-        super(L2, self).__init__()
+        super(L2Similarity, self).__init__()
 
         self.gradient_operator = Gradient.Create(dim=dim, device=device, dtype=dtype)
 

@@ -64,7 +64,7 @@ def circle_and_elipse():
         )
 
         # Create the matching term
-        similarity = L2(dim=2, device=device)
+        similarity = L2Similarity(dim=2, device=device)
 
         # Now make the registration object
         matcher = IterativeMatch(

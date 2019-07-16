@@ -13,3 +13,12 @@ class Filter(nn.Module):
 
     def forward(self, x):
         return x
+
+    def energy(self):
+        raise NotImplementedError
+
+    def update(self, field):
+        raise NotImplementedError
+
+    def step(self):
+        raise NotImplementedError

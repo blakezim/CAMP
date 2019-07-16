@@ -5,8 +5,8 @@ class Filter(nn.Module):
     def __init__(self):
         super(Filter, self).__init__()
 
-    def forward(self, target, moving):
-        return target - moving
+    def forward(self, **kwargs):
+        raise NotImplementedError
 
-    def c1(self, target, moving):
+    def c1(self, **kwargs):
         return False

@@ -1,6 +1,6 @@
 from .ImageMatchFilter import *
-from .L2Filter import *
+from .L2ImageSimilarity import *
 __all__ = [
     'IterativeMatch',
-    'L2',
+    'L2Similarity',
 ]
