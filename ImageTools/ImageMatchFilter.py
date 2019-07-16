@@ -1,10 +1,8 @@
-import torch
-
 # from Core.ImageClass import Image
 from Core.FieldClass import Field
-from ImageOperators.ApplyFieldFilter import ApplyHField
+from ImageOperators import ApplyHField
 # from Core.GridClass import Grid
-from ._BaseMatchFilter import Filter
+from ._BaseTool import Filter
 
 
 class IterativeMatch(Filter):
@@ -80,3 +78,25 @@ class IterativeMatch(Filter):
 
     def get_image(self):
         return self.moving
+
+
+class LandmarkMatch(Filter):
+    def __init__(self, source, target, landmark_comparator, device='cpu'):
+        super(LandmarkMatch, self).__init__(source, target)
+
+        if not type(source).__name__ == 'Image':
+            raise RuntimeError(
+                f'Only type "Image" for source is accepted, got {type(source).__name__}'
+            )
+
+        if not type(target).__name__ == 'Image':
+            raise RuntimeError(
+                f'Only type "Image" for target is accepted, got {type(target).__name__}'
+            )
+
+        self.comparator = landmark_comparator
+        self.moving = source.clone()  # Clone the source so we don't mess with the original image
+        self.field = Field(source.size, device=device)
+
+    def forward(self, **kwargs):
+        raise NotImplementedError

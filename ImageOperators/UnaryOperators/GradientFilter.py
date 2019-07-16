@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-from ._BaseFilter import Filter
+from ._UnaryFilter import Filter
 
 
 class Gradient(Filter):

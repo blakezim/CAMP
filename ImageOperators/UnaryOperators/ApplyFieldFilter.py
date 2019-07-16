@@ -3,7 +3,7 @@ import torch.nn.functional as F
 
 from Core.ImageClass import Image
 from Core.GridClass import Grid
-from ._BaseFilter import Filter
+from ._UnaryFilter import Filter
 
 
 class ApplyHField(Filter):

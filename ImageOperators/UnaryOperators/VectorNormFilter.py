@@ -1,6 +1,6 @@
 import torch
 
-from ._BaseFilter import Filter
+from ._UnaryFilter import Filter
 
 
 class VectorNorm(Filter):

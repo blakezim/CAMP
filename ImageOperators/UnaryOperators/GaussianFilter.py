@@ -3,7 +3,7 @@ import torch
 import numbers
 import torch.nn.functional as F
 
-from ._BaseFilter import Filter
+from ._UnaryFilter import Filter
 
 
 class Gaussian(Filter):
