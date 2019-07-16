@@ -1,7 +1,7 @@
 import torch
 from Core import *
 from ImageOperators import *
-from Registration import *
+from Comparators import *
 
 import matplotlib
 matplotlib.use('qt5agg')
