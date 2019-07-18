@@ -31,26 +31,32 @@ class Field(Grid):
                      grid.dtype, grid.requires_grad, tensor, ftype, space)
 
     def _get_identity(self, size):
-        """Assuming z, x, y"""
+        """Assuming z, y, x"""
 
         # Need to make sure the size is on the right device
-        if type(size).__name__ == 'Tensor':
-            size = size.to(self.device)
-            size = size.tolist()
+        size = list(size)
 
         vecs = [torch.linspace(-1, 1, int(size[x])) for x in range(0, len(size))]
+        # vecs = [torch.linspace(0, int(size[x]) - 1, int(size[x])) for x in range(0, len(size))]
         grids = torch.meshgrid(vecs)
-        grids = [grid.view(1, *grid.shape) for grid in grids]
+        # grids = [grid.view(1, *grid.shape) for grid in grids]
 
-        # Need to flip the x and y dimension as per affine grid
-        grids[-2], grids[-1] = grids[-1], grids[-2]
+        # torch is z, y, x out of mesh grid
+        # grids[-2], grids[-1] = grids[-1], grids[-2]
 
-        field = torch.cat(grids, 0)
+        # Need to flip the size if we are going to flip the grids
+        # size[-2], size[-1] = size[-1], size[-2]
+
+        field = torch.stack(grids, 0)
+        # field = (field / (torch.as_tensor(size[::-1]).unsqueeze(-1).unsqueeze(-1).float() / 2.0)) - 1
         field = field.to(self.device)
+
+        # Make the size a tensor so we can use it
+        size = torch.as_tensor(size, dtype=self.dtype, device=self.device)
 
         if self.space == 'real':
             field += 1
-            field *= ((self.size / 2) * self.spacing).view(*self.size.shape, *([1] * len(self.size)))
+            field *= ((size / 2) * self.spacing).view(*size.shape, *([1] * len(size)))
             field += self.origin.view(*self.size.shape, *([1] * len(self.size)))
             # This is a fancy way to expand the attributes to be the correct shape
 

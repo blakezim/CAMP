@@ -39,6 +39,9 @@ class ApplyHField(Filter):
 
         if self.field.space == 'real' and self.apply_space == 'index':
             field.to_index_()
+        #
+        # size = x.size
+        # size[-2], size[-1] = size[-1], size[-2]
 
         field = field - x.origin.view(*x.size.shape, *([1] * len(x.size)))
         field = field / (x.spacing * (x.size / 2)).view(*x.size.shape, *([1] * len(x.size)))
@@ -74,6 +77,9 @@ class ApplyHField(Filter):
 
         # Make the grid have the index values of the input
         resample_field = self.to_input_index(x)
+
+        # Resample is expecting x, y, z. Because we are in torch land, our fields are z, y, x. Need to flip
+        resample_field = resample_field.flip(-1)
 
         out.data = F.grid_sample(out.data.view(1, *out.data.shape),
                                  resample_field,
