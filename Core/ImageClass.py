@@ -9,6 +9,8 @@ class Image(Grid):
                  tensor=None, channels=1):
         super(Image, self).__init__(size, spacing, origin, device=device, dtype=dtype, requires_grad=requires_grad)
 
+        # Should we assume that if the data doesn't have the 1 channel that it was meant to be 1 channel?
+
         if tensor is None:
             self.data = torch.zeros([channels] + self.size.int().tolist(),
                                     dtype=dtype,

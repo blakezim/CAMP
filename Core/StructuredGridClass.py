@@ -1,0 +1,289 @@
+import torch
+import torch.nn.functional as F
+
+
+class StructuredGrid:
+    def __init__(self, size, spacing=None, origin=None,
+                 device='cpu', dtype=torch.float32, requires_grad=False,
+                 tensor=None, channels=1):
+        super(StructuredGrid, self).__init__()
+
+        self.device = device
+        self.dtype = dtype
+        self.requires_grad = requires_grad
+        self.channels = channels
+
+        if type(size).__name__ == 'Tensor':
+            self.size = size.clone().type(self.dtype).to(self.device)
+        else:
+            self.size = torch.tensor(size, dtype=dtype, requires_grad=requires_grad, device=device)
+
+        if spacing is None:
+            self.spacing = torch.ones(len(size), dtype=dtype, requires_grad=requires_grad, device=device)
+        else:
+            if type(spacing).__name__ == 'Tensor':
+                self.spacing = spacing.clone().type(self.dtype).to(self.device)
+            else:
+                self.spacing = torch.tensor(spacing, dtype=dtype, requires_grad=requires_grad, device=device)
+
+        if origin is None:
+            # Is assuming center origin the best thing to do?
+            origin = [-x / 2.0 for x in size]
+            self.origin = torch.tensor(origin, dtype=dtype, requires_grad=requires_grad, device=device)
+        else:
+            if type(origin).__name__ == 'Tensor':
+                self.origin = origin.clone().type(self.dtype).to(self.device)
+            else:
+                self.origin = torch.tensor(origin, dtype=dtype, requires_grad=requires_grad, device=device)
+
+        if tensor is None:
+            self.data = torch.zeros([channels] + self.size.int().tolist(),
+                                    dtype=dtype,
+                                    requires_grad=requires_grad,
+                                    device=device)
+
+        else:
+            if list(tensor.size()) != [channels] + self.size.int().tolist():
+                raise RuntimeError(
+                    '{Tensor.shape} and {[channels] + input_size} do not match:'
+                    f' Tensor Size: {list(tensor.shape)}, Grid Size: {self.size.int().tolist()}\n'
+                    'Tensor shape must be [Channels,  optionally (Z), X, Y] '
+                )
+            self.data = tensor.clone()
+
+        self.shape = self.data.shape
+
+    @staticmethod
+    def FromGrid(grid, tensor=None, channels=1):
+        return StructuredGrid(grid.size, grid.spacing, grid.origin, grid.device,
+                              grid.dtype, grid.requires_grad, tensor, channels)
+
+    def set_to_identity_lut_(self):
+
+        # Create the vectors to be gridded
+        vecs = [torch.linspace(-1, 1, int(self.size[x])) for x in range(0, len(self.size))]
+        # Create the grids - NOTE: This returns z, y, x
+        grids = torch.meshgrid(vecs)
+        field = torch.stack(grids, 0)
+        field = field.to(self.device)
+        field = field.type(self.dtype)
+
+        # Make the field in real coordinates
+        field += 1
+        field *= ((self.size / 2) * self.spacing).view(*self.size.shape, *([1] * len(self.size)))
+        field += self.origin.view(*self.size.shape, *([1] * len(self.size)))
+
+        self.data = field
+
+    def set_size(self, size, inplace=True):
+
+        old_size = self.size.clone()
+
+        if type(size).__name__ == 'Tensor':
+            self.size = size.clone().to(self.device).type(self.dtype)
+        else:
+            self.size = torch.tensor(size,
+                                     dtype=self.dtype,
+                                     requires_grad=self.requires_grad,
+                                     device=self.device)
+
+        self.data = self.data.view(1, *self.data.size())
+
+        if len(self.size) == 3:
+            mode = 'trilinear'
+        else:
+            mode = 'bilinear'
+
+        if inplace:
+            self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size[1:]) * self.spacing
+            self.set_spacing(new_spacing)
+
+        else:
+            out_data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size[1:]) * self.spacing
+            return StructuredGrid(
+                size=size,
+                spacing=new_spacing,
+                origin=self.origin,
+                device=self.device,
+                dtype=self.dtype,
+                requires_grad=self.requires_grad,
+                tensor=out_data,
+            )
+
+    def set_spacing_(self, spacing):
+        if type(spacing).__name__ == 'Tensor':
+            self.spacing = spacing.clone()
+        else:
+            self.spacing = torch.tensor(spacing,
+                                        dtype=self.dtype,
+                                        requires_grad=self.requires_grad,
+                                        device=self.device)
+
+    def set_origin_(self, origin):
+        if type(origin).__name__ == 'Tensor':
+            self.origin = origin.clone()
+        else:
+            self.origin = torch.tensor(origin,
+                                       dtype=self.dtype,
+                                       requires_grad=self.requires_grad,
+                                       device=self.device)
+
+    def get_subvol(self, zrng=None, yrng=None, xrng=None):
+
+        new_origin = self.origin.clone()
+
+        if len(self.size) == 3:
+            if zrng is None:
+                zrng = [0, self.size[-3]]
+            new_origin[-3] = self.origin[-3] + self.spacing[-3]*zrng[0]
+
+        elif len(self.size) == 2 and zrng is not None:
+            raise RuntimeError('Can not extract Z data from 2D image')
+
+        if yrng is None:
+            yrng = [0, self.size[-2]]
+        new_origin[-2] = self.origin[-2] + self.spacing[-2]*yrng[0]
+
+        if xrng is None:
+            xrng = [0, self.size[-1]]
+        new_origin[-1] = self.origin[-1] + self.spacing[-1] * yrng[0]
+
+        # Get the tensor
+        if len(self.size) == 3:
+            data = self.data[:, zrng[0]:zrng[1], yrng[0]:yrng[1], xrng[0]:xrng[1]]
+        else:
+            data = self.data[:, yrng[0]:yrng[1], xrng[0]:xrng[1]]
+
+        new_grid = StructuredGrid(
+            size=data.shape[1:],
+            spacing=self.spacing,
+            origin=new_origin,
+            device=self.device,
+            dtype=self.dtype,
+            tensor=data,
+            channels=self.channels
+        )
+
+        return new_grid
+
+    def to_(self, device):
+        for attr, val in self.__dict__.items():
+            if type(val).__name__ == 'Tensor':
+                self.__setattr__(attr, val.to(device))
+            else:
+                pass
+        self.device = device
+
+    def to_type_(self, new_type):
+        for attr, val in self.__dict__.items():
+            if type(val).__name__ == 'Tensor':
+                self.__setattr__(attr, val.type(new_type))
+            else:
+                pass
+        self.dtype = new_type
+
+    def copy(self):
+        return self.__copy__()
+
+    def clone(self):
+        return self.__copy__()
+    
+    def __add__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, self.data + other.data, (self.data + other.data).shape[0])
+        else:
+            return self.FromGrid(self, self.data + other, (self.data + other).shape[0])
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __iadd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, self.data - other.data, (self.data - other.data).shape[0])
+        else:
+            return self.FromGrid(self, self.data - other, (self.data - other).shape[0])
+
+    def __rsub__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, other.data - self.data, (other.data - self.data).shape[0])
+        else:
+            return self.FromGrid(self, other - self.data, (other - self.data).shape[0])
+
+    def __isub__(self, other):
+        return self.__sub__(other)
+
+    def __mul__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, self.data * other.data, (self.data * other.data).shape[0])
+        else:
+            return self.FromGrid(self, self.data * other, (self.data * other).shape[0])
+
+    def __rmul__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, other.data * self.data, (other.data * self.data).shape[0])
+        else:
+            return self.FromGrid(self, other * self.data, (other * self.data).shape[0])
+
+    def __imul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, self.data / other.data, (self.data / other.data).shape[0])
+        else:
+            return self.FromGrid(self, self.data / other, (self.data / other).shape[0])
+
+    def __rtruediv__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, other.data / self.data, (other.data / self.data).shape[0])
+        else:
+            return self.FromGrid(self, other / self.data, (other / self.data).shape[0])
+
+    def __itruediv__(self, other):
+        return self.__truediv__(other)
+
+    def __floordiv__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, self.data // other.data, (self.data // other.data).shape[0])
+        else:
+            return self.FromGrid(self, self.data // other, (self.data // other).shape[0])
+
+    def __rfloordiv__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, other.data // self.data, (other.data // self.data).shape[0])
+        else:
+            return self.FromGrid(self, other // self.data, (other // self.data).shape[0])
+
+    def __ifloordiv__(self, other):
+        return self.__floordiv__(other)
+
+    def __pow__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, self.data ** other.data, (self.data ** other.data).shape[0])
+        else:
+            return self.FromGrid(self, self.data ** other, (self.data ** other).shape[0])
+
+    def __rpow__(self, other):
+        if type(other).__name__ == 'StructuredGrid':
+            return self.FromGrid(self, other.data ** self.data, (other.data ** self.data).shape[0])
+        else:
+            return self.FromGrid(self, other ** self.data, (other ** self.data).shape[0])
+
+    def __ipow__(self, other):
+        return self.__pow__(other)
+
+    def __getitem__(self, item):
+        return self.data.__getitem__(item)
+
+    def __copy__(self):
+        new_grid = type(self)(self.size)
+        new_grid.__dict__.update(self.__dict__)
+        return new_grid
+
+    def __str__(self):
+        return f"Structured Grid Object - Size: {self.size}  Spacing: {self.spacing}  Origin: {self.origin}"
