@@ -1,7 +1,6 @@
-# from Core.ImageClass import Image
-from Core.FieldClass import Field
-from ImageOperators import ApplyHField
-# from Core.GridClass import Grid
+from ImageOperators import ApplyField
+from Core.StructuredGridClass import StructuredGrid
+
 from ._BaseTool import Filter
 
 
@@ -10,14 +9,14 @@ class IterativeMatch(Filter):
                  regularization_weight=0.1, device='cpu'):
         super(IterativeMatch, self).__init__(source, target, similarity, regularization, smoothing)
 
-        if not type(source).__name__ == 'Image':
+        if not type(source).__name__ == 'StructuredGrid':
             raise RuntimeError(
-                f'Only type "Image" for source is accepted, got {type(source).__name__}'
+                f'Only type "StructuredGrid" for source is accepted, got {type(source).__name__}'
             )
 
-        if not type(target).__name__ == 'Image':
+        if not type(target).__name__ == 'StructuredGrid':
             raise RuntimeError(
-                f'Only type "Image" for target is accepted, got {type(target).__name__}'
+                f'Only type "StructuredGrid" for target is accepted, got {type(target).__name__}'
             )
 
         if not any([source.size[x].item() == target.size[x].item() for x in range(len(source.size))]):
@@ -26,7 +25,8 @@ class IterativeMatch(Filter):
             )
 
         self.moving = source.clone()  # Clone the source so we don't mess with the original image
-        self.field = Field(source.size, device=device)
+        self.field = StructuredGrid(source.size, device=device).set_to_identity_lut_()
+        self.identity = StructuredGrid(source.size, device=device).set_to_identity_lut_()
         self.step_size = step_size
         self.reg_weight = regularization_weight
         self.initial_energy = self.energy()
@@ -44,12 +44,13 @@ class IterativeMatch(Filter):
         update_field = update_field * self.step_size
 
         # Change the stored field to a vector field and subtract the update field
-        self.field.to_v_field_()
-        self.field = self.field - update_field
+        # self.field.to_v_field_()
+        self.field = (self.field - self.identity) - update_field
 
-        # Change the field back to an h field and apply to the moving image
-        self.field.to_h_field_()
-        self.moving = ApplyHField(self.field)(self.source)
+        # Change the field back to an lut and apply to the moving image
+        self.field = self.field + self.identity
+
+        self.moving = ApplyField(self.field)(self.source)
 
     def step(self):
 
@@ -96,7 +97,7 @@ class LandmarkMatch(Filter):
 
         self.comparator = landmark_comparator
         self.moving = source.clone()  # Clone the source so we don't mess with the original image
-        self.field = Field(source.size, device=device)
+        # self.field = Field(source.size, device=device)
 
     def forward(self, **kwargs):
         raise NotImplementedError

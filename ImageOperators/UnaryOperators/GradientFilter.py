@@ -48,20 +48,26 @@ class Gradient(Filter):
         y = torch.ger(base, avg)
 
         if dim == 2:
-            return torch.cat((x.unsqueeze(0), y.unsqueeze(0)), 0)
+            return torch.cat((y.unsqueeze(0), x.unsqueeze(0)), 0)
 
         if dim == 3:
             x = torch.mul(x.unsqueeze(0), avg.unsqueeze(1).unsqueeze(2))
             y = torch.mul(y.unsqueeze(0), avg.unsqueeze(1).unsqueeze(2))
             z = torch.mul(torch.ger(avg, avg).unsqueeze(0), base.unsqueeze(1).unsqueeze(2))
-            return torch.cat((z.unsqueeze(0), x.unsqueeze(0), y.unsqueeze(0)), 0)
+            return torch.cat((z.unsqueeze(0), y.unsqueeze(0), x.unsqueeze(0)), 0)
 
     def forward(self, x):
 
-        out = x.clone()
-        out.data = self.conv(
-            out.data.view(1, *out.data.shape),
+        out_tensor = self.conv(
+            x.data.view(1, *x.data.shape),
             weight=self.weight,
             padding=self.padding
         ).squeeze(0)
+
+        out = StructuredGrid.FromGrid(
+            x,
+            tensor=out_tensor,
+            channels=out_tensor.shape[0]
+        )
+
         return out
