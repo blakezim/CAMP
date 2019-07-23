@@ -8,5 +8,5 @@ __all__ = [
     'FluidKernel',
     'Gradient',
     'ResampleWorld',
-    'ApplyHField'
+    'ApplyField'
 ]

@@ -1,7 +1,7 @@
 import torch
 
 from ImageOperators.UnaryOperators.GradientFilter import Gradient
-from ._BaseFilter import Filter
+from ImageOperators.BinaryOperators._BinaryFilter import Filter
 
 
 class L2Similarity(Filter):

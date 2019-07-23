@@ -43,14 +43,11 @@ class ResampleWorld(Filter):
 
         grid_bases = [torch.linspace(start[x], stop[x], int(shape[x])) for x in range(0, len(shape))]
         grids = torch.meshgrid(grid_bases)
-        grids = [grid.unsqueeze(-1) for grid in grids]  # So we can concatenate
+        field = torch.stack(grids, 0)
+        field = field.to(self.device)
+        field = field.type(self.dtype)
+        field = field.unsqueeze(0)
 
-        # Need to flip the x and y dimension as per affine grid
-        grids[-2], grids[-1] = grids[-1], grids[-2]
-        field = torch.cat(grids, -1)
-
-        # Need to set the device so they can be resampled
-        field = field.unsqueeze(0).to(x.device).type(x.dtype)
         return field
 
     def forward(self, x):
@@ -64,16 +61,6 @@ class ResampleWorld(Filter):
             interp_mode = self.interpolation_mode
 
         out = x.clone()  # Make sure we don't mess with the original tensor
-
-        if type(x).__name__ == 'Tensor':
-            out = Image.FromGrid(
-                Grid(x.shape[1:],
-                     device=self.field.device,
-                     dtype=self.field.dtype,
-                     requires_grad=self.field.requires_grad),
-                tensor=x.clone(),
-                channels=x.shape[0]
-            )
 
         resample_field = self._get_field(x)
         out.data = F.grid_sample(out.data.view(1, *out.data.shape),

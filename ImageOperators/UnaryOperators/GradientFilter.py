@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 
+from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 
 
@@ -57,22 +58,10 @@ class Gradient(Filter):
 
     def forward(self, x):
 
-        if type(x).__name__ in ['Image', 'Field']:
-            out = x.clone()
-            out.data = self.conv(
-                out.data.view(1, *out.data.shape),
-                weight=self.weight,
-                padding=self.padding
-            ).squeeze(0)
-            return out
-
-        elif type(x).__name__ == 'Tensor':
-            out = x.clone()
-            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
-            return out
-
-        else:
-            raise RuntimeError(
-                'Data type not understood for Gaussian Filter:'
-                f' Received type: {type(x).__name__}.  Must be type: [Image, Field, Tensor]'
-            )
+        out = x.clone()
+        out.data = self.conv(
+            out.data.view(1, *out.data.shape),
+            weight=self.weight,
+            padding=self.padding
+        ).squeeze(0)
+        return out

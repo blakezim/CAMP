@@ -3,6 +3,7 @@ import torch
 import numbers
 import torch.nn.functional as F
 
+from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 
 
@@ -76,26 +77,18 @@ class Gaussian(Filter):
         """
         Apply gaussian filter to input.
         Arguments:
-            input (torch.Tensor): Input to apply gaussian filter on.
+            input (StructuredGrid): Input to apply gaussian filter on.
         Returns:
-            filtered (torch.Tensor): Filtered output.
+            filtered (StructuredGrid): Filtered output.
         """
 
         out = x.clone()
-        if type(x).__name__ in ['Image', 'Field']:
-            out.data = self.conv(
+
+        out.data = self.conv(
                 out.data.view(1, *out.data.shape),
                 weight=self.weight,
                 groups=self.groups,
                 padding=self.padding
             ).squeeze(0)
-            return out
 
-        elif type(x).__name__ == 'Tensor':
-            out = self.conv(out, weight=self.weight, groups=self.groups, padding=self.padding).squeeze(0)
-            return out
-        else:
-            raise RuntimeError(
-                'Data type not understood for Gaussian Filter:'
-                f' Received type: {type(x).__name__}.  Must be type: [Image, Field, Tensor]'
-            )
+        return out

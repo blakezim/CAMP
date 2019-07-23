@@ -2,8 +2,7 @@ from math import pi
 
 import torch
 
-from Core.ImageClass import Image
-from Core.GridClass import Grid
+from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 
 
@@ -21,9 +20,7 @@ class FluidKernel(Filter):
         vecs = [torch.arange(0, x, device=device).float() for x in grid.size]
 
         # Create the grids from the vectors and stack them in the first dimension
-        # vecs[0], vecs[1] = vecs[1], vecs[0]
-        grids = list(torch.meshgrid(vecs))
-        grids[-2], grids[-1] = grids[-1], grids[-2]
+        grids = torch.meshgrid(vecs)
         grids = torch.stack(grids, 0)
 
         # Compute the cosine grids
@@ -100,16 +97,6 @@ class FluidKernel(Filter):
     def forward(self, x):
 
         out = x.clone()
-
-        if type(x).__name__ == 'Tensor':
-            out = Image.FromGrid(
-                Grid(x.shape[1:],
-                     device=self.field.device,
-                     dtype=self.field.dtype,
-                     requires_grad=self.field.requires_grad),
-                tensor=x.clone(),
-                channels=x.shape[0]
-            )
 
         # Take the fourier transform of the data
         fft = torch.rfft(out.data, signal_ndim=2, normalized=False, onesided=False)
