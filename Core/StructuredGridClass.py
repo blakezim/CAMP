@@ -50,8 +50,8 @@ class StructuredGrid:
                     'Tensor shape must be [Channels,  optionally (Z), X, Y] '
                 )
             self.data = tensor.clone()
-
-        self.shape = self.data.shape
+            self.data = self.data.to(self.device)
+            self.data = self.data.type(self.dtype)
 
     @staticmethod
     def FromGrid(grid, tensor=None, channels=1):
@@ -168,6 +168,31 @@ class StructuredGrid:
 
         return new_grid
 
+    def extract_slice(self, index, dim):
+        # Create a tuple of slice types with none
+        slices = [slice(None, None, None)] * len(self.shape())
+        slices[dim + 1] = slice(index, index + 1, None)
+        slices = tuple(slices)
+
+        # Extract the slice from the data
+        new_tensor = self.data[slices].squeeze(dim + 1)
+
+        # Calculate the new origin in that dimension, the other two should stay the same
+        new_origin = self.origin[self.origin != self.origin[dim]]
+        new_spacing = self.spacing[self.spacing != self.spacing[dim]]
+        new_size = self.size[self.size != self.size[dim]]
+
+        return StructuredGrid(
+            new_size,
+            new_spacing,
+            new_origin,
+            self.device,
+            self.dtype,
+            self.requires_grad,
+            new_tensor,
+            self.channels
+        )
+
     def to_(self, device):
         for attr, val in self.__dict__.items():
             if type(val).__name__ == 'Tensor':
@@ -189,6 +214,12 @@ class StructuredGrid:
 
     def clone(self):
         return self.__copy__()
+
+    def sum(self):
+        return self.data.sum()
+
+    def shape(self):
+        return self.data.shape
     
     def __add__(self, other):
         if type(other).__name__ == 'StructuredGrid':

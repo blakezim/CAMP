@@ -7,7 +7,7 @@ from ._BaseTool import Filter
 class IterativeMatch(Filter):
     def __init__(self, source, target, similarity, regularization=None, smoothing=None, step_size=0.001,
                  regularization_weight=0.1, device='cpu'):
-        super(IterativeMatch, self).__init__(source, target, similarity, regularization, smoothing)
+        super(IterativeMatch, self).__init__(source, target)
 
         if not type(source).__name__ == 'StructuredGrid':
             raise RuntimeError(
@@ -24,9 +24,15 @@ class IterativeMatch(Filter):
                 f'Images must have the same size - Target Size: {target.size}, Source Size: {source.size}'
             )
 
+        self.similarity = similarity
+        self.regularization = regularization
+        self.smoothing = smoothing
+
         self.moving = source.clone()  # Clone the source so we don't mess with the original image
-        self.field = StructuredGrid(source.size, device=device).set_to_identity_lut_()
-        self.identity = StructuredGrid(source.size, device=device).set_to_identity_lut_()
+        self.field = StructuredGrid.FromGrid(source)
+        self.field.set_to_identity_lut_()
+        self.identity = StructuredGrid.FromGrid(source)
+        self.identity.set_to_identity_lut_()
         self.step_size = step_size
         self.reg_weight = regularization_weight
         self.initial_energy = self.energy()
@@ -53,8 +59,6 @@ class IterativeMatch(Filter):
         self.moving = ApplyField(self.field)(self.source)
 
     def step(self):
-
-        # Calculate the energy?
 
         # Calculate the similarity body force
         body_v = self.similarity.c1(self.target, self.moving)
