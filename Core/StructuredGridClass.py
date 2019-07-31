@@ -46,7 +46,7 @@ class StructuredGrid:
             if list(tensor.size()) != [channels] + self.size.int().tolist():
                 raise RuntimeError(
                     '{Tensor.shape} and {[channels] + input_size} do not match:'
-                    f' Tensor Size: {list(tensor.shape)}, Grid Size: {self.size.int().tolist()}\n'
+                    f' Tensor Size: {list(tensor.shape)}, Grid Size: {[channels] + self.size.int().tolist()}\n'
                     'Tensor shape must be [Channels,  optionally (Z), X, Y] '
                 )
             self.data = tensor.clone()
@@ -178,9 +178,9 @@ class StructuredGrid:
         new_tensor = self.data[slices].squeeze(dim + 1)
 
         # Calculate the new origin in that dimension, the other two should stay the same
-        new_origin = self.origin[self.origin != self.origin[dim]]
-        new_spacing = self.spacing[self.spacing != self.spacing[dim]]
-        new_size = self.size[self.size != self.size[dim]]
+        new_origin = torch.cat((self.origin[0:dim], self.origin[dim + 1:]))
+        new_spacing = torch.cat((self.spacing[0:dim], self.spacing[dim + 1:]))
+        new_size = torch.cat((self.size[0:dim], self.size[dim + 1:]))
 
         return StructuredGrid(
             new_size,

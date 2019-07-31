@@ -120,7 +120,7 @@ def GetAspect(Image, axis='default', retFloat=True):
     # else:
 
     # Might need to flip these two
-    aspect = (Image.spacing[1] / Image.spacing[0]).item()
+    aspect = (Image.spacing[0] / Image.spacing[1]).item()
     sz = [imsz[1], imsz[0]]
 
     if axis == 'cart':
@@ -171,7 +171,7 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
     # Make sure the image is only 2D at this point
     if len(Image.size) == 3:
         if not slice_index:
-            sliceIdx = Image.size[0] // 2
+            slice_index = int(Image.size[0].item() // 2)
         Image = Image.extract_slice(slice_index, dim)
 
     # Get the aspect ratio of the image
