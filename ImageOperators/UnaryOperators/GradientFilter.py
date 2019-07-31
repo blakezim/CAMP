@@ -6,33 +6,45 @@ from ._UnaryFilter import Filter
 
 
 class Gradient(Filter):
-    def __init__(self, dim=2):
+    def __init__(self, dim=2, device='cpu', dtype=torch.float32):
         super(Gradient, self).__init__()
 
-        self.padding = tuple([1] * dim)
+        self.device = device
+        self.dtype = dtype
+
+        pad_vec = tuple([1] * dim * 2)
         kernel = self._create_filters(dim)
-
         kernel = kernel.unsqueeze(1)
-
         self.register_buffer('weight', kernel)
-        # self.groups = channels * dim
 
         if dim == 1:
             self.conv = F.conv1d
+            self.padding = torch.nn.ReplicationPad1d(pad_vec)
         elif dim == 2:
             self.conv = F.conv2d
+            self.padding = torch.nn.ReplicationPad2d(pad_vec)
         elif dim == 3:
             self.conv = F.conv3d
+            self.padding = torch.nn.ReplicationPad3d(pad_vec)
         else:
             raise RuntimeError(
-                'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
+                f'Only 1, 2 and 3 dimensions are supported. Received {dim}.'
             )
 
     @staticmethod
     def Create(dim=2, device='cpu', dtype=torch.float32):
-        grad = Gradient(dim)
+        grad = Gradient(dim, device, dtype)
         grad = grad.to(device)
         grad = grad.type(dtype)
+
+        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
+        for attr, val in grad.__dict__.items():
+            if type(val).__name__ == 'StructuredGrid':
+                val.to_(device)
+                val.to_type_(dtype)
+            else:
+                pass
+
         return grad
 
     @staticmethod
@@ -58,11 +70,14 @@ class Gradient(Filter):
 
     def forward(self, x):
 
+        # Put the channels in the batch dimension
         out_tensor = self.conv(
-            x.data.view(1, *x.data.shape),
-            weight=self.weight,
-            padding=self.padding
-        ).squeeze(0)
+            self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:])),
+            weight=self.weight
+        )
+
+        # Combine the first dimensions
+        out_tensor = out_tensor.view(out_tensor.shape[0] * out_tensor.shape[1], *out_tensor.shape[2:])
 
         out = StructuredGrid.FromGrid(
             x,

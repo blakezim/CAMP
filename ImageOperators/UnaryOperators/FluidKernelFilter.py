@@ -7,11 +7,15 @@ from ._UnaryFilter import Filter
 
 
 class FluidKernel(Filter):
-    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, incompresible=False, device='cpu'):
+    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, incompresible=False, device='cpu', dtype=torch.float32):
         super(FluidKernel, self).__init__()
 
+        self.device = device
+        self.dtype = dtype
         self.incompresible = incompresible
         self.device = device
+        self.dim = len(grid.size)  # Need to know the signal dimensions
+
         # Expand the size and spacing variable so they are easily usable
         size = grid.size.view(*grid.size.shape, *([1] * len(grid.size)))
         spacing = grid.spacing.view(*grid.spacing.shape, *([1] * len(grid.spacing)))
@@ -36,12 +40,12 @@ class FluidKernel(Filter):
         L = torch.eye(len(grid.size), device=device).unsqueeze(-1).repeat(1, 1, len(lmbda))
 
         # Fill in the diagonal terms
-        for x in range(0, len(grid.size)):
-            for y in range(0, len(grid.size)):
-                if x == y:
-                    L[x, y, :] = lmbda - (beta * cos_grids[x])
+        for i in range(0, len(grid.size)):
+            for j in range(0, len(grid.size)):
+                if i == j:
+                    L[i, j, :] = lmbda - (beta * cos_grids[i])
                 else:
-                    L[x, y, :] = (beta * sin_grids[x] * sin_grids[y])
+                    L[i, j, :] = (beta * sin_grids[i] * sin_grids[j])
 
         # Do the cholskey decomposition on the CPU - GPU is not working
         L = L.permute(2, 0, 1).cpu()
@@ -61,19 +65,20 @@ class FluidKernel(Filter):
     def solve_cholskey(self, x):
         # back-solve Gt = x to get a temporary vector t
         # back-solve G'y = t to get answer in y
-        # [G(0, 0)     0       0  ]     [y(1)] = b(1)
-        # [G(1, 0) G(1, 1)     0  ]  *  [y(2)] = b(2)
-        # [G(2, 0) G(2, 1) G(2, 2)]     [y(3)] = b(3)
+        # [G(0, 0)     0       0  ]     [t(0)] = x(0)
+        # [G(1, 0) G(1, 1)     0  ]  *  [t(1)] = x(1)
+        # [G(2, 0) G(2, 1) G(2, 2)]     [t(2)] = x(2)
         #
-        # [G(0, 0) G(1, 0) G(2, 0)]     [x(1)] = y(1)
-        # [   0    G(1, 1) G(2, 1)]  *  [x(2)] = y(2)
-        # [   0       0    G(2, 2)]     [x(3)] = y(3)
+        # [G(0, 0) G(1, 0) G(2, 0)]     [y(0)] = t(0)
+        # [   0    G(1, 1) G(2, 1)]  *  [y(1)] = t(1)
+        # [   0       0    G(2, 2)]     [y(2)] = t(2)
 
         t0 = x[:, 0] / self.G[:, 0, 0]
         t1 = (x[:, 1] - (self.G[:, 1, 0] * t0)) / self.G[:, 1, 1]
 
         if x.shape[-1] == 3:
-            t2 = (x[:, 1] - (self.G[:, 2, 0] * t0) - (self.G[:, 2, 1] * t1)) / self.G[:, 2, 2]
+            t2 = (x[:, 2] - (self.G[:, 2, 0] * t0) - (self.G[:, 2, 1] * t1)) / self.G[:, 2, 2]
+            # Good to here
             y2 = t2 / self.G[:, 2, 2]
             y1 = (t1 - (self.G[:, 2, 1] * y2)) / self.G[:, 1, 1]
             y0 = (t0 - (self.G[:, 1, 0] * y1) - (self.G[:, 2, 0] * y2)) / self.G[:, 0, 0]
@@ -89,9 +94,18 @@ class FluidKernel(Filter):
 
     @staticmethod
     def Create(grid, alpha=1.0, beta=0.0, gamma=0.001, incompresible=False, device='cpu', dtype=torch.float32):
-        lap = FluidKernel(grid, alpha, beta, gamma, incompresible, device)
+        lap = FluidKernel(grid, alpha, beta, gamma, incompresible, device, dtype)
         lap = lap.to(device)
         lap = lap.type(dtype)
+
+        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
+        for attr, val in lap.__dict__.items():
+            if type(val).__name__ == 'StructuredGrid':
+                val.to_(device)
+                val.to_type_(dtype)
+            else:
+                pass
+
         return lap
 
     def forward(self, x):
@@ -99,7 +113,7 @@ class FluidKernel(Filter):
         out = x.clone()
 
         # Take the fourier transform of the data
-        fft = torch.rfft(out.data, signal_ndim=2, normalized=False, onesided=False)
+        fft = torch.rfft(out.data, signal_ndim=self.dim, normalized=False, onesided=False)
         real, imag = fft.split(1, -1)
 
         # We need to linearize the matrices so we can easily do the multiplication
@@ -127,6 +141,6 @@ class FluidKernel(Filter):
         smooth_fft = torch.stack((real_smooth, imag_smooth), -1)
 
         # Inverse fourier transform
-        out.data = torch.irfft(smooth_fft, signal_ndim=2, normalized=False, onesided=False)
+        out.data = torch.irfft(smooth_fft, signal_ndim=self.dim, normalized=False, onesided=False)
 
         return out

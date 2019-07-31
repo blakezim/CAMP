@@ -1,0 +1,73 @@
+import torch
+import torch.nn.functional as F
+
+from Core.StructuredGridClass import StructuredGrid
+from ._UnaryFilter import Filter
+
+
+class ApplyGrid(Filter):
+    def __init__(self, grid, interp_mode='bilinear', pad_mode='border', apply_space='real',
+                 device='cpu', dtype=torch.float32):
+        super(ApplyGrid, self).__init__()
+
+        self.device = device
+        self.dtype = dtype
+        self.interpolation_mode = interp_mode
+        self.padding_mode = pad_mode
+        self.apply_space = apply_space
+        self.grid = grid
+
+    @staticmethod
+    def Create(grid, interp_mode='bilinear', pad_mode='border', apply_space='real', device='cpu', dtype=torch.float32):
+        app = ApplyGrid(grid, interp_mode, pad_mode, apply_space, device, dtype)
+        app = app.to(device)
+        app = app.type(dtype)
+
+        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
+        for attr, val in app.__dict__.items():
+            if type(val).__name__ == 'StructuredGrid':
+                val.to_(device)
+                val.to_type_(dtype)
+            else:
+                pass
+
+        return app
+
+    def to_input_index(self, x):
+        grid = self.grid.clone()
+
+        # Change the field to be in index space
+        grid = grid - x.origin.view(*x.size.shape, *([1] * len(x.size)))
+        grid = grid / (x.spacing * (x.size / 2)).view(*x.size.shape, *([1] * len(x.size)))
+        grid = grid - 1
+
+        grid = grid.data.permute(torch.arange(1, len(grid.shape())).tolist() + [0])
+        grid = grid.data.view(1, *grid.shape)
+
+        return grid
+
+    def forward(self, x):
+
+        if self.grid.data.shape[0] != len(x.size):
+            raise RuntimeError(
+                f'Can not apply lut with dimension {self.grid.data.shape[0]} to data with dimension {len(x.size)}'
+            )
+
+        # Make the grid have the index values of the input
+        resample_grid = self.to_input_index(x)
+
+        # Resample is expecting x, y, z. Because we are in torch land, our fields are z, y, x. Need to flip
+        resample_grid = resample_grid.flip(-1)
+
+        out_tensor = F.grid_sample(x.data.view(1, *x.data.shape),
+                                   resample_grid,
+                                   mode=self.interpolation_mode,
+                                   padding_mode=self.padding_mode).squeeze(0)
+
+        out = StructuredGrid.FromGrid(
+            x,
+            tensor=out_tensor,
+            channels=out_tensor.shape[0]
+        )
+
+        return out

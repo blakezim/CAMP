@@ -8,20 +8,11 @@ from ._UnaryFilter import Filter
 
 
 class Gaussian(Filter):
-    """
-    Apply gaussian smoothing on a 1d, 2d or 3d tensor. Filtering is performed seperately for each channel in the input
-    using a depthwise convolution.
-    Arguments:
-        channels (int, sequence): Number of channels of the input tensors. Output will
-            have this number of channels as well.
-        kernel_size (int, sequence): Size of the gaussian kernel.
-        sigma (float, sequence): Standard deviation of the gaussian kernel.
-        dim (int, optional): The number of dimensions of the data.
-            Default value is 2 (spatial).
-    """
-
-    def __init__(self, channels, kernel_size, sigma, dim=2):
+    def __init__(self, channels, kernel_size, sigma, dim=2, device='cpu', dtype=torch.float32):
         super(Gaussian, self).__init__()
+
+        self.device = device
+        self.dtype = dtype
 
         if isinstance(kernel_size, numbers.Number):
             kernel_size = [kernel_size] * dim
@@ -67,28 +58,34 @@ class Gaussian(Filter):
             )
 
     @staticmethod
-    def Create(channels, kernel_size, sigma, device='cpu', dtype=torch.float32, dim=2):
-        gauss = Gaussian(channels, kernel_size, sigma, dim)
+    def Create(channels, kernel_size, sigma, dim=2, device='cpu', dtype=torch.float32):
+        gauss = Gaussian(channels, kernel_size, sigma, dim, device, dtype)
         gauss = gauss.to(device)
         gauss = gauss.type(dtype)
+
+        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
+        for attr, val in gauss.__dict__.items():
+            if type(val).__name__ == 'StructuredGrid':
+                val.to_(device)
+                val.to_type_(dtype)
+            else:
+                pass
+
         return gauss
 
     def forward(self, x):
-        """
-        Apply gaussian filter to input.
-        Arguments:
-            input (StructuredGrid): Input to apply gaussian filter on.
-        Returns:
-            filtered (StructuredGrid): Filtered output.
-        """
 
-        out = x.clone()
-
-        out.data = self.conv(
-                out.data.view(1, *out.data.shape),
+        out_tensor = self.conv(
+                x.data.view(1, *x.data.shape),
                 weight=self.weight,
                 groups=self.groups,
                 padding=self.padding
             ).squeeze(0)
+
+        out = StructuredGrid.FromGrid(
+            x,
+            tensor=out_tensor,
+            channels=out_tensor.shape[0]
+        )
 
         return out

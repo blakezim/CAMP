@@ -12,20 +12,27 @@ class JacobianDeterminant(Filter):
         self.dim = dim
         self.device = device
         self.dtype = dtype
-
-        self.gradient = Gradient(dim=2)
+        self.gradient = Gradient(dim=dim)
 
     @staticmethod
     def Create(dim=2, device='cpu', dtype=torch.float32):
         jacb = JacobianDeterminant(dim)
         jacb = jacb.to(device)
         jacb = jacb.type(dtype)
+
+        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
+        for attr, val in jacb.__dict__.items():
+            if type(val).__name__ == 'StructuredGrid':
+                val.to_(device)
+                val.to_type_(dtype)
+            else:
+                pass
+
         return jacb
 
     def forward(self, x):
 
-        field = x.clone()  # Make sure we don't mess with the original tensor
-        grads = self.gradient(field)
+        grads = self.gradient(x)
         # Central difference scale the gradients by the spacing
         grads = grads / (2 * x.spacing.repeat(self.dim).view(self.dim ** 2, *([1] * len(x.size))))
 
@@ -36,8 +43,10 @@ class JacobianDeterminant(Filter):
                   grads[1] * (grads[3] * grads[8] - grads[5] * grads[6]) + \
                   grads[2] * (grads[3] * grads[7] - grads[4] * grads[6])
 
-        return StructuredGrid.FromGrid(
+        out = StructuredGrid.FromGrid(
             x,
             tensor=det.view(1, *det.shape),
             channels=1
         )
+
+        return out
