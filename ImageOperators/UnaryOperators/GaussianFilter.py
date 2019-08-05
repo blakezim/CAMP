@@ -1,6 +1,8 @@
 import math
 import torch
 import numbers
+import itertools
+
 import torch.nn.functional as F
 
 from Core.StructuredGridClass import StructuredGrid
@@ -20,11 +22,9 @@ class Gaussian(Filter):
             sigma = [sigma] * dim
 
         self.padding = []
-        self.padding += [x // 2 for x in kernel_size]
-        self.padding = tuple(self.padding)
+        self.padding += [[(x - 1) // 2, (x - 1) // 2 + (x - 1) % 2] for x in kernel_size]
+        self.padding = tuple(itertools.chain.from_iterable(self.padding))
 
-        # The gaussian kernel is the product of the gaussian function of each dimension.
-        # Because these are small, don't care about doing meshgrid
         kernel = 1
         meshgrids = torch.meshgrid(
             [torch.arange(size, dtype=torch.float32) for size in kernel_size]
@@ -48,10 +48,13 @@ class Gaussian(Filter):
 
         if dim == 1:
             self.conv = F.conv1d
+            self.padding = torch.nn.ReplicationPad1d(self.padding)
         elif dim == 2:
             self.conv = F.conv2d
+            self.padding = torch.nn.ReplicationPad2d(self.padding)
         elif dim == 3:
             self.conv = F.conv3d
+            self.padding = torch.nn.ReplicationPad3d(self.padding)
         else:
             raise RuntimeError(
                 'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
@@ -76,10 +79,9 @@ class Gaussian(Filter):
     def forward(self, x):
 
         out_tensor = self.conv(
-                x.data.view(1, *x.data.shape),
+                self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:])),
                 weight=self.weight,
                 groups=self.groups,
-                padding=self.padding
             ).squeeze(0)
 
         out = StructuredGrid.FromGrid(
