@@ -16,7 +16,7 @@ class JacobianDeterminant(Filter):
 
     @staticmethod
     def Create(dim=2, device='cpu', dtype=torch.float32):
-        jacb = JacobianDeterminant(dim)
+        jacb = JacobianDeterminant(dim, device, dtype)
         jacb = jacb.to(device)
         jacb = jacb.type(dtype)
 

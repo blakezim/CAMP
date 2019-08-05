@@ -135,15 +135,11 @@ class RadialBasis(Filter):
 
                 diff = (temp.data - point).permute(list(range(1, self.dim + 1)) + [0])
 
-                # Compute the laplacian
-                # diff = source.float() - target.float()
                 exponential = (-(self.sigma ** 2) * (diff ** 2).sum(-1)).exp()
 
                 grad = -2 * (self.sigma ** 2) * diff * exponential.unsqueeze(-1)
                 grad = torch.matmul(grad.unsqueeze(-1), (-2 * (self.sigma ** 2) * diff).unsqueeze(-2))
                 ggt = grad + torch.diag_embed((-2 * (self.sigma ** 2) * exponential).unsqueeze(-1).repeat([1] * self.dim + [2]))
-
-                # ggt = torch.ger(grad, -2 * (self.sigma ** 2) * diff) + mat * -2 * (self.sigma ** 2) * exponential
 
                 lap = ((-2 * self.sigma ** 2 + 4 * (self.sigma ** 4) * (diff ** 2)) * exponential.unsqueeze(-1)).sum(-1)
                 lap = torch.diag_embed(lap.unsqueeze(-1).repeat([1] * self.dim + [2]))

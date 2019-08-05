@@ -4,11 +4,17 @@ from ImageOperators.UnaryOperators.GradientFilter import *
 from ImageOperators.UnaryOperators.ResampleWorldFilter import *
 from ImageOperators.UnaryOperators.ApplyGridFilter import *
 from ImageOperators.UnaryOperators.JacobianDeterminantFilter import *
+from ImageOperators.UnaryOperators.AffineTransformFilter import *
+from ImageOperators.UnaryOperators.RadialBasisFilter import *
+from ImageOperators.UnaryOperators.VarianceEqualizeFilter import *
 __all__ = [
     'Gaussian',
     'FluidKernel',
     'Gradient',
     'ResampleWorld',
     'ApplyGrid',
-    'JacobianDeterminant'
+    'JacobianDeterminant',
+    'AffineTransform',
+    'RadialBasis',
+    'VarianceEqualize'
 ]

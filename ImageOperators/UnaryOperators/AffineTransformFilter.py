@@ -18,7 +18,7 @@ class AffineTransform(Filter):
             if target_landmarks.shape != source_landmarks.shape:
                 raise RuntimeError(
                     'Shape of target and source landmarks do not match: '
-                    f' Target Shape: {target_landmarks.shape}, Source Shape: {target_landmarks.shape}'
+                    f' Target Shape: {target_landmarks.shape}, Source Shape: {source_landmarks.shape}'
                 )
             self.source_landmarks = source_landmarks
             self.target_landmarks = target_landmarks
@@ -70,6 +70,9 @@ class AffineTransform(Filter):
         # Create the grid
         aff_grid = StructuredGrid.FromGrid(x, channels=self.dim)
         aff_grid.set_to_identity_lut_()
+
+        # Want to bring the grid the other direction
+        self.affine = self.affine.inverse()
 
         a = self.affine[0:self.dim, 0:self.dim].view([1]*self.dim + [self.dim] * self.dim)
         t = self.affine[0:self.dim, self.dim]
