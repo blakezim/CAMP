@@ -1,5 +1,5 @@
-from .ImageMatchFilter import *
-from .L2ImageSimilarity import *
+from .StructuredGridMatchFilter import *
+from ImageOperators.BinaryOperators.L2ImageSimilarity import *
 __all__ = [
     'IterativeMatch',
     'L2Similarity',

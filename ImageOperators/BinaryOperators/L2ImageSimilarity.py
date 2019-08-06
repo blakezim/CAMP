@@ -1,7 +1,7 @@
 import torch
 
 from ImageOperators.UnaryOperators.GradientFilter import Gradient
-from ImageOperators.BinaryOperators._BinaryFilter import Filter
+from ._BinaryFilter import Filter
 
 
 class L2Similarity(Filter):
@@ -29,8 +29,8 @@ class L2Similarity(Filter):
         return filt
 
     def forward(self, target, moving):
-        return (target - moving) ** 2
+        return 0.5 * ((target - moving) ** 2)
 
     def c1(self, target, moving):
         grads = self.gradient_operator(moving)
-        return ((target - moving) * grads) * 0.5
+        return (target - moving) * grads

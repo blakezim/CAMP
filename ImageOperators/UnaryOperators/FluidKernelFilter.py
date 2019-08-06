@@ -1,19 +1,20 @@
+import torch
 from math import pi
 
-import torch
-
-from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
+from Core.StructuredGridClass import StructuredGrid
 
 
 class FluidKernel(Filter):
-    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, incompresible=False, device='cpu', dtype=torch.float32):
+    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, inverse=True,
+                 incompresible=False, device='cpu', dtype=torch.float32):
         super(FluidKernel, self).__init__()
 
         self.device = device
         self.dtype = dtype
         self.incompresible = incompresible
         self.device = device
+        self.inverse = inverse
         self.dim = len(grid.size)  # Need to know the signal dimensions
 
         # Expand the size and spacing variable so they are easily usable
@@ -56,11 +57,29 @@ class FluidKernel(Filter):
         nsq = (sin_grids ** 2).sum(0)
 
         # Add variable to the buffer so we ensure that they are on the right device
+        self.register_buffer('L', L)
         self.register_buffer('nsq', nsq)
         self.register_buffer('sin_grids', sin_grids.permute(1, 0))
         self.register_buffer('cos_grids', cos_grids.permute(1, 0))
         self.register_buffer('G', G)
-        # self.register_buffer('test', test)
+
+    @staticmethod
+    def Create(grid, alpha=1.0, beta=0.0, gamma=0.001, inverse=True,
+               incompresible=False, device='cpu', dtype=torch.float32):
+
+        lap = FluidKernel(grid, alpha, beta, gamma, inverse, incompresible, device, dtype)
+        lap = lap.to(device)
+        lap = lap.type(dtype)
+
+        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
+        for attr, val in lap.__dict__.items():
+            if type(val).__name__ == 'StructuredGrid':
+                val.to_(device)
+                val.to_type_(dtype)
+            else:
+                pass
+
+        return lap
 
     def solve_cholskey(self, x):
         # back-solve Gt = x to get a temporary vector t
@@ -92,55 +111,50 @@ class FluidKernel(Filter):
 
         return y
 
-    @staticmethod
-    def Create(grid, alpha=1.0, beta=0.0, gamma=0.001, incompresible=False, device='cpu', dtype=torch.float32):
-        lap = FluidKernel(grid, alpha, beta, gamma, incompresible, device, dtype)
-        lap = lap.to(device)
-        lap = lap.type(dtype)
-
-        # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
-        for attr, val in lap.__dict__.items():
-            if type(val).__name__ == 'StructuredGrid':
-                val.to_(device)
-                val.to_type_(dtype)
-            else:
-                pass
-
-        return lap
-
     def forward(self, x):
 
-        out = x.clone()
-
         # Take the fourier transform of the data
-        fft = torch.rfft(out.data, signal_ndim=self.dim, normalized=False, onesided=False)
+        fft = torch.rfft(x.data, signal_ndim=self.dim, normalized=False, onesided=False)
         real, imag = fft.split(1, -1)
 
         # We need to linearize the matrices so we can easily do the multiplication
         real = real.squeeze().view(len(x.size), -1).permute(1, 0)
         imag = imag.squeeze().view(len(x.size), -1).permute(1, 0)
 
-        real_smooth = self.solve_cholskey(real)
-        imag_smooth = self.solve_cholskey(imag)
+        # Cholskey solve for the inverse operator
+        if self.inverse:
+            real_app = self.solve_cholskey(real)
+            imag_app = self.solve_cholskey(imag)
 
+        # Otherwise apply the forward operator via matrix multiply
+        else:
+            real_app = torch.matmul(self.L, real.unsqueeze(-1)).squeeze()
+            imag_app = torch.matmul(self.L, imag.unsqueeze(-1)).squeeze()
+
+        # Project the flow field into the space of incompressible fluids
         if self.incompresible:
+            real_dot = (real_app * self.sin_grids).sum(-1, keepdim=True)
+            imag_dot = (imag_app * self.sin_grids).sum(-1, keepdim=True)
 
-            real_dot = (real_smooth * self.sin_grids).sum(-1, keepdim=True)
-            imag_dot = (imag_smooth * self.sin_grids).sum(-1, keepdim=True)
-
-            real_smooth = real_smooth - (real_dot * self.sin_grids / self.nsq.unsqueeze(-1))
-            imag_smooth = imag_smooth - (imag_dot * self.sin_grids / self.nsq.unsqueeze(-1))
+            real_app = real_app - (real_dot * self.sin_grids / self.nsq.unsqueeze(-1))
+            imag_app = imag_app - (imag_dot * self.sin_grids / self.nsq.unsqueeze(-1))
 
             # Deal with the nan
-            real_smooth[real_smooth != real_smooth] = real.squeeze()[real_smooth != real_smooth]
-            imag_smooth[imag_smooth != imag_smooth] = imag.squeeze()[imag_smooth != imag_smooth]
+            real_app[real_app != real_app] = real.squeeze()[real_app != real_app]
+            imag_app[imag_app != imag_app] = imag.squeeze()[imag_app != imag_app]
 
-        # # now return them to their actual shapes
-        real_smooth = real_smooth.permute(1, 0).view(len(x.size), *x.size.long())
-        imag_smooth = imag_smooth.permute(1, 0).view(len(x.size), *x.size.long())
-        smooth_fft = torch.stack((real_smooth, imag_smooth), -1)
+        # Return tensors to their actual shapes
+        real_app = real_app.permute(1, 0).view(len(x.size), *x.size.long())
+        imag_app = imag_app.permute(1, 0).view(len(x.size), *x.size.long())
+        smooth_fft = torch.stack((real_app, imag_app), -1)
 
         # Inverse fourier transform
-        out.data = torch.irfft(smooth_fft, signal_ndim=self.dim, normalized=False, onesided=False)
+        out_tensor = torch.irfft(smooth_fft, signal_ndim=self.dim, normalized=False, onesided=False)
+
+        out = StructuredGrid.FromGrid(
+            x,
+            tensor=out_tensor,
+            channels=out_tensor.shape[0]
+        )
 
         return out

@@ -7,6 +7,7 @@ from ImageOperators.UnaryOperators.JacobianDeterminantFilter import *
 from ImageOperators.UnaryOperators.AffineTransformFilter import *
 from ImageOperators.UnaryOperators.RadialBasisFilter import *
 from ImageOperators.UnaryOperators.VarianceEqualizeFilter import *
+from ImageOperators.UnaryOperators.FluidRegularizationFilter import *
 __all__ = [
     'Gaussian',
     'FluidKernel',
@@ -16,5 +17,6 @@ __all__ = [
     'JacobianDeterminant',
     'AffineTransform',
     'RadialBasis',
-    'VarianceEqualize'
+    'VarianceEqualize',
+    'FluidRegularization'
 ]
