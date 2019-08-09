@@ -74,7 +74,7 @@ class IterativeMatch(Filter):
         update_field = update_field * self.step_size
 
         # The field stored in self is always a look up table, so
-        self.field = (self.field - self.identity) - update_field
+        self.field = (self.field - self.identity) + update_field
 
         # Change the field back to an lut and apply to the moving image
         self.field = self.field + self.identity
@@ -84,14 +84,14 @@ class IterativeMatch(Filter):
     def step(self):
 
         # Calculate the similarity body force
-        body_v = self.similarity.c1(self.target, self.moving)
+        body_v = self.similarity.c1(self.target, self.moving, self.field)
 
         # Apply the operator to the body force
         body_v = self.operator(body_v)
 
         if self.regularization:
             reg_v = self.reg_weight * self.regularization.c1(self.field - self.identity)
-            body_v = body_v + reg_v
+            body_v = body_v - reg_v
 
         # Update variables
         self.update(body_v)
