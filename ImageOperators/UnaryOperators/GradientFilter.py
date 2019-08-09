@@ -50,7 +50,7 @@ class Gradient(Filter):
     @staticmethod
     def _create_filters(dim):
 
-        base = torch.tensor([1, 0, -1], dtype=torch.float32)
+        base = torch.tensor([-1, 0, 1], dtype=torch.float32)
 
         if dim == 1:
             return base
