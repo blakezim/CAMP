@@ -200,7 +200,7 @@ class RadialBasis(Filter):
 
         rbf_grid = self._apply_affine(rbf_grid)
 
-        x_rbf = ApplyGrid.Create(rbf_grid, device=x.device, dtype=x.dtype)(in_grid)
+        x_rbf = ApplyGrid.Create(rbf_grid, device=x.device, dtype=x.dtype)(in_grid, out_grid)
 
         return x_rbf
 

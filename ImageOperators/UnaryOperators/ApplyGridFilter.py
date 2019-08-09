@@ -46,7 +46,12 @@ class ApplyGrid(Filter):
 
         return grid
 
-    def forward(self, x):
+    def forward(self, in_grid, out_grid=None):
+
+        if out_grid is not None:
+            x = out_grid.clone()
+        else:
+            x = in_grid.clone()
 
         if self.grid.data.shape[0] != len(x.size):
             raise RuntimeError(
@@ -54,12 +59,12 @@ class ApplyGrid(Filter):
             )
 
         # Make the grid have the index values of the input
-        resample_grid = self.to_input_index(x)
+        resample_grid = self.to_input_index(in_grid)
 
         # Resample is expecting x, y, z. Because we are in torch land, our fields are z, y, x. Need to flip
         resample_grid = resample_grid.flip(-1)
 
-        out_tensor = F.grid_sample(x.data.view(1, *x.data.shape),
+        out_tensor = F.grid_sample(in_grid.data.view(1, *x.data.shape),
                                    resample_grid,
                                    mode=self.interpolation_mode,
                                    padding_mode=self.padding_mode).squeeze(0)
