@@ -32,9 +32,10 @@ class JacobianDeterminant(Filter):
 
     def forward(self, x):
 
-        grads = self.gradient(x)
+        # mat = torch.eye(self.dim, device=self.device, dtype=self.dtype)
+        grads = self.gradient(x / (x.spacing.view([self.dim] + [1]*self.dim)))
         # Central difference scale the gradients by the spacing
-        grads = grads / (2 * x.spacing.repeat(self.dim).view(self.dim ** 2, *([1] * len(x.size))))
+        grads = grads / 2.0
 
         if self.dim == 2:
             det = grads[0] * grads[3] - grads[1] * grads[2]
