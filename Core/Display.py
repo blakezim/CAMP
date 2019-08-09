@@ -470,5 +470,5 @@ def EnergyPlot(energy, title='Energy', new_figure=True, legend=None):
     if title is not None:
         plt.title(title)
     plt.draw()
-#     plt.show()
+
 
