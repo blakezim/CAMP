@@ -5,8 +5,6 @@ from math import pi
 from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 from .ApplyGridFilter import ApplyGrid
-import numpy as np
-
 
 class RadialBasis(Filter):
     def __init__(self, target_landmarks, source_landmarks, sigma=0.001, incompressible=False,
@@ -61,40 +59,9 @@ class RadialBasis(Filter):
         def _sigma(x1, x2):
             mat = torch.eye(len(x1), device=self.device)
 
-            # if self.incomp:
-            #
-            #     diff = x2 - x1
-            #
-            #     numerator = ((self.sigma ** 4) * torch.matmul(torch.ones_like(mat) - mat, diff ** 2)) + (self.sigma ** 2)
-            #
-            #     denominator = ((self.sigma ** 2) * (diff ** 2).sum() + 1).pow(3.0/2.0)
-            #
-            #     double_grad = numerator / denominator * mat
-            #
-            #     lap = (numerator / denominator).sum() * mat
-            #
-            #     sigma_mat = (self.sigma ** 4).unsqueeze(0).repeat(self.dim, 1)
-            #
-            #     off_diag = torch.ger(diff, diff) * (torch.ones_like(mat) - mat) * sigma_mat
-            #
-            #     ggt = off_diag + double_grad
-            #
-            #     # diff = x2 - x1
-            #     # exponential = (-(self.sigma ** 2) * (diff ** 2).sum()).exp()
-            #     #
-            #     # grad = -2 * (self.sigma ** 2) * diff * exponential
-            #     # ggt = torch.ger(grad, -2 * (self.sigma ** 2) * diff) + mat * -2 * (self.sigma ** 2) * exponential
-            #     #
-            #     # lap = ((-2 * self.sigma ** 2 + 4*(self.sigma ** 4) * (diff ** 2)) * exponential).sum() * mat
-            #     mat = ggt - lap
-            #
-            # else:
             diff = x2.float() - x1.float()
             r = torch.sqrt(1 + (self.sigma * (diff ** 2).sum()))
             mat = mat * r
-            # r = -1 * (self.sigma ** 2) * ((x2 - x1) ** 2).sum()
-            # mat = mat * r.exp()
-
             return mat
 
         dim = self.dim
@@ -153,12 +120,17 @@ class RadialBasis(Filter):
 
         return x
 
-    def forward(self, x):
+    def forward(self, in_grid, out_grid=None):
+
+        if out_grid is not None:
+            x = out_grid.clone()
+        else:
+            x = in_grid.clone()
 
         rbf_grid = StructuredGrid.FromGrid(x, channels=self.dim)
         rbf_grid.set_to_identity_lut_()
         temp = StructuredGrid.FromGrid(x, channels=self.dim)
-        temp_zeros = temp.clone() * 0.0
+        accu = temp.clone() * 0.0
 
         for i in range(self.num_landmarks):
             temp.set_to_identity_lut_()
@@ -166,11 +138,11 @@ class RadialBasis(Filter):
             point = self.target_landmarks[i].view([self.dim] + self.dim * [1]).float()
             weight = self.params[i].view([self.dim] + self.dim * [1]).float()
 
-            sigma = self.sigma.view([self.dim] + [1]*self.dim)
+            sigma = self.sigma.view([self.dim] + [1] * self.dim)
 
             temp.data = torch.sqrt(1 + sigma * ((temp - point) ** 2).data.sum(0))
 
-            temp_zeros.data = temp_zeros.data + temp.data * weight
+            accu.data = accu.data + temp.data * weight
 
         if self.incomp:
             # Expand the size and spacing variable so they are easily usable
@@ -196,7 +168,7 @@ class RadialBasis(Filter):
             sin_grids = sin_grids.permute(1, 0)
 
             # Take the fourier transform of the data
-            fft = torch.rfft(temp_zeros.data, signal_ndim=self.dim, normalized=False, onesided=False)
+            fft = torch.rfft(accu.data, signal_ndim=self.dim, normalized=False, onesided=False)
             real, imag = fft.split(1, -1)
 
             # We need to linearize the matrices so we can easily do the multiplication
@@ -219,19 +191,16 @@ class RadialBasis(Filter):
             smooth_fft = torch.stack((real_app, imag_app), -1)
 
             # Inverse fourier transform
-            temp_zeros.data = torch.irfft(smooth_fft, signal_ndim=self.dim, normalized=False, onesided=False)
+            accu.data = torch.irfft(smooth_fft, signal_ndim=self.dim, normalized=False, onesided=False)
 
             del sin_grids, real_dot, real_app, imag_app, imag_dot
+            torch.cuda.empty_cache()
 
-        rbf_grid.data = rbf_grid.data + temp_zeros.data
+        rbf_grid.data = rbf_grid.data + accu.data
 
         rbf_grid = self._apply_affine(rbf_grid)
 
-        from ImageOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
-        jacobian = JacobianDeterminant.Create(dim=3, device=self.device, dtype=self.dtype)
-        test = jacobian(rbf_grid)
-
-        x_rbf = ApplyGrid.Create(rbf_grid, device=x.device, dtype=x.dtype)(x)
+        x_rbf = ApplyGrid.Create(rbf_grid, device=x.device, dtype=x.dtype)(in_grid)
 
         return x_rbf
 
