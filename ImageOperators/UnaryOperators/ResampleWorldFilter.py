@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-from Core.StructuredGridClass import StructuredGrid
+from CAMP.Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 
 

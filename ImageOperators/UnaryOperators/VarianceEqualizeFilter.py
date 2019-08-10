@@ -1,6 +1,6 @@
 import torch
 
-from Core.StructuredGridClass import StructuredGrid
+# from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 from .GaussianFilter import Gaussian
 

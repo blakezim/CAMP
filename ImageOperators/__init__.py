@@ -1,2 +1,2 @@
-from ImageOperators.UnaryOperators import *
-from ImageOperators.BinaryOperators import *
+from CAMP.ImageOperators.UnaryOperators import *
+from CAMP.ImageOperators.BinaryOperators import *

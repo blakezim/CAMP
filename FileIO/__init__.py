@@ -1,4 +1,4 @@
-from FileIO.ITKFileIO import *
+from CAMP.FileIO.ITKFileIO import *
 __all__ = [
     'LoadITKFile',
     'SaveITKFile'

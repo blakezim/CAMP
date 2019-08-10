@@ -212,60 +212,60 @@ def circle_and_elipse():
         gamma = 0.001
         device = 'cuda:1'
 
-        # # landmarks = [[[-5.067165, 46.25, 9.768159], [-7.708513, 45.529398, 9.724182]], [[-22.625597, 40.75, -18.203844], [-26.124477, 39.029398, -16.200991]], [[-24.201354, 50.25, 6.560102], [-27.921156, 49.529398, 7.670703]], [[8.319126, 55.25, 48.231431], [3.007396, 52.529398, 43.927441]], [[2.621867, 62.75, 4.656731], [0.055709, 62.029398, 2.857861]], [[11.620947, 74.75, 40.267556], [11.734125, 74.529398, 36.611922]], [[-41.48797, 72.590742, 21.699997], [-46.958948, 72.661284, 23.026169]], [[-37.075866, 59.26558, 7.199997], [-40.845577, 58.070459, 8.526169]], [[-8.416497, 67.191336, 12.199997], [-10.895197, 66.033761, 14.026169]], [[35.410681, 75.057844, -1.800003], [36.612227, 75.016824, -1.473831]], [[13.5, 65.377428, -3.869874], [12.125687, 63.77973, -3.601394]], [[-10.0, 56.069879, -12.792643], [-12.374313, 54.358263, -11.42074]], [[22.0, 52.655275, -14.445007], [20.125687, 52.124307, -14.674753]], [[32.0, 72.482007, -12.572327], [37.125687, 74.269611, -12.343519]]]
-        # rigid_matrix = [[0.9689578463919097, -0.006562321241736855, -0.2471388837384192, -4.528427048834612], [0.045088641005423334, 0.9875727458506949, 0.15055592351415986, -12.121896486318946], [0.24307962968507982, -0.15702549981718802, 0.9572122471214657, 30.248595664088207], [0.0, 0.0, 0.0, 1.0]]
-        # rigid_tensor = torch.as_tensor(rigid_matrix)
-        # rigid_tensor = rigid_tensor.to(device)
-        # rigid_tensor = rigid_tensor.type(torch.float32)
-        #
-        # source_volume = LoadITKFile(
-        #     '/home/sci/blakez/ucair/18_047/rawVolumes/PostImaging_2018-07-02/012_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
-        #     device=device
-        # )
-        #
-        # # source_volume = LoadITKFile(
-        # #     '/home/sci/blakez/ucair/18_047/rigidVolumes/interday/008_mr-e_t2_spc_1mm_iso_cor.nii.gz',
-        # #     device=device
-        # # )
-        #
-        # target_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day0_tps/*.txt'))
-        # source_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day3_tps/*.txt'))
-        #
-        # for src_item, tar_item in zip(source_list, target_list):
-        #     rigid_array = np.loadtxt(src_item)
-        #     target_array = np.loadtxt(tar_item)
-        #
-        #     # rigid_array = rigid_array[:, ::-1].copy() # Can't do this yet because the transform expects xyz
-        #     target_array = target_array[:, ::-1].copy()
-        #
-        #     rigid_landmarks = torch.as_tensor(rigid_array)
-        #     target_landmarks = torch.as_tensor(target_array)
-        #
-        #     rigid_landmarks = rigid_landmarks.to(device)
-        #     rigid_landmarks = rigid_landmarks.type(torch.float32)
-        #     target_landmarks = target_landmarks.to(device)
-        #     target_landmarks = target_landmarks.type(torch.float32)
-        #
-        # # Need to rotate the point by the (inverse?) of the rigid matrix
-        # rigid_landmarks = torch.cat((rigid_landmarks, torch.ones(len(rigid_landmarks), 1, device=device)), -1).t()
-        # source_landmarks = torch.matmul(rigid_tensor.inverse(), rigid_landmarks)
-        #
-        # source_landmarks = source_landmarks.t()[:, 0:3].contiguous()
-        # rigid_landmarks = rigid_landmarks.t()[:, 0:3].contiguous()
-        #
-        # source_array = source_landmarks.cpu().numpy()
-        # source_array = source_array[:, ::-1].copy()
-        #
-        # source_landmarks = torch.as_tensor(source_array)
-        # source_landmarks = source_landmarks.to(device)
-        # source_landmarks = source_landmarks.type(torch.float32)
-        #
-        # sigma = .1
-        #
-        # rbf_filter = RadialBasis.Create(target_landmarks, source_landmarks, sigma, incompressible=False, device=device)
-        # test = rbf_filter(source_volume)
-        # SaveITKFile(test, '/home/sci/blakez/no_chance_incomp.nii.gz')
-        # jacobian = JacobianDeterminant.Create(dim=3, device=device, dtype=torch.float32)
+        # # # landmarks = [[[-5.067165, 46.25, 9.768159], [-7.708513, 45.529398, 9.724182]], [[-22.625597, 40.75, -18.203844], [-26.124477, 39.029398, -16.200991]], [[-24.201354, 50.25, 6.560102], [-27.921156, 49.529398, 7.670703]], [[8.319126, 55.25, 48.231431], [3.007396, 52.529398, 43.927441]], [[2.621867, 62.75, 4.656731], [0.055709, 62.029398, 2.857861]], [[11.620947, 74.75, 40.267556], [11.734125, 74.529398, 36.611922]], [[-41.48797, 72.590742, 21.699997], [-46.958948, 72.661284, 23.026169]], [[-37.075866, 59.26558, 7.199997], [-40.845577, 58.070459, 8.526169]], [[-8.416497, 67.191336, 12.199997], [-10.895197, 66.033761, 14.026169]], [[35.410681, 75.057844, -1.800003], [36.612227, 75.016824, -1.473831]], [[13.5, 65.377428, -3.869874], [12.125687, 63.77973, -3.601394]], [[-10.0, 56.069879, -12.792643], [-12.374313, 54.358263, -11.42074]], [[22.0, 52.655275, -14.445007], [20.125687, 52.124307, -14.674753]], [[32.0, 72.482007, -12.572327], [37.125687, 74.269611, -12.343519]]]
+        rigid_matrix = [[0.9689578463919097, -0.006562321241736855, -0.2471388837384192, -4.528427048834612], [0.045088641005423334, 0.9875727458506949, 0.15055592351415986, -12.121896486318946], [0.24307962968507982, -0.15702549981718802, 0.9572122471214657, 30.248595664088207], [0.0, 0.0, 0.0, 1.0]]
+        rigid_tensor = torch.as_tensor(rigid_matrix)
+        rigid_tensor = rigid_tensor.to(device)
+        rigid_tensor = rigid_tensor.type(torch.float32)
+
+        source_volume = LoadITKFile(
+            '/home/sci/blakez/ucair/18_047/rawVolumes/PostImaging_2018-07-02/012_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
+            device=device
+        )
+
+        target_volume = LoadITKFile(
+            '/home/sci/blakez/ucair/18_047/rawVolumes/Ablation_2018-06-28/074_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor_post.nii.gz',
+            device=device
+        )
+
+        target_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day0_tps/*.txt'))
+        source_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day3_tps/*.txt'))
+
+        for src_item, tar_item in zip(source_list, target_list):
+            rigid_array = np.loadtxt(src_item)
+            target_array = np.loadtxt(tar_item)
+
+            # rigid_array = rigid_array[:, ::-1].copy() # Can't do this yet because the transform expects xyz
+            target_array = target_array[:, ::-1].copy()
+
+            rigid_landmarks = torch.as_tensor(rigid_array)
+            target_landmarks = torch.as_tensor(target_array)
+
+            rigid_landmarks = rigid_landmarks.to(device)
+            rigid_landmarks = rigid_landmarks.type(torch.float32)
+            target_landmarks = target_landmarks.to(device)
+            target_landmarks = target_landmarks.type(torch.float32)
+
+        # Need to rotate the point by the (inverse?) of the rigid matrix
+        rigid_landmarks = torch.cat((rigid_landmarks, torch.ones(len(rigid_landmarks), 1, device=device)), -1).t()
+        source_landmarks = torch.matmul(rigid_tensor.inverse(), rigid_landmarks)
+
+        source_landmarks = source_landmarks.t()[:, 0:3].contiguous()
+        rigid_landmarks = rigid_landmarks.t()[:, 0:3].contiguous()
+
+        source_array = source_landmarks.cpu().numpy()
+        source_array = source_array[:, ::-1].copy()
+
+        source_landmarks = torch.as_tensor(source_array)
+        source_landmarks = source_landmarks.to(device)
+        source_landmarks = source_landmarks.type(torch.float32)
+
+        sigma = 0.9
+
+        rbf_filter = RadialBasis.Create(target_landmarks, source_landmarks, sigma, incompressible=True, device=device)
+        test = rbf_filter(source_volume, target_volume)
+        SaveITKFile(test, '/home/sci/blakez/no_chance_incomp.nii.gz')
+        jacobian = JacobianDeterminant.Create(dim=3, device=device, dtype=torch.float32)
         # print('Done')
         # # Width and height of the black window
         # width = 400
@@ -554,7 +554,7 @@ def circle_and_elipse():
             operator=smoothing,
             device=device,
             step_size=step,
-            regularization_weight=0.0
+            regularization_weight=0.1
         )
 
         energy_incomp = [matcher_incomp.initial_energy.item()]
@@ -581,7 +581,7 @@ def circle_and_elipse():
             operator=smoothing,
             device=device,
             step_size=step,
-            regularization_weight=0.0
+            regularization_weight=0.1
         )
 
         energy_comp = [matcher_comp.initial_energy.item()]
@@ -598,6 +598,8 @@ def circle_and_elipse():
         jacobian_comp = jacobain(field_comp)
         jacobian_incomp = jacobain(field_incomp)
 
+        jacobian_comp.data[jacobian_comp.data <0.001] = 0.01
+
         Display.DispImage(def_image_comp, title='Moving Compressible')
         Display.DispImage(def_image_incomp, title='Moving Incompressible')
         Display.DispImage(ellipse_im, title='Source')
@@ -611,7 +613,7 @@ def circle_and_elipse():
         Display.DispImage(circle_im - ellipse_im, title='Difference Image')
 
         font = {'family': 'sans-serif',
-                'size': 22}
+                'size': 11}
 
         matplotlib.rc('font', **font)
 
@@ -641,7 +643,7 @@ def circle_and_elipse():
         plt.axis('off')
 
         plt.sca(ax01)
-        ax01.text(0.4, 0.5, '$\phi^{-1}$', family='sans-serif', size=50)
+        ax01.text(0.4, 0.5, '$\phi^{-1}$', family='sans-serif', size=30)
         plt.arrow(0.2, 0.4, 0.6, 0.0, width=.01, color='k')
         plt.axis('off')
 
@@ -692,7 +694,7 @@ def circle_and_elipse():
         ax12.set_anchor('W')
         plt.title('Non-Volume Preserving Jacobian Determinant', **font)
         plt.axis('off')
-        img12 = plt.imshow(jacobian_comp.data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
+        img12 = plt.imshow((jacobian_comp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
         divider = make_axes_locatable(ax12)
         cax12 = divider.append_axes("right", size="5%", pad=0.07)
         fig.colorbar(img12, cax=cax12)
@@ -740,16 +742,18 @@ def circle_and_elipse():
         ax22.set_anchor('W')
         plt.title('Volume Preserving Jacobian Determinant', **font)
         plt.axis('off')
-        img22 = plt.imshow(jacobian_incomp.data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
+        img22 = plt.imshow((jacobian_incomp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
         divider = make_axes_locatable(ax22)
         cax22 = divider.append_axes("right", size="5%", pad=0.07)
         fig.colorbar(img22, cax=cax22)
         divider.set_anchor('W')
 
-        fig.set_size_inches(24, 11)
-        fig.set_dpi(500)
+        fig.set_size_inches(18, 11)
+        fig.set_dpi(100)
 
-        plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.png')
+        plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.png', dpi=500)
+        # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.eps', dpi=500)
+        # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.pdf', dpi=500)
 
         print('Done')
 

@@ -2,9 +2,10 @@ import torch
 import numbers
 from math import pi
 
-from Core.StructuredGridClass import StructuredGrid
+from CAMP.Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 from .ApplyGridFilter import ApplyGrid
+
 
 class RadialBasis(Filter):
     def __init__(self, target_landmarks, source_landmarks, sigma=0.001, incompressible=False,

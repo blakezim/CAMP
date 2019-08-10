@@ -1,6 +1,6 @@
 import torch
 
-from ImageOperators.UnaryOperators.GradientFilter import Gradient
+from CAMP.ImageOperators.UnaryOperators.GradientFilter import Gradient
 from ._BinaryFilter import Filter
 
 

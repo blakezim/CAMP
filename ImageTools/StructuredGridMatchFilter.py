@@ -1,6 +1,6 @@
 import torch
-from ImageOperators import ApplyGrid
-from Core.StructuredGridClass import StructuredGrid
+from CAMP.ImageOperators import ApplyGrid
+from CAMP.Core.StructuredGridClass import StructuredGrid
 
 from ._BaseTool import Filter
 

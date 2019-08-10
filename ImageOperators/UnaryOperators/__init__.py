@@ -1,13 +1,13 @@
-from ImageOperators.UnaryOperators.GaussianFilter import *
-from ImageOperators.UnaryOperators.FluidKernelFilter import *
-from ImageOperators.UnaryOperators.GradientFilter import *
-from ImageOperators.UnaryOperators.ResampleWorldFilter import *
-from ImageOperators.UnaryOperators.ApplyGridFilter import *
-from ImageOperators.UnaryOperators.JacobianDeterminantFilter import *
-from ImageOperators.UnaryOperators.AffineTransformFilter import *
-from ImageOperators.UnaryOperators.RadialBasisFilter import *
-from ImageOperators.UnaryOperators.VarianceEqualizeFilter import *
-from ImageOperators.UnaryOperators.FluidRegularizationFilter import *
+from CAMP.ImageOperators.UnaryOperators.GaussianFilter import *
+from CAMP.ImageOperators.UnaryOperators.FluidKernelFilter import *
+from CAMP.ImageOperators.UnaryOperators.GradientFilter import *
+from CAMP.ImageOperators.UnaryOperators.ResampleWorldFilter import *
+from CAMP.ImageOperators.UnaryOperators.ApplyGridFilter import *
+from CAMP.ImageOperators.UnaryOperators.JacobianDeterminantFilter import *
+from CAMP.ImageOperators.UnaryOperators.AffineTransformFilter import *
+from CAMP.ImageOperators.UnaryOperators.RadialBasisFilter import *
+from CAMP.ImageOperators.UnaryOperators.VarianceEqualizeFilter import *
+from CAMP.ImageOperators.UnaryOperators.FluidRegularizationFilter import *
 __all__ = [
     'Gaussian',
     'FluidKernel',

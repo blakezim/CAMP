@@ -1,6 +1,3 @@
-from . import Display
-from .ImageClass import Image
-from .FieldClass import Field
-from .GridClass import Grid
-from .StructuredGridClass import StructuredGrid
-__all__ = ['Display', 'Image', 'Field', 'Grid', 'StructuredGrid']
+from CAMP.Core import Display
+from CAMP.Core.StructuredGridClass import StructuredGrid
+__all__ = ['Display', 'StructuredGrid']

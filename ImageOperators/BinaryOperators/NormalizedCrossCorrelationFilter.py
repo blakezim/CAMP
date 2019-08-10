@@ -1,12 +1,12 @@
 import torch
 import numbers
-import functools
+# import functools
 import itertools
 import torch.nn.functional as F
 
-from ImageOperators.UnaryOperators.GradientFilter import Gradient
-from ImageOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
-from Core.StructuredGridClass import StructuredGrid
+from CAMP.ImageOperators.UnaryOperators.GradientFilter import Gradient
+from CAMP.ImageOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
+# from Core.StructuredGridClass import StructuredGrid
 from ._BinaryFilter import Filter
 
 

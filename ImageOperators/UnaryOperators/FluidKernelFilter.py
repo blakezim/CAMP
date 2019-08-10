@@ -2,7 +2,7 @@ import torch
 from math import pi
 
 from ._UnaryFilter import Filter
-from Core.StructuredGridClass import StructuredGrid
+from CAMP.Core.StructuredGridClass import StructuredGrid
 
 
 class FluidKernel(Filter):

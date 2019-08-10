@@ -1,6 +1,6 @@
 import torch
 
-from Core.StructuredGridClass import StructuredGrid
+from CAMP.Core.StructuredGridClass import StructuredGrid
 from .ApplyGridFilter import ApplyGrid
 from ._UnaryFilter import Filter
 

@@ -1,7 +1,7 @@
 import torch
 import SimpleITK as sitk
 
-from Core import *
+from CAMP.Core import *
 
 
 def LoadITKFile(filename, device='cpu', dtype=torch.float32):

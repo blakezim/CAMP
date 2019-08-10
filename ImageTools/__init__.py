@@ -1,6 +1,4 @@
-from .StructuredGridMatchFilter import *
-from ImageOperators.BinaryOperators.L2ImageSimilarity import *
+from CAMP.ImageTools.StructuredGridMatchFilter import *
 __all__ = [
-    'IterativeMatch',
-    'L2Similarity',
+    'IterativeMatch'
 ]
