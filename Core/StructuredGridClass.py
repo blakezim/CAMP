@@ -95,13 +95,15 @@ class StructuredGrid:
             mode = 'bilinear'
 
         if inplace:
-            self.data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
-            new_spacing = (old_size / self.size[1:]) * self.spacing
-            self.set_spacing(new_spacing)
+            self.data = F.interpolate(self.data, size=[int(x) for x in size.tolist()],
+                                      mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size) * self.spacing
+            self.set_spacing_(new_spacing)
 
         else:
-            out_data = F.interpolate(self.data, size=size, mode=mode, align_corners=True).squeeze(0)
-            new_spacing = (old_size / self.size[1:]) * self.spacing
+            out_data = F.interpolate(self.data, size=[int(x) for x in size.tolist()],
+                                     mode=mode, align_corners=True).squeeze(0)
+            new_spacing = (old_size / self.size) * self.spacing
             return StructuredGrid(
                 size=size,
                 spacing=new_spacing,

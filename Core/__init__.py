@@ -1,3 +1,4 @@
-from CAMP.Core import Display
-from CAMP.Core.StructuredGridClass import StructuredGrid
-__all__ = ['Display', 'StructuredGrid']
+from CAMP.Core.Display import *
+from CAMP.Core.StructuredGridClass import *
+__all__ = ['DispImage', 'DispFieldGrid', 'EnergyPlot', 'StructuredGrid']
+# TODO Make is to you can import display from core
