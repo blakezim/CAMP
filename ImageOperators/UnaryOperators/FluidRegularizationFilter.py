@@ -1,25 +1,18 @@
 import torch
 
-from .FluidKernelFilter import FluidKernel
 from ._UnaryFilter import Filter
 
 
 class FluidRegularization(Filter):
-    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, inverse=True,
-                 incompresible=False, device='cpu', dtype=torch.float32):
+    def __init__(self, device='cpu', dtype=torch.float32):
         super(FluidRegularization, self).__init__()
 
         self.device = device
         self.dtype = dtype
 
-        self.identity = grid.clone()
-        self.identity.set_to_identity_lut_()
-        self.fluid_operator = FluidKernel(grid, alpha, beta, gamma, inverse, incompresible, device, dtype)
-
     @staticmethod
-    def Create(grid, alpha=1.0, beta=0.0, gamma=0.001, inverse=True,
-               incompresible=False, device='cpu', dtype=torch.float32):
-        reg = FluidRegularization(grid, alpha, beta, gamma, inverse, incompresible, device, dtype)
+    def Create(device='cpu', dtype=torch.float32):
+        reg = FluidRegularization(device, dtype)
         reg = reg.to(device)
         reg = reg.type(dtype)
 
@@ -33,22 +26,20 @@ class FluidRegularization(Filter):
 
         return reg
 
-    def forward(self, x):
+    @staticmethod
+    def forward(x, operator):
 
         # Apply the forward operator
-        self.fluid_operator.inverse = False
-        x = self.fluid_operator(x)
-
+        x = operator.apply_forward(x)
         return 0.5 * (x ** 2)
 
-    def c1(self, x):
+    @staticmethod
+    def c1(x, operator):
 
         # Apply the forward operator
-        self.fluid_operator.inverse = False
-        x = self.fluid_operator(x)
+        x = operator.apply_forward(x)
 
         # Apply the inverse operator
-        self.fluid_operator.inverse = True
-        x = self.fluid_operator(x)
+        x = operator.apply_inverse(x)
 
         return x

@@ -7,6 +7,9 @@ from ._UnaryFilter import Filter
 from .ApplyGridFilter import ApplyGrid
 
 
+# TODO Need a way to store the grid so it can be applied to other volumes
+
+
 class RadialBasis(Filter):
     def __init__(self, target_landmarks, source_landmarks, sigma=0.001, incompressible=False,
                  device='cpu', dtype=torch.float32):
@@ -74,7 +77,7 @@ class RadialBasis(Filter):
                                                                                  self.target_landmarks[j])
                 if i != j:
                     b[(j * dim):(j * dim) + dim, (i * dim):(i * dim) + dim] = b[(i * dim):(i * dim) + dim,
-                                                                                (j * dim):(j * dim) + dim]
+                                                                              (j * dim):(j * dim) + dim]
 
         c = (self.affine_landmarks - self.target_landmarks).view(-1)
         # c = self.affine_landmarks.view(-1)
@@ -101,7 +104,8 @@ class RadialBasis(Filter):
             self.affine = torch.matmul(u, vt.t())
 
         # Solve for the translation
-        self.translation = self.target_landmarks.mean(0) - torch.matmul(self.affine, self.source_landmarks.mean(0).t()).t()
+        self.translation = self.target_landmarks.mean(0) - torch.matmul(self.affine,
+                                                                        self.source_landmarks.mean(0).t()).t()
 
         self.affine_landmarks = torch.matmul(self.affine, self.source_landmarks.t()).t().contiguous()
         self.affine_landmarks = self.affine_landmarks + self.translation
@@ -203,5 +207,4 @@ class RadialBasis(Filter):
 
         x_rbf = ApplyGrid.Create(rbf_grid, device=x.device, dtype=x.dtype)(in_grid, out_grid)
 
-        return x_rbf
-
+        return x_rbf, rbf_grid

@@ -31,6 +31,6 @@ class L2Similarity(Filter):
     def forward(self, target, moving):
         return 0.5 * ((target - moving) ** 2)
 
-    def c1(self, target, moving, field):
-        grads = self.gradient_operator(moving)
-        return (target - moving) * grads
+    def c1(self, target, moving, grads):
+        # grads = self.gradient_operator(moving)
+        return (target - moving) * (-1 * grads)

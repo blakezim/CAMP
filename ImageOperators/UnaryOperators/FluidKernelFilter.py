@@ -6,16 +6,16 @@ from CAMP.Core.StructuredGridClass import StructuredGrid
 
 
 class FluidKernel(Filter):
-    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, inverse=True,
-                 incompresible=False, device='cpu', dtype=torch.float32):
+    def __init__(self, grid, alpha=1.0, beta=0.0, gamma=0.001, device='cpu', dtype=torch.float32):
         super(FluidKernel, self).__init__()
 
         self.device = device
         self.dtype = dtype
-        self.incompresible = incompresible
         self.device = device
-        self.inverse = inverse
         self.dim = len(grid.size)  # Need to know the signal dimensions
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
 
         # Expand the size and spacing variable so they are easily usable
         size = grid.size.view(*grid.size.shape, *([1] * len(grid.size)))
@@ -64,10 +64,9 @@ class FluidKernel(Filter):
         self.register_buffer('G', G)
 
     @staticmethod
-    def Create(grid, alpha=1.0, beta=0.0, gamma=0.001, inverse=True,
-               incompresible=False, device='cpu', dtype=torch.float32):
+    def Create(grid, alpha=1.0, beta=0.0, gamma=0.001, device='cpu', dtype=torch.float32):
 
-        lap = FluidKernel(grid, alpha, beta, gamma, inverse, incompresible, device, dtype)
+        lap = FluidKernel(grid, alpha, beta, gamma, device, dtype)
         lap = lap.to(device)
         lap = lap.type(dtype)
 
@@ -80,6 +79,16 @@ class FluidKernel(Filter):
                 pass
 
         return lap
+
+    def set_size(self, grid):
+        return self.Create(
+            grid=grid,
+            alpha=self.alpha,
+            beta=self.beta,
+            gamma=self.gamma,
+            device=self.device,
+            dtype=self.dtype
+        )
 
     def solve_cholskey(self, x):
         # back-solve Gt = x to get a temporary vector t
@@ -97,7 +106,6 @@ class FluidKernel(Filter):
 
         if x.shape[-1] == 3:
             t2 = (x[:, 2] - (self.G[:, 2, 0] * t0) - (self.G[:, 2, 1] * t1)) / self.G[:, 2, 2]
-            # Good to here
             y2 = t2 / self.G[:, 2, 2]
             y1 = (t1 - (self.G[:, 2, 1] * y2)) / self.G[:, 1, 1]
             y0 = (t0 - (self.G[:, 1, 0] * y1) - (self.G[:, 2, 0] * y2)) / self.G[:, 0, 0]
@@ -111,7 +119,7 @@ class FluidKernel(Filter):
 
         return y
 
-    def forward(self, x):
+    def forward(self, x, inverse):
 
         # Take the fourier transform of the data
         fft = torch.rfft(x.data, signal_ndim=self.dim, normalized=False, onesided=False)
@@ -122,7 +130,7 @@ class FluidKernel(Filter):
         imag = imag.squeeze().view(len(x.size), -1).permute(1, 0)
 
         # Cholskey solve for the inverse operator
-        if self.inverse:
+        if inverse:
             real_app = self.solve_cholskey(real)
             imag_app = self.solve_cholskey(imag)
 
@@ -131,17 +139,46 @@ class FluidKernel(Filter):
             real_app = torch.matmul(self.L, real.unsqueeze(-1)).squeeze()
             imag_app = torch.matmul(self.L, imag.unsqueeze(-1)).squeeze()
 
-        # Project the flow field into the space of incompressible fluids
-        if self.incompresible:
-            real_dot = (real_app * self.sin_grids).sum(-1, keepdim=True)
-            imag_dot = (imag_app * self.sin_grids).sum(-1, keepdim=True)
+        # Return tensors to their actual shapes
+        real_app = real_app.permute(1, 0).view(len(x.size), *x.size.long())
+        imag_app = imag_app.permute(1, 0).view(len(x.size), *x.size.long())
+        smooth_fft = torch.stack((real_app, imag_app), -1)
 
-            real_app = real_app - (real_dot * self.sin_grids / self.nsq.unsqueeze(-1))
-            imag_app = imag_app - (imag_dot * self.sin_grids / self.nsq.unsqueeze(-1))
+        # Inverse fourier transform
+        out_tensor = torch.irfft(smooth_fft, signal_ndim=self.dim, normalized=False, onesided=False)
 
-            # Deal with the nan
-            real_app[real_app != real_app] = real.squeeze()[real_app != real_app]
-            imag_app[imag_app != imag_app] = imag.squeeze()[imag_app != imag_app]
+        out = StructuredGrid.FromGrid(
+            x,
+            tensor=out_tensor,
+            channels=out_tensor.shape[0]
+        )
+
+        return out
+
+    def apply_forward(self, x):
+        return self.forward(x, inverse=False)
+
+    def apply_inverse(self, x):
+        return self.forward(x, inverse=True)
+
+    def project_incompressible(self, x):
+
+        fft = torch.rfft(x.data, signal_ndim=self.dim, normalized=False, onesided=False)
+        real, imag = fft.split(1, -1)
+
+        # We need to linearize the matrices so we can easily do the multiplication
+        real = real.squeeze().view(len(x.size), -1).permute(1, 0)
+        imag = imag.squeeze().view(len(x.size), -1).permute(1, 0)
+
+        real_dot = (real * self.sin_grids).sum(-1, keepdim=True)
+        imag_dot = (imag * self.sin_grids).sum(-1, keepdim=True)
+
+        real_app = real - (real_dot * self.sin_grids / self.nsq.unsqueeze(-1))
+        imag_app = imag - (imag_dot * self.sin_grids / self.nsq.unsqueeze(-1))
+
+        # Deal with the nan
+        real_app[real_app != real_app] = real.squeeze()[real_app != real_app]
+        imag_app[imag_app != imag_app] = imag.squeeze()[imag_app != imag_app]
 
         # Return tensors to their actual shapes
         real_app = real_app.permute(1, 0).view(len(x.size), *x.size.long())

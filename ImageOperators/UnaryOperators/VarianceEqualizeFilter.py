@@ -49,7 +49,14 @@ class VarianceEqualize(Filter):
 
     def forward(self, x):
 
-        gaussian_filter = Gaussian.Create(x.shape()[0], self.kernel_size, self.sigma, len(x.size))
+        gaussian_filter = Gaussian.Create(
+            x.shape()[0],
+            self.kernel_size,
+            self.sigma,
+            len(x.size),
+            device=self.device,
+            dtype=self.dtype
+        )
 
         I_prime = x - gaussian_filter(x)
 

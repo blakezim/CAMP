@@ -16,16 +16,15 @@ class Gradient(Filter):
         kernel = self._create_filters(dim)
         kernel = kernel.unsqueeze(1)
         self.register_buffer('weight', kernel)
+        self.pad_vec = pad_vec
+        self.padding = F.pad
 
         if dim == 1:
             self.conv = F.conv1d
-            self.padding = torch.nn.ReplicationPad1d(pad_vec)
         elif dim == 2:
             self.conv = F.conv2d
-            self.padding = torch.nn.ReplicationPad2d(pad_vec)
         elif dim == 3:
             self.conv = F.conv3d
-            self.padding = torch.nn.ReplicationPad3d(pad_vec)
         else:
             raise RuntimeError(
                 f'Only 1, 2 and 3 dimensions are supported. Received {dim}.'
@@ -72,9 +71,15 @@ class Gradient(Filter):
 
         # Put the channels in the batch dimension
         out_tensor = self.conv(
-            self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:])),
+            self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:]), self.pad_vec, mode='reflect'),
             weight=self.weight
         )
+
+        # Need to multiply by the spacing and 0.5 for central difference
+        # Not sure what spacing needs to be apply here...
+        spacing = (x.spacing * 0.5).view([1] + [len(x.size)] + [1] * len(x.size))
+        spacing = spacing.repeat([out_tensor.shape[0]] + [1] * (len(x.size) + 1))
+        out_tensor = out_tensor * spacing
 
         # Combine the first dimensions
         out_tensor = out_tensor.view(out_tensor.shape[0] * out_tensor.shape[1], *out_tensor.shape[2:])

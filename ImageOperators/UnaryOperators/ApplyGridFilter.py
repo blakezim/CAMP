@@ -64,7 +64,7 @@ class ApplyGrid(Filter):
         # Resample is expecting x, y, z. Because we are in torch land, our fields are z, y, x. Need to flip
         resample_grid = resample_grid.flip(-1)
 
-        out_tensor = F.grid_sample(in_grid.data.view(1, *x.data.shape),
+        out_tensor = F.grid_sample(in_grid.data.view(1, *in_grid.data.shape),
                                    resample_grid,
                                    mode=self.interpolation_mode,
                                    padding_mode=self.padding_mode).squeeze(0)
