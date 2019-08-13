@@ -6,7 +6,7 @@ from ._UnaryFilter import Filter
 
 
 class ResampleWorld(Filter):
-    def __init__(self, grid, interp_mode='bilinear', pad_mode='border', device='cpu', dtype=torch.float32):
+    def __init__(self, grid, interp_mode='bilinear', pad_mode='zeros', device='cpu', dtype=torch.float32):
         super(ResampleWorld, self).__init__()
 
         self.device = device
@@ -17,7 +17,7 @@ class ResampleWorld(Filter):
         self.grid = grid
 
     @staticmethod
-    def Create(grid, interp_mode='bilinear', pad_mode='border', device='cpu', dtype=torch.float32):
+    def Create(grid, interp_mode='bilinear', pad_mode='zeros', device='cpu', dtype=torch.float32):
         resamp = ResampleWorld(grid, interp_mode, pad_mode, device, dtype)
         resamp = resamp.to(device)
         resamp = resamp.type(dtype)

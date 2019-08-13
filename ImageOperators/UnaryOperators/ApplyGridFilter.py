@@ -18,7 +18,7 @@ class ApplyGrid(Filter):
         self.grid = grid
 
     @staticmethod
-    def Create(grid, interp_mode='bilinear', pad_mode='border', apply_space='real', device='cpu', dtype=torch.float32):
+    def Create(grid, interp_mode='bilinear', pad_mode='zeros', apply_space='real', device='cpu', dtype=torch.float32):
         app = ApplyGrid(grid, interp_mode, pad_mode, apply_space, device, dtype)
         app = app.to(device)
         app = app.type(dtype)
