@@ -50,7 +50,6 @@ class NormalizedCrossCorrelation(Filter):
                 'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
             )
 
-
     @staticmethod
     def Create(grid, window=5, device='cpu', dtype=torch.float32):
         filt = NormalizedCrossCorrelation(grid, window, device, dtype)
@@ -69,27 +68,28 @@ class NormalizedCrossCorrelation(Filter):
 
     def forward(self, target, moving):
 
-        I_bar = target  # - self.conv(input=self.padding(target.data.unsqueeze(0)), weight=self.weight).squeeze(0)
-        J_bar = moving  # - self.conv(input=self.padding(moving.data.unsqueeze(0)), weight=self.weight).squeeze(0)
+        I_bar = target  - self.conv(input=self.padding(target.data.unsqueeze(0)), weight=self.weight).squeeze(0)
+        J_bar = moving  - self.conv(input=self.padding(moving.data.unsqueeze(0)), weight=self.weight).squeeze(0)
 
-        cc = ((I_bar * J_bar) ** 2).sum() / ((I_bar ** 2).sum() * (J_bar ** 2).sum())
+        # cc = ((I_bar * J_bar) ** 2).sum() / ((I_bar ** 2).sum() * (J_bar ** 2).sum()) * (moving.data.numel())
+        cc = ((I_bar * J_bar).sum()) ** 2 / ((I_bar ** 2).sum() * (J_bar ** 2).sum())
 
         return 1.0 / cc
 
-    def c1(self, target, moving, field):
+    def c1(self, target, moving, grads):
 
-        I_bar = target  # - self.conv(input=self.padding(target.data.unsqueeze(0)), weight=self.weight).squeeze(0)
-        J_bar = moving  # - self.conv(input=self.padding(moving.data.unsqueeze(0)), weight=self.weight).squeeze(0)
+        I_bar = target  - self.conv(input=self.padding(target.data.unsqueeze(0)), weight=self.weight).squeeze(0)
+        J_bar = moving  - self.conv(input=self.padding(moving.data.unsqueeze(0)), weight=self.weight).squeeze(0)
 
         A = (I_bar * J_bar)
         B = (I_bar ** 2)
         C = (J_bar ** 2)
 
-        scale = (2*A.sum() / B.sum()*C.sum())
+        scale = ((2*A.sum()) / (B.sum()*C.sum()))
 
-        grads = self.gradient_operator(J_bar)
-        jacdet = self.jacobian_operator(field)
+        # grads = self.gradient_operator(J_bar)
+        # jacdet = self.jacobian_operator(field)
 
-        out = ((I_bar * grads) - ((J_bar * grads) * (A.sum() / C.sum()))) * scale * jacdet
+        out = ((I_bar * grads) - ((J_bar * grads) * (A.sum() / C.sum()))) * scale #* jacdet
 
-        return out
+        return -1 * out

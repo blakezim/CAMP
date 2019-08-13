@@ -71,13 +71,13 @@ class Gradient(Filter):
 
         # Put the channels in the batch dimension
         out_tensor = self.conv(
-            self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:]), self.pad_vec, mode='reflect'),
+            self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:]), self.pad_vec, mode='circular'),
             weight=self.weight
         )
 
         # Need to multiply by the spacing and 0.5 for central difference
         # Not sure what spacing needs to be apply here...
-        spacing = (x.spacing * 0.5).view([1] + [len(x.size)] + [1] * len(x.size))
+        spacing = ((1.0 / x.spacing) * 0.5).view([1] + [len(x.size)] + [1] * len(x.size))
         spacing = spacing.repeat([out_tensor.shape[0]] + [1] * (len(x.size) + 1))
         out_tensor = out_tensor * spacing
 

@@ -6,7 +6,7 @@ from ._UnaryFilter import Filter
 
 
 class ApplyGrid(Filter):
-    def __init__(self, grid, interp_mode='bilinear', pad_mode='border', apply_space='real',
+    def __init__(self, grid, interp_mode='bilinear', pad_mode='zeros', apply_space='real',
                  device='cpu', dtype=torch.float32):
         super(ApplyGrid, self).__init__()
 
@@ -32,6 +32,16 @@ class ApplyGrid(Filter):
                 pass
 
         return app
+
+    def set_size(self, grid):
+        return self.Create(
+            grid=grid,
+            interp_mode=self.interpolation_mode,
+            pad_mode=self.padding_mode,
+            apply_space=self.apply_space,
+            device=self.device,
+            dtype=self.dtype
+        )
 
     def to_input_index(self, x):
         grid = self.grid.clone()

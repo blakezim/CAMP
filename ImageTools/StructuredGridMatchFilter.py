@@ -76,9 +76,10 @@ class IterativeMatch(Filter):
         energy = self.similarity(self.target, self.moving).sum()
 
         if self.regularization:
-            energy += -0.25 * self.reg_weight * self.regularization(self.field - self.identity, self.operator).sum()
+            reg_e = 0.25 * self.reg_weight * self.regularization(self.field - self.identity, self.operator).sum()
 
-        return energy
+        return [energy.item(), reg_e.item(), (reg_e + energy).item()]
+        # return energy + reg_e
 
     def step(self):
 
@@ -113,6 +114,7 @@ class IterativeMatch(Filter):
         # Need to make a copy of the source image
         original_source = self.source.clone()
         original_target = self.target.clone()
+        original_grads = self.gradients.clone()
         energy = [[] for _ in range(0, len(scale))]
 
         for i, s in enumerate(scale):
@@ -123,32 +125,33 @@ class IterativeMatch(Filter):
             # Reset the image
             if i > 0:
                 self.source = original_source.clone()
-                # self.moving = original_source.clone()
                 self.target = original_target.clone()
+                self.gradients = original_grads.clone()
 
             # Set the size of the field
             if i < len(scale) - 1:
                 self.source.set_size(original_source.size // s, inplace=True)
-                self.moving.set_size(original_source.size // s, inplace=True)
+                # self.moving.set_size(original_source.size // s, inplace=True)
                 self.target.set_size(original_source.size // s, inplace=True)
+                self.gradients.set_size(original_source.size // s, inplace=True)
 
+            self.moving.set_size(original_source.size // s, inplace=True)
             self.field.set_size(original_source.size // s, inplace=True)
             self.identity.set_size(original_source.size // s, inplace=True)
             # self.identity.set_to_identity_lut_()
 
+            # Need to update the size of the operator
+            self.operator = self.operator.set_size(self.moving)
             self.moving = ApplyGrid(self.field)(self.source)
 
             self.reg_weight = regw[i]
             self.step_size = step[i]
 
-            # Need to update the size of the operator
-            self.operator = self.operator.set_size(self.moving)
-
-            energy[i] = [self.energy().item()]
-            print(f'Iteration: 0   Energy: {self.energy().item()}')
+            energy[i] = [self.energy()]
+            print(f'Iteration: 0   Energy: {self.energy()}')
 
             for it in range(1, niter[i]+1):
-                energy[i].append(self.step().item())
+                energy[i].append(self.step())
 
                 if it % 10 == 0:
                     print(f'Iteration: {it}   Energy: {energy[i][-1]}')

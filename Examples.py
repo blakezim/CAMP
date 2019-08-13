@@ -213,59 +213,59 @@ def circle_and_elipse():
         device = 'cuda:1'
 
         # # # landmarks = [[[-5.067165, 46.25, 9.768159], [-7.708513, 45.529398, 9.724182]], [[-22.625597, 40.75, -18.203844], [-26.124477, 39.029398, -16.200991]], [[-24.201354, 50.25, 6.560102], [-27.921156, 49.529398, 7.670703]], [[8.319126, 55.25, 48.231431], [3.007396, 52.529398, 43.927441]], [[2.621867, 62.75, 4.656731], [0.055709, 62.029398, 2.857861]], [[11.620947, 74.75, 40.267556], [11.734125, 74.529398, 36.611922]], [[-41.48797, 72.590742, 21.699997], [-46.958948, 72.661284, 23.026169]], [[-37.075866, 59.26558, 7.199997], [-40.845577, 58.070459, 8.526169]], [[-8.416497, 67.191336, 12.199997], [-10.895197, 66.033761, 14.026169]], [[35.410681, 75.057844, -1.800003], [36.612227, 75.016824, -1.473831]], [[13.5, 65.377428, -3.869874], [12.125687, 63.77973, -3.601394]], [[-10.0, 56.069879, -12.792643], [-12.374313, 54.358263, -11.42074]], [[22.0, 52.655275, -14.445007], [20.125687, 52.124307, -14.674753]], [[32.0, 72.482007, -12.572327], [37.125687, 74.269611, -12.343519]]]
-        rigid_matrix = [[0.9689578463919097, -0.006562321241736855, -0.2471388837384192, -4.528427048834612], [0.045088641005423334, 0.9875727458506949, 0.15055592351415986, -12.121896486318946], [0.24307962968507982, -0.15702549981718802, 0.9572122471214657, 30.248595664088207], [0.0, 0.0, 0.0, 1.0]]
-        rigid_tensor = torch.as_tensor(rigid_matrix)
-        rigid_tensor = rigid_tensor.to(device)
-        rigid_tensor = rigid_tensor.type(torch.float32)
-
-        source_volume = LoadITKFile(
-            '/home/sci/blakez/ucair/18_047/rawVolumes/PostImaging_2018-07-02/012_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
-            device=device
-        )
-
-        target_volume = LoadITKFile(
-            '/home/sci/blakez/ucair/18_047/rawVolumes/Ablation_2018-06-28/074_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor_post.nii.gz',
-            device=device
-        )
-
-        target_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day0_tps/*.txt'))
-        source_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day3_tps/*.txt'))
-
-        for src_item, tar_item in zip(source_list, target_list):
-            rigid_array = np.loadtxt(src_item)
-            target_array = np.loadtxt(tar_item)
-
-            # rigid_array = rigid_array[:, ::-1].copy() # Can't do this yet because the transform expects xyz
-            target_array = target_array[:, ::-1].copy()
-
-            rigid_landmarks = torch.as_tensor(rigid_array)
-            target_landmarks = torch.as_tensor(target_array)
-
-            rigid_landmarks = rigid_landmarks.to(device)
-            rigid_landmarks = rigid_landmarks.type(torch.float32)
-            target_landmarks = target_landmarks.to(device)
-            target_landmarks = target_landmarks.type(torch.float32)
-
-        # Need to rotate the point by the (inverse?) of the rigid matrix
-        rigid_landmarks = torch.cat((rigid_landmarks, torch.ones(len(rigid_landmarks), 1, device=device)), -1).t()
-        source_landmarks = torch.matmul(rigid_tensor.inverse(), rigid_landmarks)
-
-        source_landmarks = source_landmarks.t()[:, 0:3].contiguous()
-        rigid_landmarks = rigid_landmarks.t()[:, 0:3].contiguous()
-
-        source_array = source_landmarks.cpu().numpy()
-        source_array = source_array[:, ::-1].copy()
-
-        source_landmarks = torch.as_tensor(source_array)
-        source_landmarks = source_landmarks.to(device)
-        source_landmarks = source_landmarks.type(torch.float32)
-
-        sigma = 0.9
-
-        rbf_filter = RadialBasis.Create(target_landmarks, source_landmarks, sigma, incompressible=True, device=device)
-        test = rbf_filter(source_volume, target_volume)
-        SaveITKFile(test, '/home/sci/blakez/no_chance_incomp.nii.gz')
-        jacobian = JacobianDeterminant.Create(dim=3, device=device, dtype=torch.float32)
+        # rigid_matrix = [[0.9689578463919097, -0.006562321241736855, -0.2471388837384192, -4.528427048834612], [0.045088641005423334, 0.9875727458506949, 0.15055592351415986, -12.121896486318946], [0.24307962968507982, -0.15702549981718802, 0.9572122471214657, 30.248595664088207], [0.0, 0.0, 0.0, 1.0]]
+        # rigid_tensor = torch.as_tensor(rigid_matrix)
+        # rigid_tensor = rigid_tensor.to(device)
+        # rigid_tensor = rigid_tensor.type(torch.float32)
+        #
+        # source_volume = LoadITKFile(
+        #     '/home/sci/blakez/ucair/18_047/rawVolumes/PostImaging_2018-07-02/012_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
+        #     device=device
+        # )
+        #
+        # target_volume = LoadITKFile(
+        #     '/home/sci/blakez/ucair/18_047/rawVolumes/Ablation_2018-06-28/074_----_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor_post.nii.gz',
+        #     device=device
+        # )
+        #
+        # target_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day0_tps/*.txt'))
+        # source_list = sorted(glob.glob('/home/sci/blakez/ucair/18_047/landmarks/day3_tps/*.txt'))
+        #
+        # for src_item, tar_item in zip(source_list, target_list):
+        #     rigid_array = np.loadtxt(src_item)
+        #     target_array = np.loadtxt(tar_item)
+        #
+        #     # rigid_array = rigid_array[:, ::-1].copy() # Can't do this yet because the transform expects xyz
+        #     target_array = target_array[:, ::-1].copy()
+        #
+        #     rigid_landmarks = torch.as_tensor(rigid_array)
+        #     target_landmarks = torch.as_tensor(target_array)
+        #
+        #     rigid_landmarks = rigid_landmarks.to(device)
+        #     rigid_landmarks = rigid_landmarks.type(torch.float32)
+        #     target_landmarks = target_landmarks.to(device)
+        #     target_landmarks = target_landmarks.type(torch.float32)
+        #
+        # # Need to rotate the point by the (inverse?) of the rigid matrix
+        # rigid_landmarks = torch.cat((rigid_landmarks, torch.ones(len(rigid_landmarks), 1, device=device)), -1).t()
+        # source_landmarks = torch.matmul(rigid_tensor.inverse(), rigid_landmarks)
+        #
+        # source_landmarks = source_landmarks.t()[:, 0:3].contiguous()
+        # rigid_landmarks = rigid_landmarks.t()[:, 0:3].contiguous()
+        #
+        # source_array = source_landmarks.cpu().numpy()
+        # source_array = source_array[:, ::-1].copy()
+        #
+        # source_landmarks = torch.as_tensor(source_array)
+        # source_landmarks = source_landmarks.to(device)
+        # source_landmarks = source_landmarks.type(torch.float32)
+        #
+        # sigma = 0.9
+        #
+        # rbf_filter = RadialBasis.Create(target_landmarks, source_landmarks, sigma, incompressible=True, device=device)
+        # test = rbf_filter(source_volume, target_volume)
+        # SaveITKFile(test, '/home/sci/blakez/no_chance_incomp.nii.gz')
+        # jacobian = JacobianDeterminant.Create(dim=3, device=device, dtype=torch.float32)
         # print('Done')
         # # Width and height of the black window
         # width = 400
@@ -477,43 +477,65 @@ def circle_and_elipse():
         # Display.DispImage(Img1, title='Target')
         # Display.DispImage(Img2, title='Source')
 
-        step = 0.000001
+        step = 0.5
 
         # Gaussian blur object for the images
-        gauss_filt = Gaussian.Create(1, 5, 1, device=device, dim=2)
+        gauss_filt = Gaussian.Create(1, int(4*1.5), 1.5, device=device, dim=2)
+
+        # # Create the circle image
+        # circle_im = StructuredGrid((130, 200), device=device)
+        # circle(circle_im, 40)
+        # circle_im = gauss_filt(circle_im)
+        #
+        # # Create the ellipse image
+        # ellipse_im = StructuredGrid((130, 200), device=device)
+        # ellipse(ellipse_im, 35, 75)
+        # ellipse_im = gauss_filt(ellipse_im)
 
         # Create the circle image
-        circle_im = StructuredGrid((130, 200), device=device)
-        circle(circle_im, 40)
+        circle_im = StructuredGrid((256, 256), device=device)
+        circle(circle_im, 20, center=[128, 100])
         circle_im = gauss_filt(circle_im)
 
         # Create the ellipse image
-        ellipse_im = StructuredGrid((130, 200), device=device)
-        ellipse(ellipse_im, 35, 75)
+        ellipse_im = StructuredGrid((256, 256), device=device)
+        ellipse(ellipse_im, 15, 45)
         ellipse_im = gauss_filt(ellipse_im)
 
-        # Load two images that should match
-        day0 = LoadITKFile(
-            '/home/sci/blakez/ucair/18_047/rawVolumes/Ablation_2018-06-28/Crop_074_----_3D_VIBE_0.nii.gz',
-            device=device,
-            dtype=torch.float32
-        )
-        day0_slice = day0.extract_slice(50, 0)
+        circ_zeros = torch.zeros((256, 256, 256))
+        elli_zeros = torch.zeros((256, 256, 256))
+
+        circ_zeros[64:192, :, :] = circle_im.data.view(1, 256, 256).repeat(128, 1, 1)
+        elli_zeros[64:192, :, :] = ellipse_im.data.view(1, 256, 256).repeat(128, 1, 1)
+
+        cylinder = StructuredGrid((256, 256, 256), tensor=circ_zeros.unsqueeze(0), origin=(0, 0, 0))
+        ellipsoid = StructuredGrid((256, 256, 256), tensor=elli_zeros.unsqueeze(0), origin=(0, 0, 0))
+        cylinder.to_(device)
+        ellipsoid.to_(device)
+
+
+        # # Load two images that should match
+        # day0 = LoadITKFile(
+        #     '/home/sci/blakez/ucair/18_047/rawVolumes/Ablation_2018-06-28/Crop_074_----_3D_VIBE_0.nii.gz',
+        #     device=device,
+        #     dtype=torch.float32
+        # )
+        # day0_slice = day0.extract_slice(50, 0)
 
         # Display.DispImage(day0_slice)
 
-        day3 = LoadITKFile(
-            '/home/sci/blakez/ucair/18_047/tpsVolumes/interday/012_-rt-_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
-            device=device,
-            dtype=torch.float32
-        )
-
-        # Need to resample the day3 onto the day0 grid
-        day3_resamp = ResampleWorld.Create(day0, device=device)(day3)
-
-        # Display.DispImage(day3_resamp)
-
-        day3_slice = day3_resamp.extract_slice(50, 0)
+        # day3 = LoadITKFile(
+        #     '/home/sci/blakez/ucair/18_047/tpsVolumes/interday/012_-rt-_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
+        #     device=device,
+        #     dtype=torch.float32
+        # )
+        #
+        # # Need to resample the day3 onto the day0 grid
+        # day3_resamp = ResampleWorld.Create(day0, device=device)(day3)
+        #
+        # # Display.DispImage(day3_resamp)
+        #
+        # day3_slice = day3_resamp.extract_slice(50, 0)
 
         # SaveITKFile(day3_resamp, '/home/sci/blakez/18_047_test.nii.gz')
 
@@ -523,45 +545,38 @@ def circle_and_elipse():
 
         # Create the smoothing operator
         smoothing = FluidKernel.Create(
-            circle_im,
+            cylinder,
             device=device,
             alpha=alpha,
             beta=0.0,
             gamma=gamma,
-            incompresible=True
         )
 
         # Create the regularization - Does this mean we don't need the smoothing?
-        regularization = FluidRegularization.Create(
-            circle_im,
-            device=device,
-            alpha=alpha,
-            beta=0.0,
-            gamma=gamma,
-            incompresible=True
-        )
+        regularization = FluidRegularization.Create(device=device, dtype=torch.float32)
 
         # Create the matching term
-        # similarity = L2Similarity(dim=2, device=device)
-        similarity = NormalizedCrossCorrelation.Create(grid=circle_im, device=device)
+        similarity = L2Similarity.Create(dim=3, device=device)
+        # similarity = NormalizedCrossCorrelation.Create(grid=circle_im, device=device)
 
         # Now make the registration object
         matcher_incomp = IterativeMatch.Create(
-            source=ellipse_im,
-            target=circle_im,
+            source=ellipsoid,
+            target=cylinder,
             similarity=similarity,
             regularization=regularization,
             operator=smoothing,
             device=device,
             step_size=step,
-            regularization_weight=0.1
+            incompressible=False,
+            regularization_weight=0.01
         )
 
-        energy_incomp = [matcher_incomp.initial_energy.item()]
-        print(f'Iteration: 0   Energy: {matcher_incomp.initial_energy.item()}')
+        energy_incomp = [matcher_incomp.initial_energy]
+        print(f'Iteration: 0   Energy: {matcher_incomp.initial_energy}')
         for i in range(1, 500):
 
-            energy_incomp.append(matcher_incomp.step().item())
+            energy_incomp.append(matcher_incomp.step())
 
             print(f'Iteration: {i}   Energy: {energy_incomp[-1]}')
 
@@ -569,9 +584,12 @@ def circle_and_elipse():
         def_image_incomp = matcher_incomp.get_image()
         field_incomp = matcher_incomp.get_field()
 
-        # Now do the same thing for the compressible version
-        regularization.fluid_operator.incompresible = False
-        smoothing.incompresible = False
+        jacobain = JacobianDeterminant.Create(dim=2, device=device)
+        jacobian_incomp = jacobain(field_incomp)
+
+        # # Now do the same thing for the compressible version
+        # regularization.fluid_operator.incompresible = False
+        # smoothing.incompresible = False
 
         matcher_comp = IterativeMatch.Create(
             source=ellipse_im,
@@ -581,7 +599,7 @@ def circle_and_elipse():
             operator=smoothing,
             device=device,
             step_size=step,
-            regularization_weight=0.1
+            regularization_weight=0.05
         )
 
         energy_comp = [matcher_comp.initial_energy.item()]
@@ -602,15 +620,15 @@ def circle_and_elipse():
 
         Display.DispImage(def_image_comp, title='Moving Compressible')
         Display.DispImage(def_image_incomp, title='Moving Incompressible')
-        Display.DispImage(ellipse_im, title='Source')
-        Display.DispImage(circle_im, title='Target')
-        Display.DispImage(jacobian_comp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
-        Display.DispImage(jacobian_incomp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
-        Display.DispFieldGrid(field_comp, title='Deformation Grid Compressible')
-        Display.DispFieldGrid(field_incomp, title='Deformation Grid Incompressible')
+        DispImage(ellipse_im, title='Source')
+        DispImage(circle_im, title='Target')
+        DispImage(jacobian_comp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
+        DispImage(jacobian_incomp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
+        DispFieldGrid(field_comp, title='Deformation Grid Compressible')
+        DispFieldGrid(field_incomp, title='Deformation Grid Incompressible')
         # Display.EnergyPlot(energy_comp, title='Compressible Energy')
-        Display.EnergyPlot([energy_comp, energy_incomp], title='Energy Plots', legend=['Compressible', 'Incompressible'])
-        Display.DispImage(circle_im - ellipse_im, title='Difference Image')
+        EnergyPlot([energy_comp, energy_incomp], title='Energy Plots', legend=['Compressible', 'Incompressible'])
+        DispImage(circle_im - ellipse_im, title='Difference Image')
 
         font = {'family': 'sans-serif',
                 'size': 11}
