@@ -331,6 +331,39 @@ def DispFieldGrid(Field, grid_size=None, title=None,
 
     plt.draw()
 
+    ## DISPLAY WITH ASPECT
+    # field = interday_slice.data.clone()
+    # # field = field - interday_slice.origin.view(*interday_slice.size.shape, *([1] * len(interday_slice.size)))
+    # # field = field / (interday_slice.spacing * (interday_slice.size / 2)).view(*interday_slice.size.shape,
+    # #                                                                   *([1] * len(interday_slice.size)))
+    # # field = field - 1
+    # field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
+    # field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
+    # sy = interday_slice.size[-1].item()
+    # sx = interday_slice.size[-2].item()
+    # grid_sizex = max(sx // 64, 1)
+    # grid_sizey = max(sy // 64, 1)
+    # grid_sizex = int(grid_sizex)
+    # grid_sizey = int(grid_sizey)
+    # hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
+    # hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
+    # hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
+    # hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
+    # # minax = -1.0
+    # # maxax = 1.0
+    # last_point = ((interday_slice.size * interday_slice.spacing) + interday_slice.origin).tolist()
+    # rng_x = [interday_slice.origin.tolist()[0], last_point[0]]
+    # rng_y = [interday_slice.origin.tolist()[1], last_point[1]]
+    #
+    # # STOP Make the field arrays
+    # fig = plt.figure()
+    # plt.axis([rng_y[0], rng_y[1], rng_x[1], rng_x[0]])
+    # plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
+    # plt.plot(hy_sample_v, hx_sample_v, 'k')
+    # plt.axes().set_aspect((1 / (abs(rng_x[1] - rng_x[0]) / abs(rng_y[0] - rng_y[1]))) * (sx / sy))
+    # plt.axis('off')
+    ## END
+
 #     def _get_info(h, slice_index, dim, Field=None):
 #
 #         h = h.to('cpu').detach()  # Make sure that the tensor is on the CPU and detached
