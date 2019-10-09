@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from Core import *
 from StructuredGridOperators import *
-from ImageTools import *
+from StructuredGridTools import *
 from FileIO import *
 import glob
 
