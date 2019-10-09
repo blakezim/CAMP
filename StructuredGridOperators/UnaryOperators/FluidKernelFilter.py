@@ -3,6 +3,7 @@ from math import pi
 
 from ._UnaryFilter import Filter
 from CAMP.Core.StructuredGridClass import StructuredGrid
+# TODO make the project incompressible and forward use the same fft data
 
 
 class FluidKernel(Filter):

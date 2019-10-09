@@ -1,1 +1,1 @@
-__all__ = ['Core', 'FileIO', 'ImageOperators', 'ImageTools']
+__all__ = ['Core', 'FileIO', 'StructuredGridOperators', 'ImageTools']

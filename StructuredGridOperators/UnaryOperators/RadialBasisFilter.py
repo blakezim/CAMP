@@ -3,13 +3,14 @@ import numbers
 import torch.nn.functional as F
 
 from CAMP.Core.StructuredGridClass import StructuredGrid
-from CAMP.ImageOperators.BinaryOperators import ComposeGrids
+from CAMP.StructuredGridOperators.BinaryOperators import ComposeGrids
 from ._UnaryFilter import Filter
 from .ApplyGridFilter import ApplyGrid
 from .FluidKernelFilter import FluidKernel
 
 
 # TODO Need a way to store the grid so it can be applied to other volumes
+# TODO Update the incompressible matching
 
 
 class RadialBasis(Filter):
@@ -43,15 +44,6 @@ class RadialBasis(Filter):
         self.register_buffer('source_landmarks', source_landmarks)
         self.register_buffer('target_landmarks', target_landmarks)
         # self.incomp = incompressible
-        #
-        # if incompressible:
-        #     self.operator = FluidKernel.Create(
-        #         accu,
-        #         device=self.device,
-        #         alpha=1.0,
-        #         beta=0.0,
-        #         gamma=0.001,
-        #     )
 
     @staticmethod
     def Create(target_landmarks, source_landmarks, sigma=0.01, device='cpu', dtype=torch.float32):
@@ -154,7 +146,7 @@ class RadialBasis(Filter):
         # We are given a vector field
         out_points = []
         for point in self.target_landmarks:
-            # Point is in real space
+            # Point is in real space - do I need to flip the z and x? or do I do that when I load... No, flipped load
 
             # Given point is in z, y, x
             index_point = (point - field.origin)/field.spacing
@@ -222,58 +214,8 @@ class RadialBasis(Filter):
             return self._apply_vector_field(in_grid, accu)
         else:
             return accu
-        # temp = StructuredGrid.FromGrid(x, channels=self.dim)
-        # accu = temp.clone() * 0.0
-        #
-        # for i in range(self.num_landmarks):
-        #     temp.set_to_identity_lut_()
-        #
-        #     point = self.target_landmarks[i].view([self.dim] + self.dim * [1]).float()
-        #     weight = self.params[i].view([self.dim] + self.dim * [1]).float()
-        #
-        #     sigma = self.sigma.view([self.dim] + [1] * self.dim)
-        #
-        #     # eps = torch.tensor(1e-9, device=self.device, dtype=self.dtype)
-        #     # diff = ((temp - point) ** 2).data
-        #     # temp.data = diff * torch.log(torch.max(diff.sqrt(), eps))
-        #
-        #     if self.rbf == 'gaussian':
-        #         temp.data = -1 * (sigma ** 2) * ((temp - point) ** 2).data.sum(0, keepdim=True)
-        #         temp.data = torch.exp(temp.data)
-        #
-        #     else:
-        #         temp.data = torch.sqrt(1 + sigma * ((temp - point) ** 2).data.sum(0))
-        #
-        #     accu.data = accu.data + temp.data * weight
 
-        # if self.incomp:
-        #
-        #     operator = FluidKernel.Create(
-        #         accu,
-        #         device=self.device,
-        #         alpha=1.0,
-        #         beta=0.0,
-        #         gamma=0.001,
-        #     )
-        #
-        #     # Project the deformation into incompressible
-        #     accu = operator.project_incompressible(accu)
-
-            # This field likely no longer matches the points very well
-            # Look up the target points and compare them to the source points
-        # def_landmarks = self._sample_coords(accu)
-        # diff = def_landmarks - self.affine_landmarks
-
-        # if apply:
-        #     rbf_grid.data = rbf_grid.data + accu.data
-        #     rbf_grid = self._apply_affine(rbf_grid)
-        #     x_rbf = ApplyGrid.Create(rbf_grid, device=x.device, dtype=x.dtype)(in_grid, out_grid)
-        #     return x_rbf, rbf_grid
-        #
-        # else:
-        #     return accu
-
-    def filter_incompressible(self, in_grid, out_grid, t_step=10):
+    def filter_incompressible(self, in_grid, out_grid, t_step=100, conv=1.0, step=0.3):
 
         # Store the target landmarks as we are going to change these
         target_landmarks_original = self.target_landmarks.clone()
@@ -298,11 +240,16 @@ class RadialBasis(Filter):
         accu = StructuredGrid.FromGrid(out_grid, channels=self.dim)
         accu.set_to_identity_lut_()
         id = accu.copy()
+        energy = [torch.norm(self.target_landmarks - self.tform_landmarks, p=2, dim=1).sum() / len(self.target_landmarks)]
 
-        for _ in range(0, t_step):
+        for _ in range(1, t_step):
 
             # Do the forward
             def_vec = self.forward(in_grid, out_grid, apply=False)  # Get the vector field
+
+            # Only take a small step in that direction
+            def_vec = step * def_vec
+
             def_vec = operator.project_incompressible(def_vec)  # Project the vector field to divergent free
             # Compose the field
             accu = composer([accu, id + def_vec])
@@ -311,21 +258,13 @@ class RadialBasis(Filter):
             def_landmarks = self._sample_coords(accu)  # Sample the grid at the target points
             self.target_landmarks = def_landmarks.clone()  # Make the new target points the sampled points
             self._solve_matrix_spline()
-            print(torch.norm(def_landmarks - self.tform_landmarks, p=2, dim=1).sum())
-
-        # for _ in range(0, t_step - 1):
-        #
-        #     # NEED TO RESOLVE PARAMETERS
-        #     self._solve_matrix_spline()
-        #     temp_vec = self.forward(in_grid, out_grid, apply=False)
-        #     temp_vec = operator.project_incompressible(temp_vec)
-        #     # Need to figure out how to add it to the last one
-        #     def_vec = def_vec + step*temp_vec
-        #     # Return the landmarks to how they were so the vector field compare with the right points
-        #     # self.target_landmarks = target_landmarks_original.clone()
-        #     def_landmarks = self._sample_coords(temp_vec)
-        #     self.target_landmarks = def_landmarks.clone()
-        #     print(torch.norm(def_landmarks - self.tform_landmarks, p=2, dim=1).sum())
+            energy.append(torch.norm(def_landmarks - self.tform_landmarks, p=2, dim=1).sum() / len(self.target_landmarks))
+            print(f'Landmark L2 Error: {energy[-1]:.04f}')
+            #
+            if energy[-1] > energy[-2]:
+                break
+            if energy[-1] < conv:
+                break
 
         # Return the landmarks to how they were
         self.target_landmarks = target_landmarks_original.clone()

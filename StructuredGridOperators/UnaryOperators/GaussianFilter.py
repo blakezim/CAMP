@@ -82,7 +82,7 @@ class Gaussian(Filter):
                 self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:])),
                 weight=self.weight,
                 groups=self.groups,
-            ).squeeze(0)
+            ).squeeze(1)
 
         out = StructuredGrid.FromGrid(
             x,

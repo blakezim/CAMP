@@ -5,6 +5,7 @@ from CAMP.Core import *
 
 
 def LoadITKFile(filename, device='cpu', dtype=torch.float32):
+    # TODO Need to check when loading NRRD - for some reason loading Sara's volumes was backwards
 
     itk_image = sitk.ReadImage(filename)
 
@@ -42,19 +43,14 @@ def LoadITKFile(filename, device='cpu', dtype=torch.float32):
 def SaveITKFile(grid, f_name):
 
     dim = len(grid.size)
-    size = [1] * 3
-    size[0:dim] = [int(x) for x in grid.size]
-    shape = [grid.channels] + size
 
     # Need to put the vector in the last dimension
-    vector_grid = grid.data.view(shape).permute(1, 2, 3, 0)  # it will always be this size now
+    vector_grid = grid.data.permute(list(range(1, dim +1)) + [0]).squeeze()  # it will always be this size now
 
     itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy())
 
-    spacing = [1.0] * 3
-    spacing[0:dim] = grid.spacing.tolist()
-    origin = [0.0] * 3
-    origin[0:dim] = grid.origin.tolist()
+    spacing = grid.spacing.tolist()
+    origin = grid.origin.tolist()
 
     # ITK ordering is x, y, z. But numpy is z, y, x
     itk_image.SetSpacing(spacing[::-1])

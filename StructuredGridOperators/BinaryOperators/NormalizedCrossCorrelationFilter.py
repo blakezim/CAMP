@@ -4,8 +4,8 @@ import numbers
 import itertools
 import torch.nn.functional as F
 
-from CAMP.ImageOperators.UnaryOperators.GradientFilter import Gradient
-from CAMP.ImageOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
+from CAMP.StructuredGridOperators.UnaryOperators.GradientFilter import Gradient
+from CAMP.StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
 # from Core.StructuredGridClass import StructuredGrid
 from ._BinaryFilter import Filter
 

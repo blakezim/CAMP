@@ -4,22 +4,22 @@ import torch.nn.functional as F
 from CAMP.Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 
+# TODO Should change this so that it doesn't have the grid as a variable
+
 
 class ApplyGrid(Filter):
-    def __init__(self, grid, interp_mode='bilinear', pad_mode='zeros', apply_space='real',
-                 device='cpu', dtype=torch.float32):
+    def __init__(self, grid, interp_mode='bilinear', pad_mode='zeros', device='cpu', dtype=torch.float32):
         super(ApplyGrid, self).__init__()
 
         self.device = device
         self.dtype = dtype
         self.interpolation_mode = interp_mode
         self.padding_mode = pad_mode
-        self.apply_space = apply_space
         self.grid = grid
 
     @staticmethod
-    def Create(grid, interp_mode='bilinear', pad_mode='zeros', apply_space='real', device='cpu', dtype=torch.float32):
-        app = ApplyGrid(grid, interp_mode, pad_mode, apply_space, device, dtype)
+    def Create(grid, interp_mode='bilinear', pad_mode='zeros', device='cpu', dtype=torch.float32):
+        app = ApplyGrid(grid, interp_mode, pad_mode, device, dtype)
         app = app.to(device)
         app = app.type(dtype)
 
@@ -38,7 +38,6 @@ class ApplyGrid(Filter):
             grid=grid,
             interp_mode=self.interpolation_mode,
             pad_mode=self.padding_mode,
-            apply_space=self.apply_space,
             device=self.device,
             dtype=self.dtype
         )

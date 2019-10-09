@@ -2,7 +2,7 @@ import torch
 import cv2
 import numpy as np
 from Core import *
-from ImageOperators import *
+from StructuredGridOperators import *
 from ImageTools import *
 from FileIO import *
 import glob
@@ -267,10 +267,10 @@ def circle_and_elipse():
         # SaveITKFile(test, '/home/sci/blakez/no_chance_incomp.nii.gz')
         # jacobian = JacobianDeterminant.Create(dim=3, device=device, dtype=torch.float32)
         # print('Done')
-        # # Width and height of the black window
+        # Width and height of the black window
         # width = 400
         # height = 300
-        #
+        # #
         # # Create a black window of 400 x 300
         # img1 = np.zeros((height, width, 3), np.uint8)
         # img2 = np.zeros((height, width, 3), np.uint8)
@@ -306,10 +306,10 @@ def circle_and_elipse():
         #
         # triangle_arr1 = img1[:, :, 1]
         # triangle_arr2 = img2[:, :, 1]
-        #
-        # # # Create the landmarks
-        # # source_points = []
-        #
+
+        # # Create the landmarks
+        # source_points = []
+
         # # Flip the landmarks so they are x, y
         # source_landmarks = [torch.as_tensor(p) for p in [p4[::-1], p5[::-1], p6[::-1], pe2[::-1]]]
         # # source_landmarks = [torch.as_tensor(p) for p in [p4, p5, p6, pe2]]
@@ -343,12 +343,16 @@ def circle_and_elipse():
         # Img1 = StructuredGrid(
         #     triangle_arr1.shape,
         #     tensor=torch.as_tensor(triangle_arr1, dtype=torch.float32).unsqueeze(0),
-        #     origin=[0, 0]
+        #     origin=[0, 0],
+        #     device=device,
+        #     dtype=torch.float32
         # )
         # Img2 = StructuredGrid(
         #     triangle_arr2.shape,
         #     tensor=torch.as_tensor(triangle_arr2, dtype=torch.float32).unsqueeze(0),
-        #     origin=[0, 0]
+        #     origin=[0, 0],
+        #     device=device,
+        #     dtype=torch.float32
         # )
         #
         # ve_filter = VarianceEqualize.Create(kernel_size=11, sigma=3.0, device=device, dtype=torch.float32)
@@ -382,32 +386,143 @@ def circle_and_elipse():
         # transform = AffineTransform.Create(target_landmarks, source_landmarks, rigid=False)
         # img_tformed = transform(Img2)
         #
-        # sigma = 0.5
-        #
+        # # sigma = 0.5
+        # #
         # Img2.to_(device)
         # Img2.to_type_(torch.float32)
-        #
-        # source_landmarks = source_landmarks.to(device)
-        # source_landmarks = source_landmarks.type(torch.float32)
-        #
-        # target_landmarks = target_landmarks.to(device)
-        # target_landmarks = target_landmarks.type(torch.float32)
         # #
-        # # # Try using the RB filter
-        # rbf_filter_incomp = RadialBasis.Create(target_landmarks,
-        #                                        source_landmarks, sigma=[2.0, 2.0], incompressible=True, device=device)
-        # rbf_filter_regular = RadialBasis.Create(target_landmarks,
-        #                                         source_landmarks, sigma=1.0, incompressible=False, device=device)
-        # rbf_image_incomp = rbf_filter_incomp(Img2)
+        # # source_landmarks = source_landmarks.to(device)
+        # # source_landmarks = source_landmarks.type(torch.float32)
+        # #
+        # # target_landmarks = target_landmarks.to(device)
+        # # target_landmarks = target_landmarks.type(torch.float32)
+        # # #
+        # # # # Try using the RB filter
+        # rbf_filter = RadialBasis.Create(target_landmarks, source_landmarks, sigma=1.0, device=device)
+        # # # rbf_filter_regular = RadialBasis.Create(target_landmarks,
+        # # #                                         source_landmarks, sigma=1.0, incompressible=False, device=device)
+        # rbf_image, rbf_grid = rbf_filter(Img2)
+        # rbf_image_incomp, rbf_incomp = rbf_filter.filter_incompressible(Img2, Img2, t_step=4)
+        #
+        # out_path = '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/RBF_example/'
+        #
+        # # Plot the images and save them
+        # fig = plt.figure()
+        # plt.imshow(Img2.data.squeeze().cpu(), origin='lower', cmap='gray')
+        # plt.axis('off')
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}poly_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+        #
+        # fig = plt.figure()
+        # plt.imshow(Img1.data.squeeze().cpu(), origin='lower', cmap='gray')
+        # plt.axis('off')
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}triangle_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+        #
+        # fig = plt.figure()
+        # plt.imshow(rbf_image.data.squeeze().cpu(), origin='lower', cmap='gray')
+        # plt.axis('off')
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}rbf_comp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+        #
+        # fig = plt.figure()
+        # plt.imshow(rbf_image_incomp.data.squeeze().cpu(), origin='lower', cmap='gray')
+        # plt.axis('off')
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}rbf_incomp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+        #
+        # # START Make the field arrays
+        # field = rbf_grid.data.clone()
+        # field = field - rbf_grid.origin.view(*rbf_grid.size.shape, *([1] * len(rbf_grid.size)))
+        # field = field / (rbf_grid.spacing * (rbf_grid.size / 2)).view(*rbf_grid.size.shape,
+        #                                                                   *([1] * len(rbf_grid.size)))
+        # field = field - 1
+        # field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
+        # field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
+        # sy = rbf_grid.size[-1].item()
+        # sx = rbf_grid.size[-2].item()
+        # grid_sizex = max(sx // 64, 1)
+        # grid_sizey = max(sy // 64, 1)
+        # grid_sizex = int(grid_sizex)
+        # grid_sizey = int(grid_sizey)
+        # hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
+        # hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
+        # hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
+        # hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
+        # minax = -1.0
+        # maxax = 1.0
+        #
+        # # STOP Make the field arrays
+        # fig = plt.figure()
+        # plt.axis([minax, maxax, maxax, minax])
+        # plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
+        # plt.plot(hy_sample_v, hx_sample_v, 'k')
+        # plt.axis('off')
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}field_comp_image.png', dpi=300, bbox_inches='tight', pad_inches=0)
+        #
+        # # START Make the field arrays
+        # field = rbf_incomp.data.clone()
+        # field = field - rbf_incomp.origin.view(*rbf_incomp.size.shape, *([1] * len(rbf_incomp.size)))
+        # field = field / (rbf_incomp.spacing * (rbf_incomp.size / 2)).view(*rbf_incomp.size.shape,
+        #                                                               *([1] * len(rbf_incomp.size)))
+        # field = field - 1
+        # field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
+        # field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
+        # sy = rbf_incomp.size[-1].item()
+        # sx = rbf_incomp.size[-2].item()
+        # grid_sizex = max(sx // 64, 1)
+        # grid_sizey = max(sy // 64, 1)
+        # grid_sizex = int(grid_sizex)
+        # grid_sizey = int(grid_sizey)
+        # hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
+        # hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
+        # hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
+        # hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
+        # minax = -1.0
+        # maxax = 1.0
+        #
+        # # STOP Make the field arrays
+        # fig = plt.figure()
+        # plt.axis([minax, maxax, maxax, minax])
+        # plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
+        # plt.plot(hy_sample_v, hx_sample_v, 'k')
+        # plt.axis('off')
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}field_incomp_image.png', dpi=300, bbox_inches='tight', pad_inches=0)
+        #
+        # jacobian = JacobianDeterminant.Create(dim=2, device=device)
+        # jacobian_incomp = jacobian(rbf_incomp)
+        # comp_jacobian = jacobian(rbf_grid)
+        #
+        # fig = plt.figure()
+        # plt.axis('off')
+        # plt.imshow((jacobian_incomp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=2.0)
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}jacobian_incomp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+        #
+        # fig = plt.figure()
+        # plt.axis('off')
+        # plt.imshow((comp_jacobian).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=2.0)
+        # fig.set_size_inches(5, 5)
+        # plt.savefig(f'{out_path}jacobian_comp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
         # rbf_image_regular = rbf_filter_regular(Img2)
-        # #
-        # # reg_vol = torch.abs(Img2.sum() - rbf_image_regular.sum()) / Img2.sum()
-        # # inc_vol = torch.abs(Img2.sum() - rbf_image_incomp.sum()) / Img2.sum()
-        # #
-        # Display.DispImage(Img1)
-        # Display.DispImage(Img2)
-        # Display.DispImage(rbf_image_regular)
-        # Display.DispImage(rbf_image_incomp)
+        # # #
+        # # # reg_vol = torch.abs(Img2.sum() - rbf_image_regular.sum()) / Img2.sum()
+        # # # inc_vol = torch.abs(Img2.sum() - rbf_image_incomp.sum()) / Img2.sum()
+        # # #
+        # DispImage(Img1)
+        # DispImage(Img2)
+        #
+        # # rbf_image_1step, rbf_grid = rbf_filter.filter_incompressible(Img2, Img2, t_step=1)
+        # # rbf_image_2step, rbf_grid = rbf_filter.filter_incompressible(Img2, Img2, t_step=2)
+        # rbf_image_3step, rbf_grid = rbf_filter.filter_incompressible(Img2, Img2, t_step=5)
+        #
+        # # DispImage(rbf_image_1step, title='1 Step')
+        # # DispImage(rbf_image_2step, title='2 Step')
+        # DispImage(rbf_image_3step, title='2 Step')
+        # # Display.DispImage(rbf_image_incomp)
         # print('Done')
         # #
         # _, camp_param = solve_matrix_spline(target_landmarks, source_landmarks, sigma)
@@ -477,7 +592,7 @@ def circle_and_elipse():
         # Display.DispImage(Img1, title='Target')
         # Display.DispImage(Img2, title='Source')
 
-        step = 0.5
+        step = 0.01
 
         # Gaussian blur object for the images
         gauss_filt = Gaussian.Create(1, int(4*1.5), 1.5, device=device, dim=2)
@@ -494,95 +609,89 @@ def circle_and_elipse():
 
         # Create the circle image
         circle_im = StructuredGrid((256, 256), device=device)
-        circle(circle_im, 20, center=[128, 100])
+        circle(circle_im, 20,)
         circle_im = gauss_filt(circle_im)
 
         # Create the ellipse image
         ellipse_im = StructuredGrid((256, 256), device=device)
-        ellipse(ellipse_im, 15, 45)
+        ellipse(ellipse_im, 15, 40)
         ellipse_im = gauss_filt(ellipse_im)
 
-        circ_zeros = torch.zeros((256, 256, 256))
-        elli_zeros = torch.zeros((256, 256, 256))
+        circ_zeros = circle_im.data.view(1, 256, 256).repeat(30, 1, 1)
+        elli_zeros = ellipse_im.data.view(1, 256, 256).repeat(30, 1, 1)
 
-        circ_zeros[64:192, :, :] = circle_im.data.view(1, 256, 256).repeat(128, 1, 1)
-        elli_zeros[64:192, :, :] = ellipse_im.data.view(1, 256, 256).repeat(128, 1, 1)
+        cylinder = StructuredGrid(circ_zeros.shape, spacing=None, origin=None,
+                                  device=device, dtype=torch.float32, requires_grad=False,
+                                  tensor=circ_zeros.unsqueeze(0), channels=1)
 
-        cylinder = StructuredGrid((256, 256, 256), tensor=circ_zeros.unsqueeze(0), origin=(0, 0, 0))
-        ellipsoid = StructuredGrid((256, 256, 256), tensor=elli_zeros.unsqueeze(0), origin=(0, 0, 0))
-        cylinder.to_(device)
-        ellipsoid.to_(device)
+        ellipsoid = StructuredGrid(elli_zeros.shape, spacing=None, origin=None,
+                                   device=device, dtype=torch.float32, requires_grad=False,
+                                   tensor=elli_zeros.unsqueeze(0), channels=1)
 
+        # cylinder.to_(device)
+        # ellipsoid.to_(device)
 
-        # # Load two images that should match
-        # day0 = LoadITKFile(
-        #     '/home/sci/blakez/ucair/18_047/rawVolumes/Ablation_2018-06-28/Crop_074_----_3D_VIBE_0.nii.gz',
-        #     device=device,
-        #     dtype=torch.float32
-        # )
-        # day0_slice = day0.extract_slice(50, 0)
+        # # Save the iamges for dramms
+        # SaveITKFile(circle_im,
+        #             '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/circle_im.nii.gz')
+        # SaveITKFile(ellipse_im,
+        #             '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/ellipse_im.nii.gz')
 
-        # Display.DispImage(day0_slice)
+        # Load some dramms things
+        # dramms_image = LoadITKFile(
+        #     '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/deformed_ellipse.nii.gz')
+        # dramms_jacobian = LoadITKFile(
+        #     '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/jacobian_det.nii.gz')
+        # dramms_field = LoadITKFile(
+        #     '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/deformation_field.nii.gz')
 
-        # day3 = LoadITKFile(
-        #     '/home/sci/blakez/ucair/18_047/tpsVolumes/interday/012_-rt-_3D_VIBE_0.5x0.5x1_NoGrappa_3avg_fatsat_cor.nii.gz',
-        #     device=device,
-        #     dtype=torch.float32
-        # )
-        #
-        # # Need to resample the day3 onto the day0 grid
-        # day3_resamp = ResampleWorld.Create(day0, device=device)(day3)
-        #
-        # # Display.DispImage(day3_resamp)
-        #
-        # day3_slice = day3_resamp.extract_slice(50, 0)
-
-        # SaveITKFile(day3_resamp, '/home/sci/blakez/18_047_test.nii.gz')
-
-        # Display the images
-        # Display.DispImage(ellipse_im, title='Source')
-        # Display.DispImage(circle_im, title='Target')
+        # test_gauss = Gaussian.Create(channels=1, kernel_size=10, sigma=3, dim=2)
+        # gauss_filt = test_gauss(dramms_field)
 
         # Create the smoothing operator
         smoothing = FluidKernel.Create(
-            cylinder,
+            circle_im,
             device=device,
             alpha=alpha,
             beta=0.0,
-            gamma=gamma,
+            gamma=0.001,
         )
 
-        # Create the regularization - Does this mean we don't need the smoothing?
-        regularization = FluidRegularization.Create(device=device, dtype=torch.float32)
+        # # Create the regularization - Does this mean we don't need the smoothing?
+        # regularization = FluidRegularization.Create(device=device, dtype=torch.float32)
 
         # Create the matching term
-        similarity = L2Similarity.Create(dim=3, device=device)
+        similarity = L2Similarity.Create(dim=2, device=device)
         # similarity = NormalizedCrossCorrelation.Create(grid=circle_im, device=device)
 
         # Now make the registration object
         matcher_incomp = IterativeMatch.Create(
-            source=ellipsoid,
-            target=cylinder,
+            source=ellipse_im,
+            target=circle_im,
             similarity=similarity,
-            regularization=regularization,
+            regularization=None,
             operator=smoothing,
             device=device,
-            step_size=step,
-            incompressible=False,
-            regularization_weight=0.01
+            step_size=0.05,
+            incompressible=True,
+            regularization_weight=0.1
         )
 
         energy_incomp = [matcher_incomp.initial_energy]
         print(f'Iteration: 0   Energy: {matcher_incomp.initial_energy}')
-        for i in range(1, 500):
+        for i in range(1, 10000):
 
             energy_incomp.append(matcher_incomp.step())
-
             print(f'Iteration: {i}   Energy: {energy_incomp[-1]}')
+
+            if energy_incomp[-1] > energy_incomp[-2] - (1e-3 * energy_incomp[-2]):
+                break
 
         # Get the image from the matcher
         def_image_incomp = matcher_incomp.get_image()
         field_incomp = matcher_incomp.get_field()
+
+        step = 0.5
 
         jacobain = JacobianDeterminant.Create(dim=2, device=device)
         jacobian_incomp = jacobain(field_incomp)
@@ -595,94 +704,140 @@ def circle_and_elipse():
             source=ellipse_im,
             target=circle_im,
             similarity=similarity,
-            regularization=regularization,
+            regularization=None,
             operator=smoothing,
             device=device,
-            step_size=step,
-            regularization_weight=0.05
+            step_size=0.05,
+            incompressible=False,
+            regularization_weight=0.01
         )
 
-        energy_comp = [matcher_comp.initial_energy.item()]
-        print(f'Iteration: 0   Energy: {matcher_comp.initial_energy.item()}')
-        for i in range(1, 500):
-            energy_comp.append(matcher_incomp.step().item())
-
+        energy_comp = [matcher_comp.initial_energy]
+        print(f'Iteration: 0   Energy: {matcher_comp.initial_energy}')
+        for i in range(1, 100000):
+            energy_comp.append(matcher_comp.step())
+            if energy_comp[-1] > energy_comp[-2] - (1e-3 * energy_comp[-2]):
+                break
             print(f'Iteration: {i}   Energy: {energy_comp[-1]}')
 
-        def_image_comp = matcher_incomp.get_image()
-        field_comp = matcher_incomp.get_field()
+
+        def_image_comp = matcher_comp.get_image()
+        field_comp = matcher_comp.get_field()
+
+        dramms_image = LoadITKFile(
+            '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/deformed_ellipse.nii.gz')
+        # dramms_jacobian = LoadITKFile(
+        #     '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/jacobian_det.nii.gz')
+        x_field = LoadITKFile(
+            '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/x_deform.nii.gz')
+        y_field = LoadITKFile(
+            '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/DRAMMS/y_deform.nii.gz')
+
+        field_tensor = torch.cat((y_field.data, x_field.data), 0)
+        deformation = StructuredGrid.FromGrid(
+            x_field,
+            tensor=field_tensor,
+            channels=field_tensor.shape[0]
+        )
+
+        id = deformation.clone()
+        id.set_to_identity_lut_()
+
+        # dramms_field = deformation + id
 
         jacobain = JacobianDeterminant.Create(dim=2, device=device)
         jacobian_comp = jacobain(field_comp)
         jacobian_incomp = jacobain(field_incomp)
 
-        jacobian_comp.data[jacobian_comp.data <0.001] = 0.01
+        out_path = '/home/sci/blakez/ucair/LongitudinalRegistrationPaper/Figures/Incompressible_Example/'
 
-        Display.DispImage(def_image_comp, title='Moving Compressible')
-        Display.DispImage(def_image_incomp, title='Moving Incompressible')
-        DispImage(ellipse_im, title='Source')
-        DispImage(circle_im, title='Target')
-        DispImage(jacobian_comp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
-        DispImage(jacobian_incomp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
-        DispFieldGrid(field_comp, title='Deformation Grid Compressible')
-        DispFieldGrid(field_incomp, title='Deformation Grid Incompressible')
-        # Display.EnergyPlot(energy_comp, title='Compressible Energy')
-        EnergyPlot([energy_comp, energy_incomp], title='Energy Plots', legend=['Compressible', 'Incompressible'])
-        DispImage(circle_im - ellipse_im, title='Difference Image')
-
-        font = {'family': 'sans-serif',
-                'size': 11}
-
-        matplotlib.rc('font', **font)
+        # Plot the images and save them
+        fig = plt.figure()
+        plt.imshow(ellipse_im.data.squeeze().cpu(), cmap='gray')
+        plt.axis('off')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}ellipse_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
 
         fig = plt.figure()
-        gs_master = fig.add_gridspec(2, 1, height_ratios=[1, 2], hspace=0.1)
-        gs00 = gs_master[0, 0].subgridspec(1, 3, width_ratios=[2.7, 1, 2.7], wspace=0.05, hspace=0.2)
-        gs10 = gs_master[1, 0].subgridspec(2, 3, wspace=0.05, hspace=0.2)
-
-        # gs = gridspec.GridSpec(3, 3)
-        # inner = gridspec.GridSpecFromSubplotSpec(1, 3, gs[0:3, 0])
-        # gs.update(wspace=0.05)
-        ax00 = plt.subplot(gs00[0, 0])
-        ax01 = plt.subplot(gs00[0, 1])
-        ax02 = plt.subplot(gs00[0, 2])
-        ax10 = plt.subplot(gs10[0, 0])
-        ax11 = plt.subplot(gs10[0, 1])
-        ax12 = plt.subplot(gs10[0, 2])
-        ax20 = plt.subplot(gs10[1, 0])
-        ax21 = plt.subplot(gs10[1, 1])
-        ax22 = plt.subplot(gs10[1, 2])
-
-        plt.sca(ax00)
-        ax00.set_anchor('E')
-        plt.imshow(ellipse_im.data.squeeze().cpu(), cmap='gray')
-        ax00.text(5, 125, f'V={ellipse_im.sum().item():.1f}', **font, color='w')
-        plt.title('Moving Image', **font)
-        plt.axis('off')
-
-        plt.sca(ax01)
-        ax01.text(0.4, 0.5, '$\phi^{-1}$', family='sans-serif', size=30)
-        plt.arrow(0.2, 0.4, 0.6, 0.0, width=.01, color='k')
-        plt.axis('off')
-
-        plt.sca(ax02)
-        ax02.set_anchor('W')
         plt.imshow(circle_im.data.squeeze().cpu(), cmap='gray')
-        plt.title('Target Image', **font)
         plt.axis('off')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}circle_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
 
-        plt.sca(ax10)
-        ax10.set_anchor('E')
-        plt.imshow(def_image_comp.data.squeeze().cpu(), cmap='gray')
-        plt.title('Non-Volume Preserving Deformed Image', **font)
-        change = (ellipse_im.sum().item() - def_image_comp.sum().item()) / ellipse_im.sum().item() * 100
-        ax10.text(5, 125, f'dV={change:.1f}%', **font, color='w')
+        fig = plt.figure()
+        plt.imshow(def_image_incomp.data.squeeze().cpu(), cmap='gray')
         plt.axis('off')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}deformed_incomp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+        fig = plt.figure()
+        plt.imshow(def_image_comp.data.squeeze().cpu(), cmap='gray')
+        plt.axis('off')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}deformed_comp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+        fig = plt.figure()
+        plt.imshow(dramms_image.data.squeeze().cpu(), cmap='gray')
+        plt.axis('off')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}deformed_dramms_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+        # plt.close('all')
+
+        fig = plt.figure()
+        plt.axis('off')
+        plt.imshow((jacobian_comp).data.squeeze().cpu(), cmap='bwr', vmin=0.0, vmax=2.0)
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}jacobian_comp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+        # plt.sca(ax22)
+        # ax22.set_anchor('W')
+        # plt.title('Volume Preserving Jacobian Determinant', **font)
+        # plt.axis('off')
+        # fig = plt.figure()
+        # ax = plt.gca()
+        # img22 = plt.imshow((jacobian_comp).data.squeeze().cpu(), cmap='bwr', vmin=0.0, vmax=2.0)
+        # plt.axis('off')
+        # divider = make_axes_locatable(ax)
+        # cax22 = divider.append_axes("right", size="5%", pad=0.07)
+        # fig.colorbar(img22, cax=cax22)
+        # fig.set_size_inches(5, 5)
+        # divider.set_anchor('W')
+        # plt.axis('off')
+        # plt.savefig(f'{out_path}jacobian_comp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+        fig = plt.figure()
+        plt.axis('off')
+        plt.imshow((jacobian_incomp).data.squeeze().cpu(), cmap='bwr', vmin=0.0, vmax=2.0)
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}jacobian_incomp_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+        fig = plt.figure()
+        ax = plt.gca()
+        temp = np.ones((256, 1))
+        img22 = plt.imshow(temp, cmap='bwr', vmin=0.0, vmax=2.0)
+        plt.axis('off')
+        divider = make_axes_locatable(ax)
+        cax22 = divider.append_axes("right", size="5%", pad=0.07)
+        fig.colorbar(img22, cax=cax22)
+        fig.set_size_inches(2.65, 0.1)
+        divider.set_anchor('W')
+        plt.axis('off')
+        plt.savefig(f'{out_path}colorbar.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
+
+        fig = plt.figure()
+        plt.axis('off')
+        plt.imshow((dramms_jacobian).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}jacobian_dramms_image.png', dpi=200, bbox_inches='tight', pad_inches=0)
+
 
         # START Make the field arrays
         field = field_comp.data.clone()
         field = field - field_comp.origin.view(*field_comp.size.shape, *([1] * len(field_comp.size)))
-        field = field / (field_comp.spacing * (field_comp.size / 2)).view(*field_comp.size.shape, *([1] * len(field_comp.size)))
+        field = field / (field_comp.spacing * (field_comp.size / 2)).view(*field_comp.size.shape,
+                                                                          *([1] * len(field_comp.size)))
         field = field - 1
         field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
         field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
@@ -700,31 +855,13 @@ def circle_and_elipse():
         maxax = 1.0
 
         # STOP Make the field arrays
-
-        plt.sca(ax11)
+        fig = plt.figure()
         plt.axis([minax, maxax, maxax, minax])
         plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
         plt.plot(hy_sample_v, hx_sample_v, 'k')
         plt.axis('off')
-        plt.title('$\phi^{-1}$ Non-Volume Preserving Deformation Field', **font)
-
-        plt.sca(ax12)
-        ax12.set_anchor('W')
-        plt.title('Non-Volume Preserving Jacobian Determinant', **font)
-        plt.axis('off')
-        img12 = plt.imshow((jacobian_comp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
-        divider = make_axes_locatable(ax12)
-        cax12 = divider.append_axes("right", size="5%", pad=0.07)
-        fig.colorbar(img12, cax=cax12)
-        divider.set_anchor('W')
-
-        plt.sca(ax20)
-        ax20.set_anchor('E')
-        plt.imshow(def_image_incomp.data.squeeze().cpu(), cmap='gray')
-        plt.title('Volume Preserving Deformed Image', **font)
-        change = (ellipse_im.sum().item() - def_image_incomp.sum().item()) / ellipse_im.sum().item() * 100
-        ax20.text(5, 125, f'dV={change:.1f}%', **font, color='w')
-        plt.axis('off')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}field_comp_image.png', dpi=300, bbox_inches='tight', pad_inches=0)
 
         # START Make the field arrays
         field = field_incomp.data.clone()
@@ -748,47 +885,221 @@ def circle_and_elipse():
         maxax = 1.0
 
         # STOP Make the field arrays
-
-        plt.sca(ax21)
+        fig = plt.figure()
         plt.axis([minax, maxax, maxax, minax])
         plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
         plt.plot(hy_sample_v, hx_sample_v, 'k')
         plt.axis('off')
-        plt.title('$\phi^{-1}$ Volume-Preserving Deformation Field', **font)
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}field_incomp_image.png', dpi=300, bbox_inches='tight', pad_inches=0)
 
-        plt.sca(ax22)
-        ax22.set_anchor('W')
-        plt.title('Volume Preserving Jacobian Determinant', **font)
+        # START Make the field arrays
+        field = dramms_field.data.clone()
+        field = field - dramms_field.origin.view(*dramms_field.size.shape, *([1] * len(dramms_field.size)))
+        field = field / (dramms_field.spacing * (dramms_field.size / 2)).view(*field_comp.size.shape,
+                                                                              *([1] * len(dramms_field.size)))
+        field = field - 1
+        field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
+        field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
+        sy = dramms_field.size[-1].item()
+        sx = dramms_field.size[-2].item()
+        grid_sizex = max(sx // 64, 1)
+        grid_sizey = max(sy // 64, 1)
+        grid_sizex = int(grid_sizex)
+        grid_sizey = int(grid_sizey)
+        hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
+        hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
+        hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
+        hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
+        minax = -1.0
+        maxax = 1.0
+
+        # STOP Make the field arrays
+        fig = plt.figure()
+        plt.axis([minax, maxax, maxax, minax])
+        plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
+        plt.plot(hy_sample_v, hx_sample_v, 'k')
         plt.axis('off')
-        img22 = plt.imshow((jacobian_incomp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
-        divider = make_axes_locatable(ax22)
-        cax22 = divider.append_axes("right", size="5%", pad=0.07)
-        fig.colorbar(img22, cax=cax22)
-        divider.set_anchor('W')
+        fig.set_size_inches(5, 5)
+        plt.savefig(f'{out_path}field_dramms_image.png', dpi=300, bbox_inches='tight', pad_inches=0)
 
-        fig.set_size_inches(18, 11)
-        fig.set_dpi(100)
 
-        plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.png', dpi=500)
-        # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.eps', dpi=500)
-        # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.pdf', dpi=500)
 
-        print('Done')
 
-        # Create an image to show the difference between incompressible and compressible
 
-        # # Create a Jacobian determinant operator
-        # jacobain = JacobianDeterminant.Create(dim=2, device=device)
-        # jacobian_image = jacobain(field)
+
+
+        # DispImage(def_image_comp, title='Moving Compressible')
+        # DispImage(def_image_incomp, title='Moving Incompressible')
+        # DispImage(ellipse_im, title='Source')
+        # DispImage(circle_im, title='Target')
+        # DispImage(jacobian_comp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
+        # DispImage(jacobian_incomp, title='Jacobian Determinant Compressible', rng=[0.5, 6], cmap='jet')
+        # DispFieldGrid(field_comp, title='Deformation Grid Compressible')
+        # DispFieldGrid(field_incomp, title='Deformation Grid Incompressible')
+        # # Display.EnergyPlot(energy_comp, title='Compressible Energy')
+        # EnergyPlot([energy_comp, energy_incomp], title='Energy Plots', legend=['Compressible', 'Incompressible'])
+        # DispImage(circle_im - ellipse_im, title='Difference Image')
         #
-        # Display.DispImage(circle_im, title='Target')
-        # Display.DispImage(ellipse_im, title='Source')
-        # Display.DispImage(def_image, title='Moving')
-        # Display.DispFieldGrid(field, title='Deformation')
-        # Display.EnergyPlot(energy, title='Energy')
-        # Display.DispImage(jacobian_image, title='Jacobian Determinant')
+        # font = {'family': 'sans-serif',
+        #         'size': 11}
         #
-        # SaveITKFile(def_image, '/home/sci/blakez/test.nii.gz')
+        # matplotlib.rc('font', **font)
+        #
+        # fig = plt.figure()
+        # gs_master = fig.add_gridspec(2, 1, height_ratios=[1, 2], hspace=0.1)
+        # gs00 = gs_master[0, 0].subgridspec(1, 3, width_ratios=[2.7, 1, 2.7], wspace=0.05, hspace=0.2)
+        # gs10 = gs_master[1, 0].subgridspec(2, 3, wspace=0.05, hspace=0.2)
+        #
+        # # gs = gridspec.GridSpec(3, 3)
+        # # inner = gridspec.GridSpecFromSubplotSpec(1, 3, gs[0:3, 0])
+        # # gs.update(wspace=0.05)
+        # ax00 = plt.subplot(gs00[0, 0])
+        # ax01 = plt.subplot(gs00[0, 1])
+        # ax02 = plt.subplot(gs00[0, 2])
+        # ax10 = plt.subplot(gs10[0, 0])
+        # ax11 = plt.subplot(gs10[0, 1])
+        # ax12 = plt.subplot(gs10[0, 2])
+        # ax20 = plt.subplot(gs10[1, 0])
+        # ax21 = plt.subplot(gs10[1, 1])
+        # ax22 = plt.subplot(gs10[1, 2])
+        #
+        # plt.sca(ax00)
+        # ax00.set_anchor('E')
+        # plt.imshow(ellipse_im.data.squeeze().cpu(), cmap='gray')
+        # ax00.text(5, 125, f'V={ellipse_im.sum().item():.1f}', **font, color='w')
+        # plt.title('Moving Image', **font)
+        # plt.axis('off')
+        #
+        # plt.sca(ax01)
+        # ax01.text(0.4, 0.5, '$\phi^{-1}$', family='sans-serif', size=30)
+        # plt.arrow(0.2, 0.4, 0.6, 0.0, width=.01, color='k')
+        # plt.axis('off')
+        #
+        # plt.sca(ax02)
+        # ax02.set_anchor('W')
+        # plt.imshow(circle_im.data.squeeze().cpu(), cmap='gray')
+        # plt.title('Target Image', **font)
+        # plt.axis('off')
+        #
+        # plt.sca(ax10)
+        # ax10.set_anchor('E')
+        # plt.imshow(def_image_comp.data.squeeze().cpu(), cmap='gray')
+        # plt.title('Non-Volume Preserving Deformed Image', **font)
+        # change = (ellipse_im.sum().item() - def_image_comp.sum().item()) / ellipse_im.sum().item() * 100
+        # ax10.text(5, 125, f'dV={change:.1f}%', **font, color='w')
+        # plt.axis('off')
+        #
+        # # START Make the field arrays
+        # field = field_comp.data.clone()
+        # field = field - field_comp.origin.view(*field_comp.size.shape, *([1] * len(field_comp.size)))
+        # field = field / (field_comp.spacing * (field_comp.size / 2)).view(*field_comp.size.shape, *([1] * len(field_comp.size)))
+        # field = field - 1
+        # field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
+        # field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
+        # sy = field_comp.size[-1].item()
+        # sx = field_comp.size[-2].item()
+        # grid_sizex = max(sx // 64, 1)
+        # grid_sizey = max(sy // 64, 1)
+        # grid_sizex = int(grid_sizex)
+        # grid_sizey = int(grid_sizey)
+        # hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
+        # hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
+        # hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
+        # hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
+        # minax = -1.0
+        # maxax = 1.0
+        #
+        # # STOP Make the field arrays
+        #
+        # plt.sca(ax11)
+        # plt.axis([minax, maxax, maxax, minax])
+        # plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
+        # plt.plot(hy_sample_v, hx_sample_v, 'k')
+        # plt.axis('off')
+        # plt.title('$\phi^{-1}$ Non-Volume Preserving Deformation Field', **font)
+        #
+        # plt.sca(ax12)
+        # ax12.set_anchor('W')
+        # plt.title('Non-Volume Preserving Jacobian Determinant', **font)
+        # plt.axis('off')
+        # img12 = plt.imshow((jacobian_comp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
+        # divider = make_axes_locatable(ax12)
+        # cax12 = divider.append_axes("right", size="5%", pad=0.07)
+        # fig.colorbar(img12, cax=cax12)
+        # divider.set_anchor('W')
+        #
+        # plt.sca(ax20)
+        # ax20.set_anchor('E')
+        # plt.imshow(def_image_incomp.data.squeeze().cpu(), cmap='gray')
+        # plt.title('Volume Preserving Deformed Image', **font)
+        # change = (ellipse_im.sum().item() - def_image_incomp.sum().item()) / ellipse_im.sum().item() * 100
+        # ax20.text(5, 125, f'dV={change:.1f}%', **font, color='w')
+        # plt.axis('off')
+        #
+        # # START Make the field arrays
+        # field = field_incomp.data.clone()
+        # field = field - field_incomp.origin.view(*field_incomp.size.shape, *([1] * len(field_incomp.size)))
+        # field = field / (field_incomp.spacing * (field_incomp.size / 2)).view(*field_comp.size.shape,
+        #                                                                       *([1] * len(field_incomp.size)))
+        # field = field - 1
+        # field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
+        # field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
+        # sy = field_incomp.size[-1].item()
+        # sx = field_incomp.size[-2].item()
+        # grid_sizex = max(sx // 64, 1)
+        # grid_sizey = max(sy // 64, 1)
+        # grid_sizex = int(grid_sizex)
+        # grid_sizey = int(grid_sizey)
+        # hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
+        # hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
+        # hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
+        # hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
+        # minax = -1.0
+        # maxax = 1.0
+        #
+        # # STOP Make the field arrays
+        #
+        # plt.sca(ax21)
+        # plt.axis([minax, maxax, maxax, minax])
+        # plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
+        # plt.plot(hy_sample_v, hx_sample_v, 'k')
+        # plt.axis('off')
+        # plt.title('$\phi^{-1}$ Volume-Preserving Deformation Field', **font)
+        #
+        # plt.sca(ax22)
+        # ax22.set_anchor('W')
+        # plt.title('Volume Preserving Jacobian Determinant', **font)
+        # plt.axis('off')
+        # img22 = plt.imshow((jacobian_incomp).data.squeeze().cpu(), cmap='jet', vmin=0.5, vmax=6.0)
+        # divider = make_axes_locatable(ax22)
+        # cax22 = divider.append_axes("right", size="5%", pad=0.07)
+        # fig.colorbar(img22, cax=cax22)
+        # divider.set_anchor('W')
+        #
+        # fig.set_size_inches(18, 11)
+        # fig.set_dpi(100)
+        #
+        # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.png', dpi=500)
+        # # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.eps', dpi=500)
+        # # plt.savefig('/home/sci/blakez/Volume_preserving_registration_ex.pdf', dpi=500)
+        #
+        # print('Done')
+        #
+        # # Create an image to show the difference between incompressible and compressible
+        #
+        # # # Create a Jacobian determinant operator
+        # # jacobain = JacobianDeterminant.Create(dim=2, device=device)
+        # # jacobian_image = jacobain(field)
+        # #
+        # # Display.DispImage(circle_im, title='Target')
+        # # Display.DispImage(ellipse_im, title='Source')
+        # # Display.DispImage(def_image, title='Moving')
+        # # Display.DispFieldGrid(field, title='Deformation')
+        # # Display.EnergyPlot(energy, title='Energy')
+        # # Display.DispImage(jacobian_image, title='Jacobian Determinant')
+        # #
+        # # SaveITKFile(def_image, '/home/sci/blakez/test.nii.gz')
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ import torch
 from CAMP.Core.StructuredGridClass import StructuredGrid
 from .ApplyGridFilter import ApplyGrid
 from ._UnaryFilter import Filter
+# TODO Check this filter to make sure the affine and translation are correct
 
 
 class AffineTransform(Filter):
@@ -23,7 +24,6 @@ class AffineTransform(Filter):
             self.source_landmarks = source_landmarks
             self.target_landmarks = target_landmarks
             self.dim = len(self.source_landmarks[0])
-            self._solve_affine()
 
         else:
             self.dim = len(affine) - 1
@@ -35,6 +35,11 @@ class AffineTransform(Filter):
         aff = AffineTransform(target_landmarks, source_landmarks, affine, rigid, device, dtype)
         aff = aff.to(device)
         aff = aff.type(dtype)
+
+        if affine is not None:
+            aff.affine = affine
+        else:
+            aff._solve_affine()
 
         # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
         for attr, val in aff.__dict__.items():
@@ -48,37 +53,51 @@ class AffineTransform(Filter):
 
     def _solve_affine(self):
 
-        source_landmarks = torch.cat((self.source_landmarks, torch.ones(len(self.source_landmarks), 1)), -1).t()
-        target_landmarks = torch.cat((self.target_landmarks, torch.ones(len(self.target_landmarks), 1)), -1).t()
+        source_landmarks_centered = self.source_landmarks - self.source_landmarks.mean(0)
+        target_landmarks_centered = self.target_landmarks - self.target_landmarks.mean(0)
 
-        # Solve for the affine transform between the points
+        # Solve for the transform between the points
         self.affine = torch.matmul(
             torch.matmul(
-                target_landmarks, source_landmarks.t()
+                target_landmarks_centered.t(), source_landmarks_centered
             ),
             torch.matmul(
-                source_landmarks, source_landmarks.t()
+                source_landmarks_centered.t(), source_landmarks_centered
             ).inverse()
         )
 
         if self.rigid:
-            u, _, vt = torch.svd(self.affine[0:self.dim, 0:self.dim])
-            self.affine[0:self.dim, 0:self.dim] = torch.matmul(u, vt)
+            u, _, vt = torch.svd(self.affine)
+            self.affine = torch.matmul(u, vt.t())
 
-    def forward(self, x):
+        # Solve for the translation
+        self.translation = self.target_landmarks.mean(0) - torch.matmul(self.affine,
+                                                                        self.source_landmarks.mean(0).t()).t()
+
+    def forward(self, x, out_grid=None):
 
         # Create the grid
-        aff_grid = StructuredGrid.FromGrid(x, channels=self.dim)
+        if out_grid:
+            aff_grid = StructuredGrid.FromGrid(out_grid, channels=self.dim)
+        else:
+            aff_grid = StructuredGrid.FromGrid(x, channels=self.dim)
         aff_grid.set_to_identity_lut_()
 
         # Want to bring the grid the other direction
-        self.affine = self.affine.inverse()
+        affine = torch.eye(4, device=self.device, dtype=self.dtype)
 
-        a = self.affine[0:self.dim, 0:self.dim].view([1]*self.dim + [self.dim] * self.dim)
-        t = self.affine[0:self.dim, self.dim]
+        if 'target_landmarks' in self.__dict__:
+            affine[0:self.dim, 0:self.dim] = self.affine
+            affine[0:self.dim, self.dim] = self.translation
+        else:
+            affine = self.affine.clone()
+
+        affine = affine.inverse()
+        a = affine[0:self.dim, 0:self.dim]
+        t = affine[-0:self.dim, self.dim]
 
         aff_grid.data = torch.matmul(a, aff_grid.data.permute(list(range(1, self.dim + 1)) + [0]).unsqueeze(-1))
         aff_grid.data = (aff_grid.data.squeeze() + t).permute([self.dim] + list(range(0, self.dim)))
 
-        x_tf = ApplyGrid.Create(aff_grid, device=aff_grid.device, dtype=aff_grid.dtype)(x)
+        x_tf = ApplyGrid.Create(aff_grid, device=aff_grid.device, dtype=aff_grid.dtype)(x, out_grid=out_grid)
         return x_tf

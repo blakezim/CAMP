@@ -24,8 +24,6 @@ class JacobianDeterminant(Filter):
         self.crop_vec += [[-1, -1] for _ in range(0, dim)]
         self.crop_vec = tuple(itertools.chain.from_iterable(self.crop_vec))
 
-
-
     @staticmethod
     def Create(dim=2, device='cpu', dtype=torch.float32):
         jacb = JacobianDeterminant(dim, device, dtype)
@@ -44,19 +42,7 @@ class JacobianDeterminant(Filter):
 
     def forward(self, x):
 
-        # # Have to pad the tensor with the correct values otherwise edges will be huge
-        # temp = StructuredGrid(
-        #     size=x.size + 2,
-        #     spacing=x.spacing,
-        #     origin=(x.origin - x.spacing),
-        #     device=x.device,
-        #     dtype=x.dtype,
-        # )
-        # temp.set_to_identity_lut_()
-        # temp[]
         grads = self.gradient(x)
-        # Central difference scale the gradients by the spacing
-        # grads = grads / 2.0
 
         if self.dim == 2:
             det = grads[0] * grads[3] - grads[1] * grads[2]

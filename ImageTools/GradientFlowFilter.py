@@ -1,15 +1,14 @@
-import gc
 import torch
-from CAMP.ImageOperators import ApplyGrid, Gradient
+import torch.nn.functional as F
+from CAMP.StructuredGridOperators import Gradient
 from CAMP.Core.StructuredGridClass import StructuredGrid
 
 from ._BaseTool import Filter
 
 
 # TODO Multiscale matching
-# TODO make the smoothing and regularizer use the same kernel
 # TODO Use only one applier
-
+# TODO Check for memery saving and computation saving areas
 
 class IterativeMatch(Filter):
     def __init__(self, source, target, similarity, operator, regularization=None, step_size=0.001,
@@ -46,12 +45,12 @@ class IterativeMatch(Filter):
         self.moving = source.clone()
         self.field = StructuredGrid.FromGrid(source)
         self.field.set_to_identity_lut_()
-        self.identity = StructuredGrid.FromGrid(source)
-        self.identity.set_to_identity_lut_()
+        self.update = StructuredGrid.FromGrid(source)
+        self.update.set_to_identity_lut_()
         self.initial_energy = self.energy()
 
         self.gradients = Gradient.Create(dim=len(source.size), device=device, dtype=dtype)(source)
-        self.moving_grads = ApplyGrid(self.field)(self.gradients)
+        self.moving_grads = self.gradients.clone()
 
     @staticmethod
     def Create(source, target, similarity, operator, regularization=None, step_size=0.001,
@@ -59,9 +58,7 @@ class IterativeMatch(Filter):
 
         match = IterativeMatch(source, target, similarity, operator, regularization, step_size,
                                regularization_weight, incompressible, device, dtype)
-
-        match = match.to(device)
-        match = match.type(dtype)
+        match = match.to(device=device, dtype=dtype)
 
         # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
         for attr, val in match.__dict__.items():
@@ -79,13 +76,37 @@ class IterativeMatch(Filter):
         if self.regularization:
             reg_e = 0.25 * self.reg_weight * self.regularization(self.field - self.identity, self.operator).sum()
 
-        return [energy.item(), reg_e.item(), (reg_e + energy).item()]
-        # return energy + reg_e
+        return energy.item()
+
+    @staticmethod
+    def _apply_field(x, field, interpolation_mode='bilinear', padding_mode='zeros'):
+
+        grid = field.clone()
+
+        # Change the field to be in index space
+        grid = grid - x.origin.view(*x.size.shape, *([1] * len(x.size)))
+        grid = grid / (x.spacing * (x.size / 2)).view(*x.size.shape, *([1] * len(x.size)))
+        grid = grid - 1
+
+        grid = grid.data.permute(torch.arange(1, len(grid.shape())).tolist() + [0])
+        grid = grid.data.view(1, *grid.shape)
+
+        resample_grid = grid.flip(-1)
+
+        out_tensor = F.grid_sample(x.data.view(1, *x.data.shape),
+                                   resample_grid,
+                                   mode=interpolation_mode,
+                                   padding_mode=padding_mode).squeeze(0)
+
+        out = StructuredGrid.FromGrid(
+            x,
+            tensor=out_tensor,
+            channels=out_tensor.shape[0]
+        )
+
+        return out
 
     def step(self):
-
-        self.moving = ApplyGrid(self.field)(self.source)
-        self.moving_grads = ApplyGrid(self.field)(self.gradients)
 
         # Calculate the similarity body force
         body_v = self.similarity.c1(self.target, self.moving, self.moving_grads)
@@ -93,90 +114,26 @@ class IterativeMatch(Filter):
         # Apply the operator to the body force
         body_v = self.operator.apply_inverse(body_v)
 
-        if self.regularization:
-            reg_v = self.reg_weight * self.regularization.c1(self.field - self.identity, self.operator)
-            body_v = body_v + reg_v
+        # Apply the step size
+        body_v = self.step_size*body_v
 
         if self.incompressible:
             body_v = self.operator.project_incompressible(body_v)
 
-        # Update the field
-        self.field = ((self.field - self.identity) - self.step_size*body_v) + self.identity
+        # Create the update field
+        self.update = self.update - body_v
 
-        # Update variables
-        self.moving = ApplyGrid(self.field)(self.source)
+        # Sample the field at the locations of the update field
+        self.field = self._apply_field(self.field, self.update, padding_mode="border")
+
+        self.moving = self._apply_field(self.source, self.field)
+        self.moving_grads = self._apply_field(self.gradients, self.field)
+        # self.update = self.field.clone()
+        self.update.set_to_identity_lut_()
 
         # Calculate and return the new energy
         new_energy = self.energy()
         return new_energy
-
-    def multi_scale(self, scale=[2, 1], niter=[150, 25], step=[0.4, 0.01], regw=[0.2, 0.05]):
-
-        # Need to make a copy of the source image
-        original_source = self.source.clone()
-        original_target = self.target.clone()
-        original_grads = self.gradients.clone()
-        energy = [[] for _ in range(0, len(scale))]
-
-        for i, s in enumerate(scale):
-            print(f'Scale: {s}, N Iter: {niter[i]}, Step: {step[i]}, Reg Weight:{regw[i]}')
-
-            # self.moving = self.source.clone()
-
-            # Reset the image
-            if i > 0:
-                self.source = original_source.clone()
-                self.target = original_target.clone()
-                self.gradients = original_grads.clone()
-
-            # Set the size of the field
-            if i < len(scale) - 1:
-                self.source.set_size(original_source.size // s, inplace=True)
-                # self.moving.set_size(original_source.size // s, inplace=True)
-                self.target.set_size(original_source.size // s, inplace=True)
-                self.gradients.set_size(original_source.size // s, inplace=True)
-
-            else:
-                del original_grads, original_source, original_target
-                gc.collect()
-                torch.cuda.empty_cache()
-
-            # Need to scale the vector field to deal with spacing? No
-            # The vector says move 1 in that direction, but that is in real space, so it should be fine
-            # Why does the energy jump up? number of elements at that value has now increased
-
-            self.moving.set_size(self.source.size, inplace=True)
-            self.field.set_size(self.source.size, inplace=True)
-            self.identity.set_size(self.source.size, inplace=True)
-            # self.identity.set_to_identity_lut_()
-
-            # Need to update the size of the operator
-            self.operator = self.operator.set_size(self.moving)
-            self.moving = ApplyGrid(self.field)(self.source)
-
-            self.reg_weight = regw[i]
-            self.step_size = step[i]
-
-            energy[i] = [self.energy()]
-            print(f'Iteration: 000   Energy: {energy[i][-1][0]:.04f} + {energy[i][-1][1]:.04f} = {energy[i][-1][2]:.04f}')
-
-            for it in range(1, niter[i]+1):
-                energy[i].append(self.step())
-
-                if it % 10 == 0:
-                    print(f'Iteration: {it:03d}   Energy: {energy[i][-1][0]:.04f} + {energy[i][-1][1]:.04f} = {energy[i][-1][2]:.04f}')
-
-            if self.incompressible:
-                # Project the field at the end to the incompressible space
-                body_v = self.field - self.identity
-                body_v = self.operator.project_incompressible(body_v)
-                self.field = body_v + self.identity
-
-        # self.target = original_target.clone()
-        # self.source = original_source.clone()
-        self.moving = ApplyGrid(self.field)(self.source)
-
-        return energy
 
     def get_field(self):
         return self.field
