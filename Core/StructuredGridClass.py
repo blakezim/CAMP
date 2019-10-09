@@ -80,38 +80,39 @@ class StructuredGrid:
         old_size = self.size.clone()
 
         if type(size).__name__ == 'Tensor':
-            self.size = size.clone().to(self.device).type(self.dtype)
+            new_size = size.clone().to(self.device).type(self.dtype)
         else:
-            self.size = torch.tensor(size,
-                                     dtype=self.dtype,
-                                     requires_grad=self.requires_grad,
-                                     device=self.device)
-
-        self.data = self.data.view(1, *self.data.size())
-
+            new_size = torch.tensor(size,
+                                    dtype=self.dtype,
+                                    requires_grad=self.requires_grad,
+                                    device=self.device)
         if len(self.size) == 3:
             mode = 'trilinear'
         else:
             mode = 'bilinear'
 
         if inplace:
+            self.data = self.data.view(1, *self.data.size())
             self.data = F.interpolate(self.data, size=[int(x) for x in size.tolist()],
                                       mode=mode, align_corners=True).squeeze(0)
-            new_spacing = (old_size / self.size) * self.spacing
+            new_spacing = (old_size / new_size) * self.spacing
             self.set_spacing_(new_spacing)
+            self.size = new_size
 
         else:
-            out_data = F.interpolate(self.data, size=[int(x) for x in size.tolist()],
+            data = self.data.view(1, *self.data.size()).clone()
+            out_data = F.interpolate(data, size=[int(x) for x in size.tolist()],
                                      mode=mode, align_corners=True).squeeze(0)
-            new_spacing = (old_size / self.size) * self.spacing
+            new_spacing = (old_size / new_size) * self.spacing
             return StructuredGrid(
-                size=size,
+                size=new_size,
                 spacing=new_spacing,
                 origin=self.origin,
                 device=self.device,
                 dtype=self.dtype,
                 requires_grad=self.requires_grad,
                 tensor=out_data,
+                channels=out_data.shape[0]
             )
 
     def set_spacing_(self, spacing):
@@ -219,6 +220,15 @@ class StructuredGrid:
 
     def sum(self):
         return self.data.sum()
+
+    def min(self):
+        return self.data.min()
+
+    def max(self):
+        return self.data.max()
+
+    def minmax(self):
+        return torch.tensor([self.data.min(), self.data.max()], device=self.device)
 
     def shape(self):
         return self.data.shape

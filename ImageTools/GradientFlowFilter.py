@@ -1,3 +1,4 @@
+import gc
 import torch
 from CAMP.ImageOperators import ApplyGrid, Gradient
 from CAMP.Core.StructuredGridClass import StructuredGrid
@@ -135,9 +136,18 @@ class IterativeMatch(Filter):
                 self.target.set_size(original_source.size // s, inplace=True)
                 self.gradients.set_size(original_source.size // s, inplace=True)
 
-            self.moving.set_size(original_source.size // s, inplace=True)
-            self.field.set_size(original_source.size // s, inplace=True)
-            self.identity.set_size(original_source.size // s, inplace=True)
+            else:
+                del original_grads, original_source, original_target
+                gc.collect()
+                torch.cuda.empty_cache()
+
+            # Need to scale the vector field to deal with spacing? No
+            # The vector says move 1 in that direction, but that is in real space, so it should be fine
+            # Why does the energy jump up? number of elements at that value has now increased
+
+            self.moving.set_size(self.source.size, inplace=True)
+            self.field.set_size(self.source.size, inplace=True)
+            self.identity.set_size(self.source.size, inplace=True)
             # self.identity.set_to_identity_lut_()
 
             # Need to update the size of the operator
@@ -148,16 +158,22 @@ class IterativeMatch(Filter):
             self.step_size = step[i]
 
             energy[i] = [self.energy()]
-            print(f'Iteration: 0   Energy: {self.energy()}')
+            print(f'Iteration: 000   Energy: {energy[i][-1][0]:.04f} + {energy[i][-1][1]:.04f} = {energy[i][-1][2]:.04f}')
 
             for it in range(1, niter[i]+1):
                 energy[i].append(self.step())
 
                 if it % 10 == 0:
-                    print(f'Iteration: {it}   Energy: {energy[i][-1]}')
+                    print(f'Iteration: {it:03d}   Energy: {energy[i][-1][0]:.04f} + {energy[i][-1][1]:.04f} = {energy[i][-1][2]:.04f}')
 
-        self.target = original_target.clone()
-        self.source = original_source.clone()
+            if self.incompressible:
+                # Project the field at the end to the incompressible space
+                body_v = self.field - self.identity
+                body_v = self.operator.project_incompressible(body_v)
+                self.field = body_v + self.identity
+
+        # self.target = original_target.clone()
+        # self.source = original_source.clone()
         self.moving = ApplyGrid(self.field)(self.source)
 
         return energy
