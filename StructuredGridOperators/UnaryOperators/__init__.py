@@ -17,5 +17,4 @@ __all__ = [
     'AffineTransform',
     'RadialBasis',
     'VarianceEqualize',
-    'FluidRegularization'
 ]

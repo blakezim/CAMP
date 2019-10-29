@@ -1,4 +1,5 @@
 from CAMP.Core.Display import *
 from CAMP.Core.StructuredGridClass import *
-__all__ = ['DispImage', 'DispFieldGrid', 'EnergyPlot', 'StructuredGrid']
+from CAMP.Core.TriangleMeshClass import *
+__all__ = ['DispImage', 'DispFieldGrid', 'EnergyPlot', 'StructuredGrid', 'TriangleMeshClass']
 # TODO Make is to you can import display from core
