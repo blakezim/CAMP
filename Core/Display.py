@@ -505,3 +505,55 @@ def EnergyPlot(energy, title='Energy', new_figure=True, legend=None):
     plt.draw()
 
 
+def PlotSurface(verts, faces, fig=None, norms=None, ax=None, color=[0, 0, 1]):
+
+    def scale_normals(norms):
+        return (norms / np.sqrt((norms ** 2).sum(1))[:, None]) / 10
+
+    def calc_centers(tris):
+        return (1 / 3.0) * np.sum(tris, 1)
+
+    def get_colors(faces, color):
+        return color[faces].mean(2) / 255.0
+
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+    if not fig:
+        fig = plt.figure()
+
+    verts = verts.detach().cpu().clone().numpy()
+    faces = faces.detach().cpu().clone().numpy()
+
+    if not ax:
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Determine the min and max for the axis limits
+        lims = np.vstack((verts.min(0), verts.min(0), verts.max(0), verts.max(0)))
+        ax.set_xlim(lims.min(0)[0] - 1, lims.max(0)[0] + 1)
+        ax.set_ylim(lims.min(0)[1] - 1, lims.max(0)[1] + 1)
+        ax.set_zlim(lims.min(0)[2] - 1, lims.max(0)[2] + 1)
+
+    mesh = Poly3DCollection(verts[faces])  # Create the mesh to plot
+    mesh.set_alpha(0.4)  # Set the transparency of the surface
+
+    # Plot the normals
+    if norms is not None:
+        norms = norms.detach().cpu().clone().numpy()
+        norms = scale_normals(norms)
+        cents = calc_centers(verts[faces])
+        ax.quiver3D(cents[:, 0], cents[:, 1], cents[:, 2], norms[:, 0], norms[:, 1], norms[:, 2])
+
+    if len(color) != 3:
+        color = color.detach().cpu().clone().numpy()
+        color = get_colors(faces, color)
+
+    mesh.set_facecolor(color)  # Set the color of the surface
+    ax.add_collection3d(mesh)  # Add the mesh to the axis
+
+    plt.show(block=False)
+    plt.draw()
+    plt.pause(0.01)
+
+    return mesh, fig, ax
+
