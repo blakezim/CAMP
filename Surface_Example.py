@@ -6,25 +6,37 @@ from FileIO import *
 from CAMP.Core import *
 from CAMP.UnstructuredGridOperators import *
 
-
 import matplotlib
 matplotlib.use('qt5agg')
 
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-import matplotlib.gridspec as gridspec
+
 plt.ion()
 
 device = 'cuda:1'
 sigma = 0.5
 
+data_dir = '/hdscratch/ucair/blockface/18_047/surfaces/raw/'
+
+# Blocks to register
+tb = 7
+sb = 8
+
 # Load the surfaces
-s1_verts, s1_faces = ReadOBJ('/home/sci/blakez/ucair/test_surfaces/block11_surface_foot.obj')
-s2_verts, s2_faces = ReadOBJ('/home/sci/blakez/ucair/test_surfaces/block12_surface_head.obj')
+tf_verts, tf_faces = ReadOBJ(f'{data_dir}/block{tb:02d}/block{tb:02d}_surface_foot.obj')
+sh_verts, sh_faces = ReadOBJ(f'{data_dir}/block{sb:02d}/block{sb:02d}_surface_head.obj')
+
+# Load the other objects for context
+se_verts, se_faces = ReadOBJ(f'{data_dir}/block{sb:02d}/block{sb:02d}_surface_exterior.obj')
+sf_verts, sf_faces = ReadOBJ(f'{data_dir}/block{sb:02d}/block{sb:02d}_surface_foot.obj')
 
 # Create surface objects
-foot_surface = TriangleMesh(s1_verts, s1_faces)
-head_surface = TriangleMesh(s2_verts, s2_faces)
+foot_surface = TriangleMesh(tf_verts, tf_faces)
+head_surface = TriangleMesh(sh_verts, sh_faces)
+
+exterior_surface = TriangleMesh(se_verts, se_faces)
+
+exterior_surface.add_surface_(sf_verts, sf_faces)
 
 foot_surface.to_(device)
 head_surface.to_(device)
@@ -47,7 +59,7 @@ translation.requires_grad = True
 
 # Create some of the filters
 model = AffineCurrents.Create(
-    foot_surface.normals, foot_surface.centers, affine, translation, kernel='gaussian', sigma=sigma, device=device
+    foot_surface.normals, foot_surface.centers, affine, translation, kernel='cauchy', sigma=sigma, device=device
 )
 
 # See if we can perform a forward
@@ -86,17 +98,11 @@ for epoch in range(0, 300):
 affine = affine.detach()
 translation = translation.detach()
 # # Need to update the translation to account for not rotation about the origin
-# translation = translation.cpu().detach()
 translation = -torch.matmul(affine, head_surface.centers.mean(0)) + head_surface.centers.mean(0) + translation
 
 full_aff = torch.eye(4)
 full_aff[0:3, 0:3] = affine.clone()
 full_aff[0:3, 3] = translation.clone().t()
-
-
-# aff_source_verts = torch.mm(affine,
-#                             (head_surface.vertices - head_surface.centers.mean(0)).permute(1, 0)).permute(1, 0) \
-#                    + translation + head_surface.centers.mean(0)
 
 # Create affine applier filter and apply
 aff_source = AffineTransformSurface.Create(full_aff, device=device)(head_surface)
@@ -107,5 +113,43 @@ src_mesh.set_verts(aff_source.vertices[aff_source.indices].detach().cpu().numpy(
 
 plt.draw()
 plt.pause(0.00001)
+
+### Now do deformable registration
+
+# Create the deformable model
+model = DeformableCurrents.Create(
+    aff_source.copy(), foot_surface, sigma=sigma, kernel='cauchy', device=device
+)
+
+# Create a smoothing filter
+sigma = 2.0
+gauss = GaussianSmoothing(sigma, dim=3, device=device)
+
+# Set up the optimizer
+optimizer = optim.SGD([
+    {'params': model.src_vertices, 'lr': 5.0e-05}], momentum=0.9, nesterov=True
+)
+
+# Now iterate
+for epoch in range(0, 1500):
+    optimizer.zero_grad()
+    loss = model()
+
+    print(f'===> Iteration {epoch:3} Energy: {loss.item():.3f}')
+
+    loss.backward()  # Compute the gradients
+
+    # Now the gradients are stored in the parameters being optimized
+    model.src_vertices.grad = gauss(model.src_vertices)
+
+    optimizer.step()  #
+
+# Update the plot
+src_mesh.set_verts(model.src_vertices[model.src_indices].detach().cpu().numpy())
+
+plt.draw()
+plt.pause(0.00001)
+
+WriteOBJ(model.src_vertices, model.src_indices, f'/home/sci/blakez/block08_head_surface_{sigma}_def.obj')
 
 print('All Done')

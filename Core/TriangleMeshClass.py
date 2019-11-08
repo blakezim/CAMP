@@ -13,6 +13,8 @@ class TriangleMesh(UnstructuredGrid):
         self.calc_normals()
         self.calc_centers()
 
+        self.flipped_normals = False
+
     def calc_normals(self):
         tris = self.vertices[self.indices]
 
@@ -29,6 +31,18 @@ class TriangleMesh(UnstructuredGrid):
     def flip_normals_(self):
         self.indices = self.indices.flip(-1)
         self.calc_normals()
+        self.flipped_normals = True
+
+    def add_surface_(self, verts, indices):
+        length_one = len(verts)
+        updated_faces = self.indices + length_one
+        comb_vertices = torch.cat((verts, self.vertices), 0)
+        comb_faces = torch.cat((indices, updated_faces), 0)
+
+        self.vertices = comb_vertices
+        self.indices = comb_faces
+        self.calc_normals()
+        self.calc_centers()
 
     def __str__(self):
         return f"Triangle Mesh Object - Vertices: {len(self.vertices)}  Faces: {len(self.faces)}"
