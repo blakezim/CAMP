@@ -18,7 +18,7 @@ class GaussianSmoothing(Filter):
         if isinstance(sigma, numbers.Number):
             sigma = [sigma] * dim
 
-        self.register_buffer('sigma', torch.tensor(sigma, device=device))
+        self.register_buffer('sigma', sigma)
 
 
     @staticmethod
@@ -32,7 +32,7 @@ class GaussianSmoothing(Filter):
         grads = verts.grad
 
         # Need to calculate the distance between all other points
-        d = ((verts.unsqueeze(0) - verts.unsqueeze(1)) ** 2).sum(-1, keepdim=True)
+        d = ((verts.unsqueeze(1) - verts.unsqueeze(0)) ** 2).sum(-1, keepdim=True)
 
         out = (grads[None, :, :].repeat(len(grads), 1, 1) * torch.exp(-d / (2*self.sigma[None, None, :]))).sum(1)
 

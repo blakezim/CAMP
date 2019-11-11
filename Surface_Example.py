@@ -19,8 +19,8 @@ sigma = 0.5
 data_dir = '/hdscratch/ucair/blockface/18_047/surfaces/raw/'
 
 # Blocks to register
-tb = 7
-sb = 8
+tb = 6
+sb = 7
 
 # Load the surfaces
 tf_verts, tf_faces = ReadOBJ(f'{data_dir}/block{tb:02d}/block{tb:02d}_surface_foot.obj')
@@ -40,6 +40,7 @@ exterior_surface.add_surface_(sf_verts, sf_faces)
 
 foot_surface.to_(device)
 head_surface.to_(device)
+exterior_surface.to_(device)
 
 foot_surface.flip_normals_()
 
@@ -105,11 +106,13 @@ full_aff[0:3, 0:3] = affine.clone()
 full_aff[0:3, 3] = translation.clone().t()
 
 # Create affine applier filter and apply
-aff_source = AffineTransformSurface.Create(full_aff, device=device)(head_surface)
+aff_tfrom = AffineTransformSurface.Create(full_aff, device=device)
+aff_source_head = aff_tfrom(head_surface)
+aff_source_exterior = aff_tfrom(exterior_surface)
 # aff_source.to_('cpu')
 # def update_plot(mesh, verts, faces):
 #     verts = apply_affine(verts, affine, translation, mean)
-src_mesh.set_verts(aff_source.vertices[aff_source.indices].detach().cpu().numpy())
+src_mesh.set_verts(aff_source_head.vertices[aff_source_head.indices].detach().cpu().numpy())
 
 plt.draw()
 plt.pause(0.00001)
@@ -118,17 +121,21 @@ plt.pause(0.00001)
 
 # Create the deformable model
 model = DeformableCurrents.Create(
-    aff_source.copy(), foot_surface, sigma=sigma, kernel='cauchy', device=device
+    aff_source_head.copy(), foot_surface, sigma=sigma, kernel='cauchy', device=device
 )
 
 # Create a smoothing filter
-sigma = 2.0
+sigma = torch.tensor([0.5, 0.5, 5.0], device=device)
 gauss = GaussianSmoothing(sigma, dim=3, device=device)
 
 # Set up the optimizer
 optimizer = optim.SGD([
-    {'params': model.src_vertices, 'lr': 5.0e-05}], momentum=0.9, nesterov=True
+    {'params': [model.src_vertices, aff_source_exterior.vertices], 'lr': 5.0e-05}], momentum=0.9, nesterov=True
 )
+
+# dummy_opt = optim.SGD([
+#     {'params': aff_source_exterior.vertices, 'lr': 5.0e-05}], momentum=0.9, nesterov=True
+# )
 
 # Now iterate
 for epoch in range(0, 1500):
@@ -139,9 +146,14 @@ for epoch in range(0, 1500):
 
     loss.backward()  # Compute the gradients
 
+    # Need to propegate the gradients to the other vertices
+    with torch.no_grad():
+        d = ((aff_source_exterior.vertices.unsqueeze(1) - model.src_vertices.unsqueeze(0)) ** 2).sum(-1, keepdim=True)
+        gauss_d = torch.exp(-d / (2 * sigma[None, None, :]))
+        aff_source_exterior.vertices.grad = (model.src_vertices.grad[None, :, :].repeat(len(d), 1, 1) * gauss_d).sum(1)
+
     # Now the gradients are stored in the parameters being optimized
     model.src_vertices.grad = gauss(model.src_vertices)
-
     optimizer.step()  #
 
 # Update the plot
@@ -150,6 +162,11 @@ src_mesh.set_verts(model.src_vertices[model.src_indices].detach().cpu().numpy())
 plt.draw()
 plt.pause(0.00001)
 
-WriteOBJ(model.src_vertices, model.src_indices, f'/home/sci/blakez/block08_head_surface_{sigma}_def.obj')
+# Add the surfaces together
+aff_source_exterior.add_surface_(model.src_vertices, model.src_indices)
+# exterior_surface.add_surface_(sf_verts, sf_faces)
+
+WriteOBJ(aff_source_exterior.vertices, aff_source_exterior.indices, f'/home/sci/blakez/block07_exterior_def.obj')
+# WriteOBJ(model.src_vertices, model.src_indices, f'/home/sci/blakez/block08_reg_face_def.obj')
 
 print('All Done')
