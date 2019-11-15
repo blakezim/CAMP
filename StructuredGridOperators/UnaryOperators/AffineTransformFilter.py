@@ -77,14 +77,14 @@ class AffineTransform(Filter):
     def forward(self, x, out_grid=None):
 
         # Create the grid
-        if out_grid:
+        if out_grid is not None:
             aff_grid = StructuredGrid.FromGrid(out_grid, channels=self.dim)
         else:
             aff_grid = StructuredGrid.FromGrid(x, channels=self.dim)
         aff_grid.set_to_identity_lut_()
 
         # Want to bring the grid the other direction
-        affine = torch.eye(4, device=self.device, dtype=self.dtype)
+        affine = torch.eye(self.dim, device=self.device, dtype=self.dtype)
 
         if 'target_landmarks' in self.__dict__:
             affine[0:self.dim, 0:self.dim] = self.affine

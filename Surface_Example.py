@@ -6,6 +6,7 @@ from FileIO import *
 from CAMP.Core import *
 from CAMP.UnstructuredGridOperators import *
 
+
 import matplotlib
 matplotlib.use('qt5agg')
 
@@ -48,28 +49,23 @@ foot_surface.flip_normals_()
 [_, fig, ax] = PlotSurface(foot_surface.vertices, foot_surface.indices)
 [src_mesh, _, _] = PlotSurface(head_surface.vertices, head_surface.indices, fig=fig, ax=ax, color=[1, 0, 0])
 
-# Create the affine and translation to be optimized
-# Define the parameters to be optimized
-init_affine = torch.tensor([[1, 0, 0], [0, 1, 0], [0, 0, 1]]).float().to(device)
-affine = init_affine.clone()
-affine.requires_grad = True
-# translation = torch.mv(affine, block_objects[0].surface_dict['exterior']['mean'].to(device))
-translation = (foot_surface.centers.mean(0) - head_surface.centers.mean(0)).clone().float()
-translation = translation.to(device)
-translation.requires_grad = True
+# Find the inital translation
+translation = (foot_surface.centers.mean(0) - head_surface.centers.mean(0)).clone()
 
 # Create some of the filters
 model = AffineCurrents.Create(
-    foot_surface.normals, foot_surface.centers, affine, translation, kernel='cauchy', sigma=sigma, device=device
+    foot_surface.normals,
+    foot_surface.centers,
+    sigma=sigma,
+    init_translation=translation,
+    kernel='cauchy',
+    device=device
 )
-
-# See if we can perform a forward
-# loss = model(head_surface.normals.to(device).clone(), head_surface.centers.to(device).clone())
 
 # Create the optimizer
 optimizer = optim.SGD([
-    {'params': affine, 'lr': 1.0e-06},
-    {'params': translation, 'lr': 1.0e-04}], momentum=0.9, nesterov=True
+    {'params': model.affine, 'lr': 1.0e-06},
+    {'params': model.translation, 'lr': 1.0e-04}], momentum=0.9, nesterov=True
 )
 
 for epoch in range(0, 300):
@@ -84,8 +80,8 @@ for epoch in range(0, 300):
     optimizer.step()  #
 
     with torch.no_grad():
-        U, s, V = affine.clone().svd()
-        affine.data = torch.mm(U, V.transpose(1, 0))
+        U, s, V = model.affine.clone().svd()
+        model.affine.data = torch.mm(U, V.transpose(1, 0))
 
     # aff_source_verts = torch.mm(affine,
     #                             (head_surface.vertices - head_surface.centers.mean(0)).permute(1, 0)).permute(1, 0) \
@@ -96,7 +92,7 @@ for epoch in range(0, 300):
     # plt.pause(0.00001)
 #
 # # Update the transforms for the source block
-affine = affine.detach()
+affine = model.affine.detach()
 translation = translation.detach()
 # # Need to update the translation to account for not rotation about the origin
 translation = -torch.matmul(affine, head_surface.centers.mean(0)) + head_surface.centers.mean(0) + translation
@@ -133,9 +129,8 @@ optimizer = optim.SGD([
     {'params': [model.src_vertices, aff_source_exterior.vertices], 'lr': 5.0e-05}], momentum=0.9, nesterov=True
 )
 
-# dummy_opt = optim.SGD([
-#     {'params': aff_source_exterior.vertices, 'lr': 5.0e-05}], momentum=0.9, nesterov=True
-# )
+# Create a structured grid for PHI inverse
+# test = StructuredGrid((128, 128, 30), device=device, dtype=torch.float32, requires_grad=False)
 
 # Now iterate
 for epoch in range(0, 1500):

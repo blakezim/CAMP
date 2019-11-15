@@ -43,24 +43,6 @@ class CurrentsEnergy(nn.Module):
 
         return e1 - 2 * e2 + self.e3
 
-    # def gradient(self, src_normals, src_centers, tar_normals, tar_centers):
-    #
-    #     # Calculate the self term
-    #     grad1 = torch.mul(torch.mm(src_normals, src_normals.permute(1, 0)),
-    #                      self.kernel(self.distance(src_centers, src_centers), self.sigma))
-    #
-    #     d = src_centers.permute(1, 0).unsqueeze(0) - src_centers.unsqueeze(2)
-    #     grad1 = (2 * grad1.unsqueeze(1).repeat(1, 3, 1) * d / self.sigma).sum(0)
-    #
-    #     # Calculate the cross term
-    #     grad2 = torch.mul(torch.mm(tar_normals, src_normals.permute(1, 0)),
-    #                       self.kernel(self.distance(src_centers, tar_centers), self.sigma))
-    #
-    #     d = src_centers.permute(1, 0).unsqueeze(0) - tar_centers.unsqueeze(2)
-    #     grad2 = (2 * grad2.unsqueeze(1).repeat(1, 3, 1) * d / self.sigma).sum(0)
-    #
-    #     return (grad1 + grad2).permute(1, 0)
-
     def _calc_e3(self, tar_normals, tar_centers, sigma):
         self.e3 = torch.mul(torch.mm(tar_normals, tar_normals.permute(1, 0)),
                             self.kernel(self.distance(tar_centers, tar_centers), sigma)).sum()

@@ -76,6 +76,7 @@ class ApplyGrid(Filter):
         out_tensor = F.grid_sample(in_grid.data.view(1, *in_grid.data.shape),
                                    resample_grid,
                                    mode=self.interpolation_mode,
+                                   align_corners=True,
                                    padding_mode=self.padding_mode).squeeze(0)
 
         out = StructuredGrid.FromGrid(

@@ -93,7 +93,7 @@ class StructuredGrid:
 
         if inplace:
             self.data = self.data.view(1, *self.data.size())
-            self.data = F.interpolate(self.data, size=[int(x) for x in size.tolist()],
+            self.data = F.interpolate(self.data, size=[int(x) for x in new_size.tolist()],
                                       mode=mode, align_corners=True).squeeze(0)
             new_spacing = (old_size / new_size) * self.spacing
             self.set_spacing_(new_spacing)
@@ -101,7 +101,7 @@ class StructuredGrid:
 
         else:
             data = self.data.view(1, *self.data.size()).clone()
-            out_data = F.interpolate(data, size=[int(x) for x in size.tolist()],
+            out_data = F.interpolate(data, size=[int(x) for x in new_size.tolist()],
                                      mode=mode, align_corners=True).squeeze(0)
             new_spacing = (old_size / new_size) * self.spacing
             return StructuredGrid(

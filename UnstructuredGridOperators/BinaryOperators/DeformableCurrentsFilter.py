@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
+from CAMP.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
 
 
 class DeformableCurrents(nn.Module):

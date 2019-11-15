@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
+from CAMP.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
 
 
 # TODO Add the affine and translation creation to the init function
@@ -9,32 +9,33 @@ from UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import Curre
 
 class AffineCurrents(nn.Module):
 
-    def __init__(self, tar_normals, tar_centers, affine, translation,
-                 sigma, kernel='cauchy', device='cpu', dtype=torch.float32):
+    def __init__(self, tar_normals, tar_centers, sigma, init_affine=None, init_translation=None,
+                 kernel='cauchy', device='cpu', dtype=torch.float32):
         super(AffineCurrents, self).__init__()
 
         self.device = device
         self.dtype = dtype
 
-        # self.sigma = sigma
-        # self.affine = affine
-        # self.translation = translation
-        self.currents = CurrentsEnergy.Create(tar_normals, tar_centers, sigma=sigma, kernel=kernel, device=device)
-        # self.tar_normals = tar_normals
-        # self.tar_centers = tar_centers
+        if init_affine is None:
+            init_affine = torch.tensor([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=dtype, device=device)
 
-        # Need to add everything to the buffer if we want it to switch!
-        # This should be fine as all of these are just tensors
-        # self.register_buffer('sigma', sigma) # Floats do not need to be switched
-        self.register_buffer('affine', affine)
-        self.register_buffer('translation', translation)
+        if init_translation is None:
+            init_translation = torch.zeros(len(init_affine), dtype=dtype, device=device)
+
+        self.register_buffer('affine', init_affine)
+        self.register_buffer('translation', init_translation)
         self.register_buffer('tar_normals', tar_normals)
         self.register_buffer('tar_centers', tar_centers)
 
+        self.affine.requires_grad = True
+        self.translation.requires_grad = True
+
+        self.currents = CurrentsEnergy.Create(tar_normals, tar_centers, sigma=sigma, kernel=kernel, device=device)
+
     @staticmethod
-    def Create(tar_normals, tar_centers, affine, translation, sigma,
+    def Create(tar_normals, tar_centers, sigma, init_affine=None, init_translation=None,
                kernel='cauchy', device='cpu', dtype=torch.float32):
-        aff = AffineCurrents(tar_normals, tar_centers, affine, translation, sigma, kernel, device, dtype)
+        aff = AffineCurrents(tar_normals, tar_centers, sigma, init_affine, init_translation, kernel, device, dtype)
         aff = aff.to(device=device, dtype=dtype)
 
         return aff
