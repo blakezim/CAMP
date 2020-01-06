@@ -84,7 +84,7 @@ class AffineTransform(Filter):
         aff_grid.set_to_identity_lut_()
 
         # Want to bring the grid the other direction
-        affine = torch.eye(self.dim, device=self.device, dtype=self.dtype)
+        affine = torch.eye(self.dim + 1, device=self.device, dtype=self.dtype)
 
         if 'target_landmarks' in self.__dict__:
             affine[0:self.dim, 0:self.dim] = self.affine

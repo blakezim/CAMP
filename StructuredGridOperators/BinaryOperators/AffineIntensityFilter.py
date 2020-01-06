@@ -7,15 +7,20 @@ from ._BinaryFilter import Filter
 
 
 class AffineIntensity(nn.Module):
-    def __init__(self, similarity,  dim=2, init_affine=None, device='cpu', dtype=torch.float32):
+    def __init__(self, similarity,  dim=2, init_affine=None, init_translation=None, device='cpu', dtype=torch.float32):
         super(AffineIntensity, self).__init__()
 
         if init_affine is None:
-            init_affine = torch.eye(dim + 1, dtype=dtype, device=device)[0:dim]
+            init_affine = torch.eye(dim, dtype=dtype, device=device)
+
+        if init_translation is None:
+            init_translation = torch.zeros(2, dtype=torch.float32, device=device)
 
         self.register_buffer('affine', init_affine)
+        self.register_buffer('translation', init_translation)
 
         self.affine.requires_grad = True
+        self.translation.requires_grad = True
 
         self.device = device
         self.dtype = dtype
@@ -24,8 +29,8 @@ class AffineIntensity(nn.Module):
         self.similarity = similarity
 
     @staticmethod
-    def Create(similarity,  dim=2, init_affine=None, device='cpu', dtype=torch.float32):
-        filt = AffineIntensity(similarity,  dim, init_affine, device, dtype)
+    def Create(similarity,  dim=2, init_affine=None, init_translation=None, device='cpu', dtype=torch.float32):
+        filt = AffineIntensity(similarity,  dim, init_affine, init_translation, device, dtype)
         filt = filt.to(device=device, dtype=dtype)
 
         # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
@@ -40,8 +45,10 @@ class AffineIntensity(nn.Module):
 
     def apply_affine(self, moving):
 
+        affine = torch.cat([self.affine, self.translation[:, None]], 1)
+
         grid = torch.nn.functional.affine_grid(
-            self.affine.view(1, 2, 3),
+            affine.view(1, 2, 3),
             size=torch.Size([1] + list(moving.size())),
             align_corners=True
         )

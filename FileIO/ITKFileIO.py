@@ -47,7 +47,10 @@ def SaveITKFile(grid, f_name):
     # Need to put the vector in the last dimension
     vector_grid = grid.data.permute(list(range(1, dim +1)) + [0]).squeeze()  # it will always be this size now
 
-    itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy())
+    if dim == 2 and vector_grid.shape[-1] == 3:
+        itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy(), isVector=True)
+    else:
+        itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy())
 
     spacing = grid.spacing.tolist()
     origin = grid.origin.tolist()
