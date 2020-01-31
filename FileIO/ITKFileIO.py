@@ -49,11 +49,20 @@ def SaveITKFile(grid, f_name):
 
     if dim == 2 and vector_grid.shape[-1] == 3:
         itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy(), isVector=True)
+    # elif dim == 2:
+    #     itk_image = sitk.GetImageFromArray(vector_grid.unsqueeze(-2).cpu().numpy())
     else:
         itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy())
 
+
     spacing = grid.spacing.tolist()
+    if dim == 2:
+        spacing = [1.0] + spacing
+
     origin = grid.origin.tolist()
+    if dim == 2:
+        origin = [1.0] + origin
+
 
     # ITK ordering is x, y, z. But numpy is z, y, x
     itk_image.SetSpacing(spacing[::-1])

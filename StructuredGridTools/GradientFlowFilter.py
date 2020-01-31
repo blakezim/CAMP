@@ -74,7 +74,7 @@ class IterativeMatch(Filter):
         energy = self.similarity(self.target, self.moving).sum()
 
         if self.regularization:
-            reg_e = 0.25 * self.reg_weight * self.regularization(self.field - self.identity, self.operator).sum()
+            reg_e = self.reg_weight * self.regularization(self.field - self.identity, self.operator).sum()
 
         return energy.item()
 

@@ -7,6 +7,7 @@ from CAMP.StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter impor
 from CAMP.StructuredGridOperators.UnaryOperators.AffineTransformFilter import *
 from CAMP.StructuredGridOperators.UnaryOperators.RadialBasisFilter import *
 from CAMP.StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter import *
+from CAMP.StructuredGridOperators.UnaryOperators.DivergenceFilter import *
 __all__ = [
     'Gaussian',
     'FluidKernel',
@@ -17,4 +18,5 @@ __all__ = [
     'AffineTransform',
     'RadialBasis',
     'VarianceEqualize',
+    'Divergence'
 ]

@@ -34,6 +34,6 @@ class ComposeGrids(Filter):
                 device=self.device,
                 dtype=self.dtype,
                 pad_mode=self.padding_mode
-            )(f)
+            )(f, temp_field).clone()
 
         return temp_field

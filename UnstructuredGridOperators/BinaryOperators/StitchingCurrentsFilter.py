@@ -13,6 +13,9 @@ class StitchingCurrents(nn.Module):
         self.device = device
         self.dtype = dtype
 
+        self.register_buffer('orig_tar_vertices', tar_surface.vertices.clone())
+        self.register_buffer('orig_src_vertices', src_surface.vertices.clone())
+
         self.register_buffer('tar_vertices', tar_surface.vertices.clone())
         self.register_buffer('tar_indices', tar_surface.indices)
         self.register_buffer('src_vertices', src_surface.vertices.clone())
@@ -82,7 +85,9 @@ class StitchingCurrents(nn.Module):
         # Calculate the energy
         energy = self.energy(src_normals, src_centers, self.ref_normals, self.ref_centers)
         energy += self.energy(tar_normals, tar_centers, self.ref_normals, self.ref_centers)
-        energy += 2.0 * self.energy(src_normals, src_centers, tar_normals, tar_centers)
+        energy += 0.8 * self.energy(src_normals, src_centers, tar_normals, tar_centers)
+        # energy += 0.1 * ((self.tar_vertices - self.orig_tar_vertices) ** 2).sum()
+        # energy += 0.1 * ((self.src_vertices - self.orig_src_vertices) ** 2).sum()
         # energy += 2 * ((self.orig_tar_vertices - self.tar_vertices) ** 2).sum()
         #
         # # # Also make sure the area of the triangles is preserved

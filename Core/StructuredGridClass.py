@@ -74,6 +74,7 @@ class StructuredGrid:
         field += self.origin.view(*self.size.shape, *([1] * len(self.size)))
 
         self.data = field
+        self.channels = len(field)
 
     def set_size(self, size, inplace=True):
 
