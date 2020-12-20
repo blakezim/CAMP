@@ -2,7 +2,7 @@ import torch
 import itertools
 import torch.nn.functional as F
 
-from CAMP.Core.StructuredGridClass import StructuredGrid
+from Core.StructuredGridClass import StructuredGrid
 from .GradientFilter import Gradient
 from ._UnaryFilter import Filter
 

@@ -1,9 +1,5 @@
-import math
 import torch
 import numbers
-import itertools
-
-import torch.nn.functional as F
 
 from ._UnaryFilter import Filter
 

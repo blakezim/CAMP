@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
-from CAMP.StructuredGridOperators import Gradient
-from CAMP.Core.StructuredGridClass import StructuredGrid
+from StructuredGridOperators import Gradient
+from Core.StructuredGridClass import StructuredGrid
 
 from ._BaseTool import Filter
 
@@ -12,7 +12,7 @@ from ._BaseTool import Filter
 
 class IterativeMatch(Filter):
     def __init__(self, source, target, similarity, operator, regularization=None, step_size=0.001,
-                 regularization_weight=0.1, incompressible=True, device='cpu', dtype=torch.float32):
+                 incompressible=True, device='cpu', dtype=torch.float32):
         super(IterativeMatch, self).__init__(source, target)
 
         if not type(source).__name__ == 'StructuredGrid':
@@ -37,7 +37,6 @@ class IterativeMatch(Filter):
         self.regularization = regularization
         self.operator = operator
         self.step_size = step_size
-        self.reg_weight = regularization_weight
         self.incompressible = incompressible
 
         self.target = target.clone()
@@ -45,6 +44,8 @@ class IterativeMatch(Filter):
         self.moving = source.clone()
         self.field = StructuredGrid.FromGrid(source)
         self.field.set_to_identity_lut_()
+        self.identity = StructuredGrid.FromGrid(source)
+        self.identity.set_to_identity_lut_()
         self.update = StructuredGrid.FromGrid(source)
         self.update.set_to_identity_lut_()
         self.initial_energy = self.energy()
@@ -54,10 +55,10 @@ class IterativeMatch(Filter):
 
     @staticmethod
     def Create(source, target, similarity, operator, regularization=None, step_size=0.001,
-               regularization_weight=0.1, incompressible=True, device='cpu', dtype=torch.float32):
+               incompressible=True, device='cpu', dtype=torch.float32):
 
         match = IterativeMatch(source, target, similarity, operator, regularization, step_size,
-                               regularization_weight, incompressible, device, dtype)
+                               incompressible, device, dtype)
         match = match.to(device=device, dtype=dtype)
 
         # Can't add StructuredGrid to the register buffer, so we need to make sure they are on the right device
@@ -74,7 +75,8 @@ class IterativeMatch(Filter):
         energy = self.similarity(self.target, self.moving).sum()
 
         if self.regularization:
-            reg_e = self.reg_weight * self.regularization(self.field - self.identity, self.operator).sum()
+            reg_e = self.regularization(self.field - self.identity).sum()
+            energy = energy + reg_e
 
         return energy.item()
 

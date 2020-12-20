@@ -1,6 +1,6 @@
 import torch
 
-from CAMP.Core._UnstructuredGridClass import UnstructuredGrid
+from Core._UnstructuredGridClass import UnstructuredGrid
 
 
 class TriangleMesh(UnstructuredGrid):

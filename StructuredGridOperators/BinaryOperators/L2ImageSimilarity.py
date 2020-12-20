@@ -1,6 +1,6 @@
 import torch
 
-from CAMP.StructuredGridOperators.UnaryOperators.GradientFilter import Gradient
+from StructuredGridOperators.UnaryOperators.GradientFilter import Gradient
 from ._BinaryFilter import Filter
 
 

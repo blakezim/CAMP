@@ -1,7 +1,7 @@
 import torch
 import SimpleITK as sitk
 
-from CAMP.Core import *
+from Core import *
 
 
 def LoadITKFile(filename, device='cpu', dtype=torch.float32):
@@ -14,7 +14,10 @@ def LoadITKFile(filename, device='cpu', dtype=torch.float32):
     image_spacing = torch.as_tensor(itk_image.GetSpacing()[::-1], dtype=dtype)
     image_origin = torch.as_tensor(itk_image.GetOrigin()[::-1], dtype=dtype)
     channels = itk_image.GetNumberOfComponentsPerPixel()
-    tensor = torch.as_tensor(sitk.GetArrayFromImage(itk_image))
+    dataArray = sitk.GetArrayFromImage(itk_image)
+    if dataArray.dtype == 'uint16':
+        dataArray = dataArray.astype('int32')
+    tensor = torch.as_tensor(dataArray)
 
     image_origin = image_origin[image_size != 1.0]
     image_spacing = image_spacing[image_size != 1.0]
@@ -45,7 +48,7 @@ def SaveITKFile(grid, f_name):
     dim = len(grid.size)
 
     # Need to put the vector in the last dimension
-    vector_grid = grid.data.permute(list(range(1, dim +1)) + [0]).squeeze()  # it will always be this size now
+    vector_grid = grid.data.permute(list(range(1, dim +1)) + [0]).squeeze(-1)  # it will always be this size now
 
     if dim == 2 and vector_grid.shape[-1] == 3:
         itk_image = sitk.GetImageFromArray(vector_grid.cpu().numpy(), isVector=True)

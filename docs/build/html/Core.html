@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Core &mdash; CAMP  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="File Input/Output (IO)" href="FileIO.html" />
+    <link rel="prev" title="Welcome to CAMP’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CAMP
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-Core.Display">Display</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-Core.StructuredGridClass">Structured Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-Core.TriangleMeshClass">Triangle Mesh</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">StructuredGridTools package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnstructuredGridOperators.html">UnstructuredGridOperators package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAMP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Core</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="core">
+<h1>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h1>
+<p>This is some test text in the core package</p>
+<div class="section" id="module-Core.Display">
+<span id="display"></span><h2>Display<a class="headerlink" href="#module-Core.Display" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="Core.Display.DispFieldGrid">
+<code class="sig-name descname">DispFieldGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Field</span></em>, <em class="sig-param"><span class="n">grid_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">newFig</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fig_len</span><span class="o">=</span><span class="default_value">7</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">'z'</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DispFieldGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DispFieldGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a grid of the displacement field h
+Assumed to be ([dim], [Z], Y, X)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.DispImage">
+<code class="sig-name descname">DispImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">new_figure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">colorbar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DispImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DispImage" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Image</strong> – Input Image ([RGB[A]], [Z], Y, X)</p></li>
+<li><p><strong>rng</strong> – Intensity range (list, tuple) (defaults to data intensity limits)</p></li>
+<li><p><strong>cmap</strong> – Matplotlib colormap (‘gray’, ‘jet’, etc)</p></li>
+<li><p><strong>title</strong> – Figure Title (string)</p></li>
+<li><p><strong>newFig</strong> – Create a new figure (bool)</p></li>
+<li><p><strong>colorbar</strong> – Display colorbar (bool)</p></li>
+<li><p><strong>axis</strong> – <dl class="simple">
+<dt>Axis direction. ‘default’ has (0,0) in the upper left hand corner</dt><dd><p>and the x direction is vertical</p>
+</dd>
+<dt>’cart’ has (0,0) in the lower left hand corner</dt><dd><p>and the x direction is horizontal</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>dim</strong> – Dimension along which to plot ([0], 1, 2)</p></li>
+<li><p><strong>sliceIdx</strong> – Slice index along ‘dim’ to plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="Core.Display.DisplayException">
+<em class="property">exception </em><code class="sig-name descname">DisplayException</code><a class="reference internal" href="_modules/Core/Display.html#DisplayException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DisplayException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>exception for this class</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.DisplayJacobianDeterminant">
+<code class="sig-name descname">DisplayJacobianDeterminant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Field</span></em>, <em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'jet'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">new_figure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">colorbar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">'z'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DisplayJacobianDeterminant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DisplayJacobianDeterminant" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.EnergyPlot">
+<code class="sig-name descname">EnergyPlot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">energy</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'Energy'</span></em>, <em class="sig-param"><span class="n">new_figure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">legend</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#EnergyPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.EnergyPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots energies</p>
+<p>The energies should be in the form
+[E1list, E2list, E3list, …]
+with the legend as
+[E1legend, E2legend, E3legend]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.ExtractImageSlice">
+<code class="sig-name descname">ExtractImageSlice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">sliceIdx</span></em>, <em class="sig-param"><span class="n">color</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#ExtractImageSlice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.ExtractImageSlice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.GetAspect">
+<code class="sig-name descname">GetAspect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">retFloat</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#GetAspect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.GetAspect" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a image grid, determines the 2D aspect ratio of the
+off-dimension</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.GetSliceIndex">
+<code class="sig-name descname">GetSliceIndex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#GetSliceIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.GetSliceIndex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="Core.Display.PlotSurface">
+<code class="sig-name descname">PlotSurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em>, <em class="sig-param"><span class="n">faces</span></em>, <em class="sig-param"><span class="n">fig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norms</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">0, 0, 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#PlotSurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.PlotSurface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-Core.StructuredGridClass">
+<span id="structured-grid"></span><h2>Structured Grid<a class="headerlink" href="#module-Core.StructuredGridClass" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="Core.StructuredGridClass.StructuredGrid">
+<em class="property">class </em><code class="sig-name descname">StructuredGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">spacing</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">origin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em>, <em class="sig-param"><span class="n">requires_grad</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is a conceptual class representation of a simple BLE device
+(GATT Server). It is essentially an extended combination of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bluepy.btle.Peripheral</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">bluepy.btle.ScanEntry</span></code> classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (class:<cite>simpleble.SimpleBleClient</cite>) – A handle to the <code class="xref py py-class docutils literal notranslate"><span class="pre">simpleble.SimpleBleClient</span></code> client
+object that detected the device</p></li>
+<li><p><strong>addr</strong> (<em>str</em><em>, </em><em>optional</em>) – Device MAC address, defaults to None</p></li>
+<li><p><strong>addrType</strong> (<em>str</em><em>, </em><em>optional</em>) – Device address type - one of ADDR_TYPE_PUBLIC or
+ADDR_TYPE_RANDOM, defaults to ADDR_TYPE_PUBLIC</p></li>
+<li><p><strong>iface</strong> (<em>int</em><em>, </em><em>optional</em>) – Bluetooth interface number (0 = /dev/hci0) used for the
+connection, defaults to 0</p></li>
+<li><p><strong>data</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of tuples (adtype, description, value) containing the
+AD type code, human-readable description and value for all available
+advertising data items, defaults to None</p></li>
+<li><p><strong>rssi</strong> (<em>int</em><em>, </em><em>optional</em>) – Received Signal Strength Indication for the last received
+broadcast from the device. This is an integer value measured in dB,
+where 0 dB is the maximum (theoretical) signal strength, and more
+negative numbers indicate a weaker signal, defaults to 0</p></li>
+<li><p><strong>connectable</strong> (<em>bool</em><em>, </em><em>optional</em>) – <cite>True</cite> if the device supports connections, and <cite>False</cite>
+otherwise (typically used for advertising ‘beacons’).,
+defaults to <cite>False</cite></p></li>
+<li><p><strong>updateCount</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer count of the number of advertising packets
+received from the device so far, defaults to 0</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.FromGrid">
+<em class="property">static </em><code class="sig-name descname">FromGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.FromGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.FromGrid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.clone">
+<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.extract_slice">
+<code class="sig-name descname">extract_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.extract_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.extract_slice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.get_subvol">
+<code class="sig-name descname">get_subvol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">zrng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yrng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xrng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.get_subvol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.get_subvol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.max">
+<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.max" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.min">
+<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.min" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.minmax">
+<code class="sig-name descname">minmax</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.minmax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_origin_">
+<code class="sig-name descname">set_origin_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_origin_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_origin_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_size">
+<code class="sig-name descname">set_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_spacing_">
+<code class="sig-name descname">set_spacing_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">spacing</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_spacing_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_spacing_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_">
+<code class="sig-name descname">set_to_identity_lut_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_to_identity_lut_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Input</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.shape">
+<code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.sum">
+<code class="sig-name descname">sum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.sum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.to_">
+<code class="sig-name descname">to_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.to_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.to_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.to_type_">
+<code class="sig-name descname">to_type_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.to_type_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.to_type_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Core.TriangleMeshClass">
+<span id="triangle-mesh"></span><h2>Triangle Mesh<a class="headerlink" href="#module-Core.TriangleMeshClass" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="Core.TriangleMeshClass.TriangleMesh">
+<em class="property">class </em><code class="sig-name descname">TriangleMesh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">per_vert_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">per_index_values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Core._UnstructuredGridClass.UnstructuredGrid</span></code></p>
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.add_surface_">
+<code class="sig-name descname">add_surface_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.add_surface_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.add_surface_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.calc_centers">
+<code class="sig-name descname">calc_centers</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.calc_centers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.calc_centers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.calc_normals">
+<code class="sig-name descname">calc_normals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.calc_normals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.calc_normals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.flip_normals_">
+<code class="sig-name descname">flip_normals_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.flip_normals_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.flip_normals_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FileIO.html" class="btn btn-neutral float-right" title="File Input/Output (IO)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to CAMP’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blake Zimmerman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

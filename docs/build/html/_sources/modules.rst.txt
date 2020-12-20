@@ -1,0 +1,8 @@
+StructuredGridOperators
+=======================
+
+.. toctree::
+   :maxdepth: 4
+
+   StructuredGridOperators
+   FileIO

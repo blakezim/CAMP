@@ -1,10 +1,12 @@
-from CAMP.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
-from CAMP.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter import AffineCurrents
-from CAMP.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter import DeformableCurrents
-from CAMP.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter import StitchingCurrents
+from UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
+from UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter import AffineCurrents
+from UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter import DeformableCurrents
+from UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter import StitchingCurrents
+from UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter import SingleAngleCurrents
 __all__ = [
     'CurrentsEnergy',
     'AffineCurrents',
     'DeformableCurrents',
-    'StitchingCurrents'
+    'StitchingCurrents',
+    'SingleAngleCurrents'
 ]

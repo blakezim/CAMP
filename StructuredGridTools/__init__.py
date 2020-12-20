@@ -1,4 +1,4 @@
-from CAMP.StructuredGridTools.GradientFlowFilter import *
+from StructuredGridTools.GradientFlowFilter import *
 __all__ = [
     'IterativeMatch'
 ]

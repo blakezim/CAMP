@@ -2,6 +2,7 @@ import numpy as np
 # import Classes as cc
 from . import *
 # import scipy.interpolate as interp
+from StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
 
 
 class DisplayException(Exception):
@@ -152,7 +153,7 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
     :param title: Figure Title (string)
     :param newFig: Create a new figure (bool)
     :param colorbar: Display colorbar (bool)
-    :param axis: Axis direction.  'default' has (0,0) in the upper left hand corner
+    :param axis: Axis direction. 'default' has (0,0) in the upper left hand corner
                                       and the x direction is vertical
                                  'cart' has (0,0) in the lower left hand corner
                                       and the x direction is horizontal
@@ -239,12 +240,26 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
     plt.autoscale()
 
 
-# def DisplayJacobianDeterminant(Field, rng=None, cmap='jet', title=None, newFig=True, colorbar=True):
-#
-#     if type(Field).__name__ != 'StructuredGrid':
-#         raise RuntimeError(
-#             f'Can only plot StructuredGrid types - received {type(Field).__name__}'
-#         )
+def DisplayJacobianDeterminant(Field, rng=None, cmap='jet', title=None, new_figure=True, colorbar=True,
+                               slice_index=None, dim='z'):
+
+    import matplotlib.pyplot as plt
+    plt.ion()  # tell it to use interactive mode -- see results immediately
+
+    if type(Field).__name__ != 'StructuredGrid':
+        raise RuntimeError(
+            f'Can only plot StructuredGrid types - received {type(Field).__name__}'
+        )
+    Field.to_('cpu')
+
+    if len(Field.size) == 3:
+        if not slice_index:
+            slice_index = Field.size[0] // 2
+        Field = Field.extract_slice(slice_index, dim)
+
+    jac_filt = JacobianDeterminant.Create()
+    jacobian = jac_filt(Field)
+    DispImage(jacobian, cmap=cmap, title=title, new_figure=new_figure, colorbar=colorbar, rng=rng)
 
 
 def DispFieldGrid(Field, grid_size=None, title=None,
@@ -290,7 +305,8 @@ def DispFieldGrid(Field, grid_size=None, title=None,
     # realsy = (sy - 1) * spy
     #
     if newFig:
-        grid = plt.figure(figsize=(fig_len, fig_len), dpi=140)
+        # grid = plt.figure(figsize=(fig_len, fig_len), dpi=140)
+        grid = plt.figure()
         grid.set_facecolor('white')
     else:
         plt.clf()
@@ -505,7 +521,7 @@ def EnergyPlot(energy, title='Energy', new_figure=True, legend=None):
     plt.draw()
 
 
-def PlotSurface(verts, faces, fig=None, norms=None, cents=None, ax=None, color=[0, 0, 1]):
+def PlotSurface(verts, faces, fig=None, norms=None, cents=None, ax=None, color=(0, 0, 1)):
 
     def scale_normals(norms):
         return (norms / np.sqrt((norms ** 2).sum(1))[:, None]) / 10

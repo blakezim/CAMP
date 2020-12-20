@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 
-from CAMP.Core import StructuredGrid
-from CAMP.StructuredGridOperators.UnaryOperators.AffineTransformFilter import ApplyGrid
+from Core import *
+# from CAMP.Core import StructuredGrid
+from StructuredGridOperators.UnaryOperators.AffineTransformFilter import ApplyGrid
 from ._BinaryFilter import Filter
 
 
@@ -14,7 +15,7 @@ class AffineIntensity(nn.Module):
             init_affine = torch.eye(dim, dtype=dtype, device=device)
 
         if init_translation is None:
-            init_translation = torch.zeros(2, dtype=torch.float32, device=device)
+            init_translation = torch.zeros(dim, dtype=torch.float32, device=device)
 
         self.register_buffer('affine', init_affine)
         self.register_buffer('translation', init_translation)
@@ -48,7 +49,7 @@ class AffineIntensity(nn.Module):
         affine = torch.cat([self.affine, self.translation[:, None]], 1)
 
         grid = torch.nn.functional.affine_grid(
-            affine.view(1, 2, 3),
+            affine.view(1, self.dim, self.dim + 1),
             size=torch.Size([1] + list(moving.size())),
             align_corners=True
         )

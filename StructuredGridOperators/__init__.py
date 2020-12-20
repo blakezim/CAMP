@@ -1,2 +1,2 @@
-from CAMP.StructuredGridOperators.UnaryOperators import *
-from CAMP.StructuredGridOperators.BinaryOperators import *
+from StructuredGridOperators.UnaryOperators import *
+from StructuredGridOperators.BinaryOperators import *

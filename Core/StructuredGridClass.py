@@ -3,6 +3,39 @@ import torch.nn.functional as F
 
 
 class StructuredGrid:
+    """This is a conceptual class representation of a simple BLE device
+    (GATT Server). It is essentially an extended combination of the
+    :class:`bluepy.btle.Peripheral` and :class:`bluepy.btle.ScanEntry` classes
+
+    :param client: A handle to the :class:`simpleble.SimpleBleClient` client
+        object that detected the device
+    :type client: class:`simpleble.SimpleBleClient`
+    :param addr: Device MAC address, defaults to None
+    :type addr: str, optional
+    :param addrType: Device address type - one of ADDR_TYPE_PUBLIC or
+        ADDR_TYPE_RANDOM, defaults to ADDR_TYPE_PUBLIC
+    :type addrType: str, optional
+    :param iface: Bluetooth interface number (0 = /dev/hci0) used for the
+        connection, defaults to 0
+    :type iface: int, optional
+    :param data: A list of tuples (adtype, description, value) containing the
+        AD type code, human-readable description and value for all available
+        advertising data items, defaults to None
+    :type data: list, optional
+    :param rssi: Received Signal Strength Indication for the last received
+        broadcast from the device. This is an integer value measured in dB,
+        where 0 dB is the maximum (theoretical) signal strength, and more
+        negative numbers indicate a weaker signal, defaults to 0
+    :type rssi: int, optional
+    :param connectable: `True` if the device supports connections, and `False`
+        otherwise (typically used for advertising ‘beacons’).,
+        defaults to `False`
+    :type connectable: bool, optional
+    :param updateCount: Integer count of the number of advertising packets
+        received from the device so far, defaults to 0
+    :type updateCount: int, optional
+        """
+
     def __init__(self, size, spacing=None, origin=None,
                  device='cpu', dtype=torch.float32, requires_grad=False,
                  tensor=None, channels=1):
@@ -28,7 +61,7 @@ class StructuredGrid:
 
         if origin is None:
             # Is assuming center origin the best thing to do?
-            origin = [-x / 2.0 for x in size]
+            origin = [(-x * s) / 2.0 for x, s in zip(size, self.spacing)]
             self.origin = torch.tensor(origin, dtype=dtype, requires_grad=requires_grad, device=device)
         else:
             if type(origin).__name__ == 'Tensor':
@@ -59,7 +92,10 @@ class StructuredGrid:
                               grid.dtype, grid.requires_grad, tensor, channels)
 
     def set_to_identity_lut_(self):
-
+        """
+        :input: None
+        :return: None
+        """
         # Create the vectors to be gridded
         vecs = [torch.linspace(-1, 1, int(self.size[x])) for x in range(0, len(self.size))]
         # Create the grids - NOTE: This returns z, y, x
@@ -326,7 +362,7 @@ class StructuredGrid:
 
     def __copy__(self):
         new_grid = type(self)(self.size)
-        new_grid.__dict__.update(self.__dict__)
+        new_grid.__dict__.update(self.__dict__.copy())
         return new_grid
 
     def __str__(self):

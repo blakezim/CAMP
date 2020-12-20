@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Unary Operators &mdash; CAMP  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Structured Grid Tools" href="StructuredGridTools.html" />
+    <link rel="prev" title="Binary Operators" href="StructuredGridOperators.BinaryOperators.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CAMP
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="StructuredGridOperators.BinaryOperators.html">Binary Operators</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Unary Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.AffineTransformFilter">Affine Transform Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.ApplyGridFilter">Apply Grid Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.DivergenceFilter">Divergence Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.FluidKernelFilter">Fluid Kernel Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.GaussianFilter">Gaussian Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.GradientFilter">Gradient Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.GradientRegularizer">Gradient Regularizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter">Jacobian Determinant Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.RadialBasisFilter">Radial Basis Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.ResampleWorldFilter">Resample World Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter">Variance Equalize Filter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">Structured Grid Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnstructuredGridOperators.html">Unstructured Grid Operators</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAMP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="StructuredGridOperators.html">Structured Grid Operators</a> &raquo;</li>
+        
+      <li>Unary Operators</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/StructuredGridOperators.UnaryOperators.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="unary-operators">
+<h1>Unary Operators<a class="headerlink" href="#unary-operators" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.AffineTransformFilter">
+<span id="affine-transform-filter"></span><h2>Affine Transform Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.AffineTransformFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform">
+<em class="property">class </em><code class="sig-name descname">AffineTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransform.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">out_grid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xyz_affine</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransform.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.ApplyGridFilter">
+<span id="apply-grid-filter"></span><h2>Apply Grid Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.ApplyGridFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid">
+<em class="property">class </em><code class="sig-name descname">ApplyGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">pad_mode</span><span class="o">=</span><span class="default_value">'zeros'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ApplyGridFilter.html#ApplyGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">pad_mode</span><span class="o">=</span><span class="default_value">'zeros'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ApplyGridFilter.html#ApplyGrid.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid.Create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Apply Grid Filter that contained a deformation field that can be applied to type <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> and adds all attributes to the appropriate memory device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world coordinates relative to the spacing and origin of the grid.</p></li>
+<li><p><strong>interp_mode</strong> (<em>str</em>) – Resampling interpolation mode to be used when applying the defromation - one of ‘bilinear’ or ‘nearest’.  Default: ‘bilinear’</p></li>
+<li><p><strong>pad_mode</strong> (<em>str</em>) – padding mode for outside grid values - one of ‘zeros’, ‘border’, or ‘reflection’. Default: ‘zeros’</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Memory location for the created Apply Grid Filter - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier. Default: ‘cpu’</p></li>
+<li><p><strong>dtype</strong> (<em>str</em>) – Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default: ‘torch.float32’</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When mode=’bilinear’ and the input is 5-D, the interpolation mode used internally will actually be trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Apply Grid Filter with the specified parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_grid</span></em>, <em class="sig-param"><span class="n">out_grid</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ApplyGridFilter.html#ApplyGrid.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the grid attribute to in_grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – The :class:’StructuredGrid’ to apply the grid attribute to.</p></li>
+<li><p><strong>out_grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>, optional) – An optional additional grid that specifies the output grid. If not specified, the output grid will be the same as the input grid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns in_grid resampled through the grid attribute onto the out_grid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.DivergenceFilter">
+<span id="divergence-filter"></span><h2>Divergence Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.DivergenceFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence">
+<em class="property">class </em><code class="sig-name descname">Divergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/DivergenceFilter.html#Divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/DivergenceFilter.html#Divergence.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/DivergenceFilter.html#Divergence.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.FluidKernelFilter">
+<span id="fluid-kernel-filter"></span><h2>Fluid Kernel Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.FluidKernelFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel">
+<em class="property">class </em><code class="sig-name descname">FluidKernel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">beta</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">beta</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.apply_forward">
+<code class="sig-name descname">apply_forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.apply_forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.apply_forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.apply_inverse">
+<code class="sig-name descname">apply_inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.apply_inverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.apply_inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">inverse</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.project_incompressible">
+<code class="sig-name descname">project_incompressible</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.project_incompressible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.project_incompressible" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.set_size">
+<code class="sig-name descname">set_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.set_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.set_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.solve_cholskey">
+<code class="sig-name descname">solve_cholskey</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/FluidKernelFilter.html#FluidKernel.solve_cholskey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.FluidKernelFilter.FluidKernel.solve_cholskey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.GaussianFilter">
+<span id="gaussian-filter"></span><h2>Gaussian Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.GaussianFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian">
+<em class="property">class </em><code class="sig-name descname">Gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channels</span></em>, <em class="sig-param"><span class="n">kernel_size</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GaussianFilter.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channels</span></em>, <em class="sig-param"><span class="n">kernel_size</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GaussianFilter.html#Gaussian.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GaussianFilter.html#Gaussian.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.GradientFilter">
+<span id="gradient-filter"></span><h2>Gradient Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.GradientFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.GradientFilter.Gradient">
+<em class="property">class </em><code class="sig-name descname">Gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientFilter.html#Gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientFilter.Gradient" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientFilter.html#Gradient.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientFilter.html#Gradient.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.GradientRegularizer">
+<span id="gradient-regularizer"></span><h2>Gradient Regularizer<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.GradientRegularizer" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.GradientRegularizer.NormGradient">
+<em class="property">class </em><code class="sig-name descname">NormGradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientRegularizer.html#NormGradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientRegularizer.NormGradient" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.GradientRegularizer.NormGradient.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientRegularizer.html#NormGradient.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientRegularizer.NormGradient.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.GradientRegularizer.NormGradient.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector_field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientRegularizer.html#NormGradient.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientRegularizer.NormGradient.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter">
+<span id="jacobian-determinant-filter"></span><h2>Jacobian Determinant Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter.JacobianDeterminant">
+<em class="property">class </em><code class="sig-name descname">JacobianDeterminant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/JacobianDeterminantFilter.html#JacobianDeterminant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter.JacobianDeterminant" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter.JacobianDeterminant.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/JacobianDeterminantFilter.html#JacobianDeterminant.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter.JacobianDeterminant.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter.JacobianDeterminant.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/JacobianDeterminantFilter.html#JacobianDeterminant.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter.JacobianDeterminant.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.RadialBasisFilter">
+<span id="radial-basis-filter"></span><h2>Radial Basis Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.RadialBasisFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis">
+<em class="property">class </em><code class="sig-name descname">RadialBasis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_landmarks</span></em>, <em class="sig-param"><span class="n">source_landmarks</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/RadialBasisFilter.html#RadialBasis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_landmarks</span></em>, <em class="sig-param"><span class="n">source_landmarks</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/RadialBasisFilter.html#RadialBasis.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis.filter_incompressible">
+<code class="sig-name descname">filter_incompressible</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_grid</span></em>, <em class="sig-param"><span class="n">out_grid</span></em>, <em class="sig-param"><span class="n">t_step</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">conv</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">0.3</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/RadialBasisFilter.html#RadialBasis.filter_incompressible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis.filter_incompressible" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_grid</span></em>, <em class="sig-param"><span class="n">out_grid</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">apply</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/RadialBasisFilter.html#RadialBasis.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.RadialBasisFilter.RadialBasis.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.ResampleWorldFilter">
+<span id="resample-world-filter"></span><h2>Resample World Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.ResampleWorldFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.ResampleWorldFilter.ResampleWorld">
+<em class="property">class </em><code class="sig-name descname">ResampleWorld</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">pad_mode</span><span class="o">=</span><span class="default_value">'zeros'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ResampleWorldFilter.html#ResampleWorld"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ResampleWorldFilter.ResampleWorld" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.ResampleWorldFilter.ResampleWorld.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">pad_mode</span><span class="o">=</span><span class="default_value">'zeros'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ResampleWorldFilter.html#ResampleWorld.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ResampleWorldFilter.ResampleWorld.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.ResampleWorldFilter.ResampleWorld.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ResampleWorldFilter.html#ResampleWorld.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ResampleWorldFilter.ResampleWorld.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter">
+<span id="variance-equalize-filter"></span><h2>Variance Equalize Filter<a class="headerlink" href="#module-StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize">
+<em class="property">class </em><code class="sig-name descname">VarianceEqualize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel_size</span><span class="o">=</span><span class="default_value">11</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/VarianceEqualizeFilter.html#VarianceEqualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes an Image and gives the variance equalized version.</p>
+<p>I_out, Im: PyCA Image3Ds
+sigma: (scalar) gaussian filter parameter
+eps: (scalar) division regularizer</p>
+<p>sigma is the width (in voxels) of the gaussian kernel
+eps is the regularizer</p>
+<p>for a gaussian kernel k, we have</p>
+<p>I_ve = I’/sqrt(k * I’^2)
+where I’ = I - k*I</p>
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel_size</span><span class="o">=</span><span class="default_value">11</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/VarianceEqualizeFilter.html#VarianceEqualize.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/VarianceEqualizeFilter.html#VarianceEqualize.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="StructuredGridTools.html" class="btn btn-neutral float-right" title="Structured Grid Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="StructuredGridOperators.BinaryOperators.html" class="btn btn-neutral float-left" title="Binary Operators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blake Zimmerman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

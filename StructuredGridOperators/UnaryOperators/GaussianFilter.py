@@ -5,7 +5,7 @@ import itertools
 
 import torch.nn.functional as F
 
-from CAMP.Core.StructuredGridClass import StructuredGrid
+from Core.StructuredGridClass import StructuredGrid
 from ._UnaryFilter import Filter
 
 

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from CAMP.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
+from UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
 
 
 # TODO Add the affine and translation creation to the init function

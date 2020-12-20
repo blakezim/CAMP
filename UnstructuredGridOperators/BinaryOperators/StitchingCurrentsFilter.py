@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 
-from CAMP.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter import CurrentsEnergy
-
 
 class StitchingCurrents(nn.Module):
 
@@ -85,7 +83,7 @@ class StitchingCurrents(nn.Module):
         # Calculate the energy
         energy = self.energy(src_normals, src_centers, self.ref_normals, self.ref_centers)
         energy += self.energy(tar_normals, tar_centers, self.ref_normals, self.ref_centers)
-        energy += 0.8 * self.energy(src_normals, src_centers, tar_normals, tar_centers)
+        energy += 0.5 * self.energy(src_normals, src_centers, tar_normals, tar_centers)
         # energy += 0.1 * ((self.tar_vertices - self.orig_tar_vertices) ** 2).sum()
         # energy += 0.1 * ((self.src_vertices - self.orig_src_vertices) ** 2).sum()
         # energy += 2 * ((self.orig_tar_vertices - self.tar_vertices) ** 2).sum()

@@ -2,8 +2,8 @@ import torch
 import numbers
 import torch.nn.functional as F
 
-from CAMP.Core.StructuredGridClass import StructuredGrid
-from CAMP.StructuredGridOperators.BinaryOperators import ComposeGrids
+from Core.StructuredGridClass import StructuredGrid
+from StructuredGridOperators.BinaryOperators import ComposeGrids
 from ._UnaryFilter import Filter
 from .ApplyGridFilter import ApplyGrid
 from .FluidKernelFilter import FluidKernel

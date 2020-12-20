@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Binary Operators &mdash; CAMP  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Unary Operators" href="StructuredGridOperators.UnaryOperators.html" />
+    <link rel="prev" title="Structured Grid Operators" href="StructuredGridOperators.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CAMP
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Binary Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.BinaryOperators.AffineIntensityFilter">Affine Intensity Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.BinaryOperators.ComposeGridsFilter">Compose Grids Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.BinaryOperators.L2ImageSimilarity">L2 Image Similarity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter">Normalized Cross Correlation Filter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="StructuredGridOperators.UnaryOperators.html">Unary Operators</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">Structured Grid Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnstructuredGridOperators.html">Unstructured Grid Operators</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAMP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="StructuredGridOperators.html">Structured Grid Operators</a> &raquo;</li>
+        
+      <li>Binary Operators</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/StructuredGridOperators.BinaryOperators.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="binary-operators">
+<h1>Binary Operators<a class="headerlink" href="#binary-operators" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-StructuredGridOperators.BinaryOperators.AffineIntensityFilter">
+<span id="affine-intensity-filter"></span><h2>Affine Intensity Filter<a class="headerlink" href="#module-StructuredGridOperators.BinaryOperators.AffineIntensityFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity">
+<em class="property">class </em><code class="sig-name descname">AffineIntensity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.apply_affine">
+<code class="sig-name descname">apply_affine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity.apply_affine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.apply_affine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.BinaryOperators.ComposeGridsFilter">
+<span id="compose-grids-filter"></span><h2>Compose Grids Filter<a class="headerlink" href="#module-StructuredGridOperators.BinaryOperators.ComposeGridsFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids">
+<em class="property">class </em><code class="sig-name descname">ComposeGrids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">padding_mode</span><span class="o">=</span><span class="default_value">'border'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/ComposeGridsFilter.html#ComposeGrids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">padding_mode</span><span class="o">=</span><span class="default_value">'border'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/ComposeGridsFilter.html#ComposeGrids.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/ComposeGridsFilter.html#ComposeGrids.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.BinaryOperators.L2ImageSimilarity">
+<span id="l2-image-similarity"></span><h2>L2 Image Similarity<a class="headerlink" href="#module-StructuredGridOperators.BinaryOperators.L2ImageSimilarity" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity">
+<em class="property">class </em><code class="sig-name descname">L2Similarity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.c1">
+<code class="sig-name descname">c1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em>, <em class="sig-param"><span class="n">grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity.c1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.c1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter">
+<span id="normalized-cross-correlation-filter"></span><h2>Normalized Cross Correlation Filter<a class="headerlink" href="#module-StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation">
+<em class="property">class </em><code class="sig-name descname">NormalizedCrossCorrelation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">window</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/NormalizedCrossCorrelationFilter.html#NormalizedCrossCorrelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">window</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/NormalizedCrossCorrelationFilter.html#NormalizedCrossCorrelation.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation.Create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation.c1">
+<code class="sig-name descname">c1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em>, <em class="sig-param"><span class="n">grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/NormalizedCrossCorrelationFilter.html#NormalizedCrossCorrelation.c1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation.c1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/NormalizedCrossCorrelationFilter.html#NormalizedCrossCorrelation.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter.NormalizedCrossCorrelation.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="StructuredGridOperators.UnaryOperators.html" class="btn btn-neutral float-right" title="Unary Operators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="StructuredGridOperators.html" class="btn btn-neutral float-left" title="Structured Grid Operators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blake Zimmerman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
