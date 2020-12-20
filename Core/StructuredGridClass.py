@@ -3,7 +3,8 @@ import torch.nn.functional as F
 
 
 class StructuredGrid:
-    """ This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc.
+    """ This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc. This
+    class wraps a torch tensor (data attribute) to provide world coordinate system context.
 
     :param size: Size of the grid. Size is ordered [z],y,x ([] is optional).
     :type size: list, tuple, tensor

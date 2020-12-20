@@ -157,13 +157,19 @@
             
   <div class="section" id="core">
 <h1>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h1>
-<p>This is some test text in the core package</p>
+<p>This section details the currently implemented base classes available in CAMP, including the Structured Grid and
+Triangle Mesh objects. The structured grids represent images, fields, look-up tables, or anything that is structured on
+a grid. The triangle mesh object inherits from an underlying unstructured grid object meant to represent different
+surfaces. Currently, the only mesh type supported is a triangle mesh, but the unstructured grid object could easily
+be expanded to include other mesh types, such as quads. This module also provides functions for displaying both
+structured grid data and triangle mesh objects.</p>
 <div class="section" id="module-Core.StructuredGridClass">
 <span id="structured-grid"></span><h2>Structured Grid<a class="headerlink" href="#module-Core.StructuredGridClass" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="Core.StructuredGridClass.StructuredGrid">
 <em class="property">class </em><code class="sig-name descname">StructuredGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">spacing</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">origin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em>, <em class="sig-param"><span class="n">requires_grad</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc.</p>
+<dd><p>This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc. This
+class wraps a torch tensor (data attribute) to provide world coordinate system context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -476,32 +482,43 @@ attribute.</p>
 <span id="display"></span><h2>Display<a class="headerlink" href="#module-Core.Display" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="Core.Display.DispFieldGrid">
-<code class="sig-name descname">DispFieldGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Field</span></em>, <em class="sig-param"><span class="n">grid_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">newFig</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fig_len</span><span class="o">=</span><span class="default_value">7</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">'z'</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DispFieldGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DispFieldGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Displays a grid of the displacement field h
-Assumed to be ([dim], [Z], Y, X)</p>
+<code class="sig-name descname">DispFieldGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Field</span></em>, <em class="sig-param"><span class="n">grid_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">newFig</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">'z'</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DispFieldGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DispFieldGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a grid of the input field. Field is assumed to be a look-up table (LUT) of type <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Assumed to be a <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> LUT that defines a transformation.</p></li>
+<li><p><strong>grid_size</strong> (<em>int</em>) – Number of grid lines to plot in each direction.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Figure Title.</p></li>
+<li><p><strong>newFig</strong> (<em>bool</em>) – Create a new figure. Default True.</p></li>
+<li><p><strong>dim</strong> (<em>str</em>) – Dimension along which to plot 3D image. Default is 0 (‘z’).</p></li>
+<li><p><strong>slice_index</strong> (<em>int</em>) – Slice index along ‘dim’ to plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="Core.Display.DispImage">
 <code class="sig-name descname">DispImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">new_figure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">colorbar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DispImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DispImage" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Display an image default with a colorbar. If the input image is 3D, it will be sliced along the dim argument. If no
+slice index is provided then it will be the center slice along dim.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Image</strong> – Input Image ([RGB[A]], [Z], Y, X)</p></li>
-<li><p><strong>rng</strong> – Intensity range (list, tuple) (defaults to data intensity limits)</p></li>
-<li><p><strong>cmap</strong> – Matplotlib colormap (‘gray’, ‘jet’, etc)</p></li>
-<li><p><strong>title</strong> – Figure Title (string)</p></li>
-<li><p><strong>newFig</strong> – Create a new figure (bool)</p></li>
-<li><p><strong>colorbar</strong> – Display colorbar (bool)</p></li>
-<li><p><strong>axis</strong> – <dl class="simple">
-<dt>Axis direction. ‘default’ has (0,0) in the upper left hand corner</dt><dd><p>and the x direction is vertical</p>
-</dd>
-<dt>’cart’ has (0,0) in the lower left hand corner</dt><dd><p>and the x direction is horizontal</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>dim</strong> – Dimension along which to plot ([0], 1, 2)</p></li>
-<li><p><strong>sliceIdx</strong> – Slice index along ‘dim’ to plot</p></li>
+<li><p><strong>Image</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Input Image ([RGB[A]], [Z], Y, X)</p></li>
+<li><p><strong>rng</strong> (<em>list</em><em>, </em><em>tuple</em>) – Display intensity range. Defaults to data intensity range.</p></li>
+<li><p><strong>cmap</strong> (<em>str</em>) – Matplotlib colormap. Default ‘gray’.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Figure Title.</p></li>
+<li><p><strong>new_figure</strong> (<em>bool</em>) – Create a new figure. Default True.</p></li>
+<li><p><strong>colorbar</strong> (<em>bool</em>) – Display colorbar. Default True.</p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – Axis direction. ‘default’ has (0,0) in the upper left hand corner and the x direction is vertical
+‘cart’ has (0,0) in the lower left hand corner and the x direction is horizontal</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Dimension along which to plot 3D image. Default is 0 (z).</p></li>
+<li><p><strong>slice_index</strong> (<em>int</em>) – Slice index along ‘dim’ to plot</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -513,46 +530,72 @@ Assumed to be ([dim], [Z], Y, X)</p>
 <dl class="py exception">
 <dt id="Core.Display.DisplayException">
 <em class="property">exception </em><code class="sig-name descname">DisplayException</code><a class="reference internal" href="_modules/Core/Display.html#DisplayException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DisplayException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>exception for this class</p>
+<dd><p>exception for this class</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="Core.Display.DisplayJacobianDeterminant">
 <code class="sig-name descname">DisplayJacobianDeterminant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Field</span></em>, <em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'jet'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">new_figure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">colorbar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">slice_index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">'z'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#DisplayJacobianDeterminant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.DisplayJacobianDeterminant" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculated and display the jacobian determinant of a field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Assumed to be a <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> LUT that defines a transformation.</p></li>
+<li><p><strong>rng</strong> (<em>list</em><em>, </em><em>tuple</em>) – Display intensity range. Defaults to jacobian determinant intensity range.</p></li>
+<li><p><strong>cmap</strong> (<em>str</em>) – Matplotlib colormap. Default ‘jet’.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Figure Title.</p></li>
+<li><p><strong>new_figure</strong> (<em>bool</em>) – Create a new figure. Default True.</p></li>
+<li><p><strong>colorbar</strong> (<em>bool</em>) – Display colorbar. Default True.</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Dimension along which to plot 3D image. Default is 0 (z).</p></li>
+<li><p><strong>slice_index</strong> (<em>int</em>) – Slice index along ‘dim’ to plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="Core.Display.EnergyPlot">
 <code class="sig-name descname">EnergyPlot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">energy</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'Energy'</span></em>, <em class="sig-param"><span class="n">new_figure</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">legend</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#EnergyPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.EnergyPlot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots energies</p>
-<p>The energies should be in the form
-[E1list, E2list, E3list, …]
-with the legend as
-[E1legend, E2legend, E3legend]</p>
+<dd><p>Plot energies from registration functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy</strong> (<em>list</em><em>, </em><em>tuple</em>) – The energies should be in the form [E1list, E2list, E3list, …]</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Figure Title.</p></li>
+<li><p><strong>new_figure</strong> (<em>bool</em>) – Create a new figure. Default True.</p></li>
+<li><p><strong>legend</strong> (<em>list</em>) – List of strings to be added to the legend in the form [E1legend, E2legend, E3legend, …]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="Core.Display.ExtractImageSlice">
-<code class="sig-name descname">ExtractImageSlice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">sliceIdx</span></em>, <em class="sig-param"><span class="n">color</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#ExtractImageSlice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.ExtractImageSlice" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="Core.Display.GetAspect">
-<code class="sig-name descname">GetAspect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">retFloat</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#GetAspect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.GetAspect" title="Permalink to this definition">¶</a></dt>
-<dd><p>given a image grid, determines the 2D aspect ratio of the
-off-dimension</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="Core.Display.GetSliceIndex">
-<code class="sig-name descname">GetSliceIndex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Image</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#GetSliceIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.GetSliceIndex" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt id="Core.Display.PlotSurface">
 <code class="sig-name descname">PlotSurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em>, <em class="sig-param"><span class="n">faces</span></em>, <em class="sig-param"><span class="n">fig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norms</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">0, 0, 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#PlotSurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.PlotSurface" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plot a triangle mesh object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>verts</strong> (<em>tensor</em>) – Vertices of the mesh object.</p></li>
+<li><p><strong>faces</strong> (<em>tensor</em>) – Indices of the mesh object.</p></li>
+<li><p><strong>fig</strong> (<em>Maplotlib figure object</em>) – Matplotlib figure object to plot the surface on. If one is not provided, and new one is created.</p></li>
+<li><p><strong>norms</strong> (<em>tensor</em><em>, </em><em>optional</em>) – Normals of the mesh object.</p></li>
+<li><p><strong>cents</strong> (<em>tensor</em><em>, </em><em>optional</em>) – Centers of the mesh object.</p></li>
+<li><p><strong>ax</strong> (<em>Maplotlib axis object</em>) – Matplotlib axis object to plot the surface on. If one is not provided, and new one is created.</p></li>
+<li><p><strong>color</strong> (<em>tuple</em>) – Plotted color of the surface. Tuple of three floats between 0 and 1 specifying RGB values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 </div>

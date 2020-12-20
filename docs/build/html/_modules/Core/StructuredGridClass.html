@@ -152,7 +152,8 @@
 
 
 <div class="viewcode-block" id="StructuredGrid"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid">[docs]</a><span class="k">class</span> <span class="nc">StructuredGrid</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc.</span>
+    <span class="sd">&quot;&quot;&quot; This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc. This</span>
+<span class="sd">    class wraps a torch tensor (data attribute) to provide world coordinate system context.</span>
 
 <span class="sd">    :param size: Size of the grid. Size is ordered [z],y,x ([] is optional).</span>
 <span class="sd">    :type size: list, tuple, tensor</span>

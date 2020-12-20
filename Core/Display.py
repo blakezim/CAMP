@@ -1,7 +1,6 @@
 import numpy as np
-# import Classes as cc
 from . import *
-# import scipy.interpolate as interp
+
 from StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter import JacobianDeterminant
 
 
@@ -24,7 +23,7 @@ def _is_3d(im, color):
             return False
 
 
-def GetSliceIndex(Image, dim):
+def _GetSliceIndex(Image, dim):
 
     if dim == 'z':
         if Image.isColor():
@@ -45,7 +44,7 @@ def GetSliceIndex(Image, dim):
             return Image.data.size()[2] // 2
 
 
-def ExtractImageSlice(Image, dim, sliceIdx, color):
+def _ExtractImageSlice(Image, dim, sliceIdx, color):
 
     def _get_slice_index(im, dim, color):
 
@@ -100,25 +99,9 @@ def ExtractImageSlice(Image, dim, sliceIdx, color):
         return Image(im)
 
 
-def GetAspect(Image, axis='default', retFloat=True):
-    '''given a image grid, determines the 2D aspect ratio of the
-    off-dimension'''
+def _GetAspect(Image, axis='default', retFloat=True):
 
     imsz = Image.size.tolist()
-
-    # if color:
-    #     # aspect is always (displayed) height spacing/width spacing
-    #     # sz is displayed (displayed, apparent) [width, height]
-    #     if dim == 'x':
-    #         aspect = Image.spacing[2]/Image.spacing[0]
-    #         sz = [imsz[0], imsz[2]]
-    #     elif dim == 'y':
-    #         aspect = Image.spacing[1]/Image.spacing[0]
-    #         sz = [imsz[0], imsz[1]]
-    #     else:
-    #         aspect = Image.spacing[1]/Image.spacing[2]
-    #         sz = [imsz[2], imsz[1]]
-    # else:
 
     # Might need to flip these two
     aspect = (Image.spacing[0] / Image.spacing[1]).item()
@@ -147,18 +130,28 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
               new_figure=True, color=False, colorbar=True, axis='default',
               dim=0, slice_index=None):
     """
+    Display an image default with a colorbar. If the input image is 3D, it will be sliced along the dim argument. If no
+    slice index is provided then it will be the center slice along dim.
+
     :param Image: Input Image ([RGB[A]], [Z], Y, X)
-    :param rng: Intensity range (list, tuple) (defaults to data intensity limits)
-    :param cmap: Matplotlib colormap ('gray', 'jet', etc)
-    :param title: Figure Title (string)
-    :param newFig: Create a new figure (bool)
-    :param colorbar: Display colorbar (bool)
-    :param axis: Axis direction. 'default' has (0,0) in the upper left hand corner
-                                      and the x direction is vertical
-                                 'cart' has (0,0) in the lower left hand corner
-                                      and the x direction is horizontal
-    :param dim: Dimension along which to plot ([0], 1, 2)
-    :param sliceIdx: Slice index along 'dim' to plot
+    :type Image: :class:`StructuredGrid`
+    :param rng: Display intensity range. Defaults to data intensity range.
+    :type rng: list, tuple
+    :param cmap: Matplotlib colormap. Default 'gray'.
+    :type cmap: str
+    :param title: Figure Title.
+    :type title: str
+    :param new_figure: Create a new figure. Default True.
+    :type new_figure: bool
+    :param colorbar: Display colorbar. Default True.
+    :type colorbar: bool
+    :param axis: Axis direction. 'default' has (0,0) in the upper left hand corner and the x direction is vertical
+                                 'cart' has (0,0) in the lower left hand corner and the x direction is horizontal
+    :type axis: str
+    :param dim: Dimension along which to plot 3D image. Default is 0 (z).
+    :type dim: int
+    :param slice_index: Slice index along 'dim' to plot
+    :type slice_index: int
     :return: None
     """
     import matplotlib.pyplot as plt
@@ -176,14 +169,10 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
         Image = Image.extract_slice(slice_index, dim)
 
     # Get the aspect ratio of the image
-    aspect = GetAspect(Image, axis=axis, retFloat=True)
+    aspect = _GetAspect(Image, axis=axis, retFloat=True)
 
-    # Define a function to display a tensor
-    # This allows us to pass both an Image and a Tensor type into DispImage
-    # def _display_tensor(tensor, rng=None, cmap='gray', title=None, new_figure=True, colorbar=True,
-    #                     axis='default', dim='z', color=False, aspect=[1, 1]):
-
-    im = Image.data.to('cpu').detach().clone()  # Make sure that the tensor is on the CPU and detached
+    # Make sure that the tensor is on the CPU and detached
+    im = Image.data.to('cpu').detach().clone()
 
     # create the figure if requested
     if new_figure:
@@ -199,17 +188,7 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
     else:
         vmin, vmax = rng
 
-    # if color:  # for color images
-    #     # color images need to be in 0-1 range
-    #     if im.max(0) > 1.0:
-    #         denom = max(2.0 ** (np.ceil(np.log2(im.max(0)))), 1.0)  # nextpow2
-    #     else:
-    #         denom = 1.0
-    #     imnp = im.numpy() / denom
-    # else:
     imnp = im.squeeze().numpy()
-
-    # If it is 3D now, then it is color
 
     if np.isnan(imnp).any():
         raise DisplayException("DispImage: Image contains NaNs, cannot plot")
@@ -242,6 +221,27 @@ def DispImage(Image, rng=None, cmap='gray', title=None,
 
 def DisplayJacobianDeterminant(Field, rng=None, cmap='jet', title=None, new_figure=True, colorbar=True,
                                slice_index=None, dim='z'):
+    """
+    Calculated and display the jacobian determinant of a field.
+
+    :param Field: Assumed to be a :class:`StructuredGrid` LUT that defines a transformation.
+    :type Field: :class:`StructuredGrid`
+    :param rng: Display intensity range. Defaults to jacobian determinant intensity range.
+    :type rng: list, tuple
+    :param cmap: Matplotlib colormap. Default 'jet'.
+    :type cmap: str
+    :param title: Figure Title.
+    :type title: str
+    :param new_figure: Create a new figure. Default True.
+    :type new_figure: bool
+    :param colorbar: Display colorbar. Default True.
+    :type colorbar: bool
+    :param dim: Dimension along which to plot 3D image. Default is 0 (z).
+    :type dim: int
+    :param slice_index: Slice index along 'dim' to plot
+    :type slice_index: int
+    :return: None
+    """
 
     import matplotlib.pyplot as plt
     plt.ion()  # tell it to use interactive mode -- see results immediately
@@ -262,11 +262,24 @@ def DisplayJacobianDeterminant(Field, rng=None, cmap='jet', title=None, new_figu
     DispImage(jacobian, cmap=cmap, title=title, new_figure=new_figure, colorbar=colorbar, rng=rng)
 
 
-def DispFieldGrid(Field, grid_size=None, title=None,
-                  newFig=True, fig_len=7, dim='z', axis=None,
-                  slice_index=None):
-    """Displays a grid of the displacement field h
-    Assumed to be ([dim], [Z], Y, X)"""
+def DispFieldGrid(Field, grid_size=None, title=None, newFig=True, dim='z', slice_index=None):
+    """
+    Displays a grid of the input field. Field is assumed to be a look-up table (LUT) of type :class:`StructuredGrid`.
+
+    :param Field: Assumed to be a :class:`StructuredGrid` LUT that defines a transformation.
+    :type Field: :class:`StructuredGrid`
+    :param grid_size: Number of grid lines to plot in each direction.
+    :type grid_size: int
+    :param title: Figure Title.
+    :type title: str
+    :param newFig: Create a new figure. Default True.
+    :type newFig: bool
+    :param dim: Dimension along which to plot 3D image. Default is 0 ('z').
+    :type dim: str
+    :param slice_index: Slice index along 'dim' to plot
+    :type slice_index: int
+    :return: None
+    """
 
     import matplotlib.pyplot as plt
     plt.ion()  # tell it to use interactive mode -- see results immediately
@@ -282,10 +295,6 @@ def DispFieldGrid(Field, grid_size=None, title=None,
             slice_index = Field.size[0] // 2
         Field = Field.extract_slice(slice_index, dim)
 
-    # It will be 2D at this point
-    # spx = Field.spacing[-1].item()
-    # spy = Field.spacing[-2].item()
-
     field = Field.data.clone()
     # Change the field to be between -1 and 1
     field = field - Field.origin.view(*Field.size.shape, *([1] * len(Field.size)))
@@ -298,14 +307,7 @@ def DispFieldGrid(Field, grid_size=None, title=None,
     sy = Field.size[-1].item()
     sx = Field.size[-2].item()
 
-    # hx *= spx # The fields should already be in real space
-    # hy *= spy
-
-    # realsx = (sx - 1) * spx
-    # realsy = (sy - 1) * spy
-    #
     if newFig:
-        # grid = plt.figure(figsize=(fig_len, fig_len), dpi=140)
         grid = plt.figure()
         grid.set_facecolor('white')
     else:
@@ -347,164 +349,20 @@ def DispFieldGrid(Field, grid_size=None, title=None,
 
     plt.draw()
 
-    ## DISPLAY WITH ASPECT
-    # field = interday_slice.data.clone()
-    # # field = field - interday_slice.origin.view(*interday_slice.size.shape, *([1] * len(interday_slice.size)))
-    # # field = field / (interday_slice.spacing * (interday_slice.size / 2)).view(*interday_slice.size.shape,
-    # #                                                                   *([1] * len(interday_slice.size)))
-    # # field = field - 1
-    # field_y = field[-1].cpu().detach().squeeze().numpy()  # X Coordinates
-    # field_x = field[-2].cpu().detach().squeeze().numpy()  # Y Coordinates
-    # sy = interday_slice.size[-1].item()
-    # sx = interday_slice.size[-2].item()
-    # grid_sizex = max(sx // 64, 1)
-    # grid_sizey = max(sy // 64, 1)
-    # grid_sizex = int(grid_sizex)
-    # grid_sizey = int(grid_sizey)
-    # hx_sample_h = field_x[grid_sizex // 2::grid_sizex, :]
-    # hy_sample_h = field_y[grid_sizex // 2::grid_sizex, :]
-    # hx_sample_v = field_x[:, grid_sizey // 2::grid_sizey]
-    # hy_sample_v = field_y[:, grid_sizey // 2::grid_sizey]
-    # # minax = -1.0
-    # # maxax = 1.0
-    # last_point = ((interday_slice.size * interday_slice.spacing) + interday_slice.origin).tolist()
-    # rng_x = [interday_slice.origin.tolist()[0], last_point[0]]
-    # rng_y = [interday_slice.origin.tolist()[1], last_point[1]]
-    #
-    # # STOP Make the field arrays
-    # fig = plt.figure()
-    # plt.axis([rng_y[0], rng_y[1], rng_x[1], rng_x[0]])
-    # plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
-    # plt.plot(hy_sample_v, hx_sample_v, 'k')
-    # plt.axes().set_aspect((1 / (abs(rng_x[1] - rng_x[0]) / abs(rng_y[0] - rng_y[1]))) * (sx / sy))
-    # plt.axis('off')
-    ## END
-
-#     def _get_info(h, slice_index, dim, Field=None):
-#
-#         h = h.to('cpu').detach()  # Make sure that the tensor is on the CPU and detached
-#
-#         if len(h.size()) == 4:
-#
-#             if dim == 'z':
-#                 if not slice_index:
-#                     slice_index = h.size()[0] // 2
-#                 h = h[slice_index, :, :].squeeze()
-#                 hx = h[:, :, 1].numpy()
-#                 hy = h[:, :, 2].numpy()
-#                 sx = h.size()[0]
-#                 sy = h.size()[1]
-#                 if Field:
-#                     spx = Field.spacing()[1].item()
-#                     spy = Field.spacing()[2].item()
-#             elif dim == 'y':        # not tested
-#                 if not slice_index:
-#                     slice_index = h.size()[2] // 2
-#                 h = h[:, :, slice_index].squeeze()
-#                 hx = h[:, :, 0].numpy()
-#                 hy = h[:, :, 1].numpy()
-#                 sx = h.size()[0]
-#                 sy = h.size()[1]
-#                 if Field:
-#                     spx = Field.spacing()[0].item()
-#                     spy = Field.spacing()[1].item()
-#             elif dim == 'x':        # not tested
-#                 if not slice_index:
-#                     slice_index = h.size()[1] // 2
-#                 h = h[:, slice_index, :].squeeze()
-#                 hx = h[:, :, 0].numpy()
-#                 hy = h[:, :, 2].numpy()
-#                 sx = h.size()[0]
-#                 sy = h.size()[1]
-#                 if Field:
-#                     spx = Field.spacing()[0].item()
-#                     spy = Field.spacing()[2].item()
-#
-#         else:
-#             hx = h.numpy()[:, :, 0]
-#             hy = h.numpy()[:, :, 1]
-#             sx = h.size()[0]
-#             sy = h.size()[1]
-#             if Field:
-#                 spx = Field.spacing()[0].item()
-#                 spy = Field.spacing()[1].item()
-#
-#         if 'spx' not in locals():
-#             spx = 1.0
-#             spy = 1.0
-#
-#         return hx, hy, sx, sy, spx, spy
-#
-#     if type(Field).__name__ != 'Stru':
-#         h = Field.h.clone()  # Make sure we don't mess with the original tensor
-#         hy, hx, sx, sy, spx, spy = _get_info(h, slice_index, dim, Field) # x,y flipped for plotting
-#
-#     # account for image spacing
-#     hx *= spx
-#     hy *= spy
-#
-#     realsx = (sx - 1) * spx
-#     realsy = (sy - 1) * spy
-#
-#     if axis == 'cart':
-#         hx, hy = hy.T, hx.T
-#     elif axis is not None:
-#         raise DisplayException("Unknown value for 'axis'")
-#
-#     # create the figure if requested
-#     # TODO: Non square grid plots
-#     if newFig:
-#         grid = plt.figure(figsize=(fig_len, fig_len), dpi=140)
-#         grid.set_facecolor('white')
-#     else:
-#         plt.clf()
-#     if title is not None:
-#         plt.title(title)
-#
-#     # dont allow for more than 127 lines
-#     if grid_size is None:
-#         grid_sizex = max(sx//64, 1)
-#         grid_sizey = max(sy//64, 1)
-#     else:
-#         grid_sizex = grid_size
-#         grid_sizey = grid_size
-#
-#     # This may not always be right
-#     hx_sample_h = hx[grid_sizex//2::grid_sizex, :]
-#     hy_sample_h = hy[grid_sizex//2::grid_sizex, :]
-#
-#     hx_sample_v = hx[:, grid_sizey//2::grid_sizey]
-#     hy_sample_v = hy[:, grid_sizey//2::grid_sizey]
-#
-#
-#     # keep the figure square, but make sure the whole grid fits in the fig
-#     # These fields should always range between [-1, 1]
-#     minax = -1
-#     maxax = 1
-#
-#     if axis == 'cart':
-#         plt.axis([minax, maxax, minax, maxax])
-#     else:  # flip y axis
-#         plt.axis([minax, maxax, maxax, minax])
-#
-#     # plot horizontal lines (y values)
-#     plt.plot(hy_sample_h.transpose(), hx_sample_h.transpose(), 'k')
-#     # plot vertical lines (x values)
-#     plt.plot(hy_sample_v, hx_sample_v, 'k')
-#     # make grid look nicer
-#     plt.axis('off')
-#
-#     plt.draw()
-# #     plt.show()
-
 
 def EnergyPlot(energy, title='Energy', new_figure=True, legend=None):
-    """Plots energies
+    """
+    Plot energies from registration functions.
 
-    The energies should be in the form
-    [E1list, E2list, E3list, ...]
-    with the legend as
-    [E1legend, E2legend, E3legend]
+    :param energy: The energies should be in the form [E1list, E2list, E3list, ...]
+    :type energy: list, tuple
+    :param title: Figure Title.
+    :type title: str
+    :param new_figure: Create a new figure. Default True.
+    :type new_figure: bool
+    :param legend: List of strings to be added to the legend in the form [E1legend, E2legend, E3legend, ...]
+    :type legend: list
+    :return: None
     """
     import matplotlib.pyplot as plt
     # plt.ion()  # tell it to use interactive mode -- see results immediately
@@ -523,13 +381,33 @@ def EnergyPlot(energy, title='Energy', new_figure=True, legend=None):
 
 def PlotSurface(verts, faces, fig=None, norms=None, cents=None, ax=None, color=(0, 0, 1)):
 
-    def scale_normals(norms):
+    """
+    Plot a triangle mesh object.
+
+    :param verts: Vertices of the mesh object.
+    :type verts: tensor
+    :param faces: Indices of the mesh object.
+    :type faces: tensor
+    :param fig: Matplotlib figure object to plot the surface on. If one is not provided, and new one is created.
+    :type fig: Maplotlib figure object
+    :param norms: Normals of the mesh object.
+    :type norms: tensor, optional
+    :param cents: Centers of the mesh object.
+    :type cents: tensor, optional
+    :param ax: Matplotlib axis object to plot the surface on. If one is not provided, and new one is created.
+    :type ax: Maplotlib axis object
+    :param color: Plotted color of the surface. Tuple of three floats between 0 and 1 specifying RGB values.
+    :type color: tuple
+    :return: None
+    """
+
+    def _scale_normals(norms):
         return (norms / np.sqrt((norms ** 2).sum(1))[:, None]) / 10
 
-    def calc_centers(tris):
+    def _calc_centers(tris):
         return (1 / 3.0) * np.sum(tris, 1)
 
-    def get_colors(faces, color):
+    def _get_colors(faces, color):
         return color[faces].mean(2) / 255.0
 
     import matplotlib.pyplot as plt
@@ -556,19 +434,19 @@ def PlotSurface(verts, faces, fig=None, norms=None, cents=None, ax=None, color=(
     # Plot the normals
     if norms is not None and cents is None:
         norms = norms.detach().cpu().clone().numpy()
-        norms = scale_normals(norms)
-        cents = calc_centers(verts[faces])
+        norms = _scale_normals(norms)
+        cents = _calc_centers(verts[faces])
         ax.quiver3D(cents[:, 0], cents[:, 1], cents[:, 2], norms[:, 0], norms[:, 1], norms[:, 2])
 
     elif norms is not None and cents is not None:
         norms = norms.detach().cpu().clone().numpy()
-        norms = scale_normals(norms)
+        norms = _scale_normals(norms)
         cents = cents.detach().cpu().clone().numpy()
         ax.quiver3D(cents[:, 0], cents[:, 1], cents[:, 2], norms[:, 0], norms[:, 1], norms[:, 2])
 
     if len(color) != 3:
         color = color.detach().cpu().clone().numpy()
-        color = get_colors(faces, color)
+        color = _get_colors(faces, color)
 
     mesh.set_facecolor(color)  # Set the color of the surface
     ax.add_collection3d(mesh)  # Add the mesh to the axis
