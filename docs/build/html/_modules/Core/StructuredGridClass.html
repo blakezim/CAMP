@@ -152,38 +152,31 @@
 
 
 <div class="viewcode-block" id="StructuredGrid"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid">[docs]</a><span class="k">class</span> <span class="nc">StructuredGrid</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This is a conceptual class representation of a simple BLE device</span>
-<span class="sd">    (GATT Server). It is essentially an extended combination of the</span>
-<span class="sd">    :class:`bluepy.btle.Peripheral` and :class:`bluepy.btle.ScanEntry` classes</span>
+    <span class="sd">&quot;&quot;&quot; This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc.</span>
 
-<span class="sd">    :param client: A handle to the :class:`simpleble.SimpleBleClient` client</span>
-<span class="sd">        object that detected the device</span>
-<span class="sd">    :type client: class:`simpleble.SimpleBleClient`</span>
-<span class="sd">    :param addr: Device MAC address, defaults to None</span>
-<span class="sd">    :type addr: str, optional</span>
-<span class="sd">    :param addrType: Device address type - one of ADDR_TYPE_PUBLIC or</span>
-<span class="sd">        ADDR_TYPE_RANDOM, defaults to ADDR_TYPE_PUBLIC</span>
-<span class="sd">    :type addrType: str, optional</span>
-<span class="sd">    :param iface: Bluetooth interface number (0 = /dev/hci0) used for the</span>
-<span class="sd">        connection, defaults to 0</span>
-<span class="sd">    :type iface: int, optional</span>
-<span class="sd">    :param data: A list of tuples (adtype, description, value) containing the</span>
-<span class="sd">        AD type code, human-readable description and value for all available</span>
-<span class="sd">        advertising data items, defaults to None</span>
-<span class="sd">    :type data: list, optional</span>
-<span class="sd">    :param rssi: Received Signal Strength Indication for the last received</span>
-<span class="sd">        broadcast from the device. This is an integer value measured in dB,</span>
-<span class="sd">        where 0 dB is the maximum (theoretical) signal strength, and more</span>
-<span class="sd">        negative numbers indicate a weaker signal, defaults to 0</span>
-<span class="sd">    :type rssi: int, optional</span>
-<span class="sd">    :param connectable: `True` if the device supports connections, and `False`</span>
-<span class="sd">        otherwise (typically used for advertising ‘beacons’).,</span>
-<span class="sd">        defaults to `False`</span>
-<span class="sd">    :type connectable: bool, optional</span>
-<span class="sd">    :param updateCount: Integer count of the number of advertising packets</span>
-<span class="sd">        received from the device so far, defaults to 0</span>
-<span class="sd">    :type updateCount: int, optional</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    :param size: Size of the grid. Size is ordered [z],y,x ([] is optional).</span>
+<span class="sd">    :type size: list, tuple, tensor</span>
+<span class="sd">    :param spacing: Spacing between the grid elements. Default is isotropic 1.0 spacing.</span>
+<span class="sd">    :type spacing: list, tuple, tensor, optional</span>
+<span class="sd">    :param origin: Real world location of the pixel (2D) or voxel (3D) with the minimum location value. The locations</span>
+<span class="sd">        of the grid elements increase by the spacing in each relative direction from this voxel. Default pleaces the</span>
+<span class="sd">        center of the grid at the origin.</span>
+<span class="sd">    :type origin: list, tuple, tensor, optional</span>
+<span class="sd">    :param device: Memory location - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X specifies the device identifier.</span>
+<span class="sd">        Default: &#39;cpu&#39;</span>
+<span class="sd">    :type device: str, optional</span>
+<span class="sd">    :param dtype: Data type, specified from torch memory types. Default: &#39;torch.float32&#39;</span>
+<span class="sd">    :type dtype: str, optional</span>
+<span class="sd">    :param requires_grad: Track tensor for gradient operations. Default: False</span>
+<span class="sd">    :type requires_grad: bool, optional</span>
+<span class="sd">    :param tensor: The underlying tensor for the data attribute. This allows :class:`StructuredGird` to be wrapped</span>
+<span class="sd">        around alread-exisiting tensors. This tensor must be of size C,[z],y,x where [z],y,x are the same as &#39;size&#39; and</span>
+<span class="sd">        C is equal to Channels. If not provided, the data attribute will be initialized to size C,[z],y,x with zeros.</span>
+<span class="sd">    :type tensor: torch.tensor, optional</span>
+<span class="sd">    :param channels: Number of channels for the grid. For example, black and white images must have 1 channel</span>
+<span class="sd">        and RGB images have 3 channels. Channels can be any integer number.</span>
+<span class="sd">    :type channels: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -237,13 +230,28 @@
 
 <div class="viewcode-block" id="StructuredGrid.FromGrid"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.FromGrid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">FromGrid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new :class:`StructuredGrid` from a reference :class:`StructuredGrid` (for the size, spacing,</span>
+<span class="sd">        origin, device, dtype, requires_grad) and a torch tensor.</span>
+
+<span class="sd">        :param grid: Reference :class:`StructuredGrid` with the reference attributes.</span>
+<span class="sd">        :type grid: :class:`StructuredGrid`</span>
+<span class="sd">        :param tensor: Torch tensor to wrap into the new :class:`StructuredGrid`. Must have size [z],y,x from the</span>
+<span class="sd">            reference :class:`StructuredGrid` and the number of specific channels.</span>
+<span class="sd">        :type tensor: tensor</span>
+<span class="sd">        :param channels: Channels of the input tensor.</span>
+<span class="sd">        :type channels: int</span>
+<span class="sd">        :return: New :class:`StructuredGrid` wrapped around the input tensor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">StructuredGrid</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">spacing</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                               <span class="n">grid</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.set_to_identity_lut_"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_">[docs]</a>    <span class="k">def</span> <span class="nf">set_to_identity_lut_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :input: None</span>
-<span class="sd">        :return: None</span>
+<span class="sd">        Set the tensor to an real world identity look-up table (LUT) using the spacing and origin of the</span>
+<span class="sd">        :class:`StructuredGrid`. The number of channels will be set to the number of dimensions in size.</span>
+
+<span class="sd">        :return: :class:`StructuredGrid` as a real world identity LUT.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the vectors to be gridded</span>
         <span class="n">vecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="n">x</span><span class="p">]))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))]</span>
@@ -262,7 +270,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.set_size"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.set_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the size of the :class:`StructuredGrid`. This will update the spacing and origin of the</span>
+<span class="sd">        :class:`StructuredGrid` to maintain the original real world FOV.</span>
 
+<span class="sd">        :param size: New size for the :class:`StructuredGrid` [z],y,x</span>
+<span class="sd">        :type size: torch.tensor</span>
+<span class="sd">        :param inplace: Perform the resize operation in place. Default=True.</span>
+<span class="sd">        :type inplace: bool</span>
+<span class="sd">        :return: If inplace==True then returns a new :class:`StructuredGrid`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">old_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
@@ -302,6 +319,13 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.set_spacing_"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.set_spacing_">[docs]</a>    <span class="k">def</span> <span class="nf">set_spacing_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacing</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the spacing. Does not change the origin.</span>
+
+<span class="sd">        :param spacing:  New spacing.</span>
+<span class="sd">        :type spacing: list, tuple, tensor,</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">spacing</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">=</span> <span class="n">spacing</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -311,6 +335,13 @@
                                         <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.set_origin_"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.set_origin_">[docs]</a>    <span class="k">def</span> <span class="nf">set_origin_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the origin. Does not change the spacing.</span>
+
+<span class="sd">        :param origin:  New origin.</span>
+<span class="sd">        :type origin: list, tuple, tensor</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -320,6 +351,19 @@
                                        <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.get_subvol"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.get_subvol">[docs]</a>    <span class="k">def</span> <span class="nf">get_subvol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zrng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yrng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xrng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract a sub volume. The coordiantes for the sub volume are in index coordiantes.</span>
+<span class="sd">        Updates the origin to maintain the world coordinate system location.</span>
+
+<span class="sd">        :param zrng: Tuple or list of 2 values between [0, size[0]]. If no range is provided, the size stays the same.</span>
+<span class="sd">        :type zrng: list, tuple, optional</span>
+<span class="sd">        :param yrng: Tuple or list of 2 values between [0, size[1]]. If no range is provided, the size stays the same.</span>
+<span class="sd">        :type yrng: list, tuple, optional</span>
+<span class="sd">        :param xrng: Tuple or list of 2 values between [0, size[2]]. If no range is provided, the size stays the same.</span>
+<span class="sd">        :type xrng: list, tuple, optional</span>
+<span class="sd">        :return: Sub volume with updated origin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">new_origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
@@ -358,6 +402,16 @@
         <span class="k">return</span> <span class="n">new_grid</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.extract_slice"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.extract_slice">[docs]</a>    <span class="k">def</span> <span class="nf">extract_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract a slice from a 3D volume. Updates the origin to maintain the world coordinate system location.</span>
+
+<span class="sd">        :param index: Slice index to extract.</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :param dim: Dimension along which to extract the slice.</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :return: Extracted slice.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Create a tuple of slice types with none</span>
         <span class="n">slices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">())</span>
         <span class="n">slices</span><span class="p">[</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -383,6 +437,14 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.to_"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.to_">[docs]</a>    <span class="k">def</span> <span class="nf">to_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change the memory device of the :class:`StructuredGrid`.</span>
+
+<span class="sd">        :param device: New memory location - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X specifies the device identifier.</span>
+<span class="sd">        :type device: str, optional</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
@@ -391,6 +453,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.to_type_"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.to_type_">[docs]</a>    <span class="k">def</span> <span class="nf">to_type_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change the data type of the :class:`StructuredGrid` attributes.</span>
+
+<span class="sd">        :param dtype: Data type, specified from torch memory types. Default: &#39;torch.float32&#39;</span>
+<span class="sd">        :type dtype: str, optional</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">new_type</span><span class="p">))</span>
@@ -399,24 +469,59 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">new_type</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.copy"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a copy of the :class:`StructuredGrid`.</span>
+
+<span class="sd">        :return: Copy of :class:`StructuredGrid`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.clone"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a copy of the :class:`StructuredGrid`.</span>
+
+<span class="sd">        :return: Copy of :class:`StructuredGrid`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.sum"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sum of the data attribute.</span>
+
+<span class="sd">        :return: data.sum()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.min"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.min">[docs]</a>    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Min of the data attribute.</span>
+
+<span class="sd">        :return: data.min()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.max"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.max">[docs]</a>    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Max of the data attribute.</span>
+
+<span class="sd">        :return: data.max()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.minmax"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.minmax">[docs]</a>    <span class="k">def</span> <span class="nf">minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Min and Max of the data attribute.</span>
+
+<span class="sd">        :return: [data.min(), data.max()]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructuredGrid.shape"><a class="viewcode-back" href="../../Core.html#Core.StructuredGridClass.StructuredGrid.shape">[docs]</a>    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the shape of the data attribute, including the channels.</span>
+
+<span class="sd">        :return: data.shape</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span></div>
     
     <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>

@@ -24,22 +24,28 @@ class ApplyGrid(Filter):
         """
         Returns an Apply Grid Filter that contained a deformation field that can be applied to type :class:`~Core.StructuredGrid` and adds all attributes to the appropriate memory device.
 
-        :param grid: The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world coordinates relative to the spacing and origin of the grid.
+        :param grid: The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world
+            coordinates relative to the spacing and origin of the grid.
         :type grid: :class:`~Core.StructuredGrid`
 
-        :param interp_mode: Resampling interpolation mode to be used when applying the defromation - one of 'bilinear' or 'nearest'.  Default: 'bilinear'
+        :param interp_mode: Resampling interpolation mode to be used when applying the defromation - one of 'bilinear'
+            or 'nearest'.  Default: 'bilinear'
         :type interp_mode: str
 
-        :param pad_mode: padding mode for outside grid values - one of 'zeros', 'border', or 'reflection'. Default: 'zeros'
+        :param pad_mode: padding mode for outside grid values - one of 'zeros', 'border', or 'reflection'.
+            Default: 'zeros'
         :type pad_mode: str
 
-        :param device: Memory location for the created Apply Grid Filter - one of 'cpu', 'cuda', or 'cuda:X' where X specifies the device identifier. Default: 'cpu'
+        :param device: Memory location for the created Apply Grid Filter - one of 'cpu', 'cuda', or 'cuda:X' where X
+            specifies the device identifier. Default: 'cpu'
         :type device: str
 
-        :param dtype: Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default: 'torch.float32'
+        :param dtype: Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default:
+            'torch.float32'
         :type dtype: str
 
-        .. note:: When mode='bilinear' and the input is 5-D, the interpolation mode used internally will actually be trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.
+        .. note:: When mode='bilinear' and the input is 5-D, the interpolation mode used internally will actually be
+            trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.
 
         :return: Apply Grid Filter with the specified parameters.
 

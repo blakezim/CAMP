@@ -7,6 +7,7 @@ Affine Transform Filter
 .. automodule:: StructuredGridOperators.UnaryOperators.AffineTransformFilter
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Apply Grid Filter
 -----------------
@@ -14,6 +15,7 @@ Apply Grid Filter
 .. automodule:: StructuredGridOperators.UnaryOperators.ApplyGridFilter
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Divergence Filter
 -----------------
@@ -35,6 +37,7 @@ Gaussian Filter
 .. automodule:: StructuredGridOperators.UnaryOperators.GaussianFilter
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Gradient Filter
 ---------------
@@ -42,6 +45,7 @@ Gradient Filter
 .. automodule:: StructuredGridOperators.UnaryOperators.GradientFilter
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Gradient Regularizer
 --------------------

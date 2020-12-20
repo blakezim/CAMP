@@ -176,7 +176,8 @@
 <dl class="py class">
 <dt id="StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform">
 <em class="property">class </em><code class="sig-name descname">AffineTransform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
+<dl class="py method">
 <dt id="StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_landmarks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransform.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -203,24 +204,31 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="py class">
 <dt id="StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid">
 <em class="property">class </em><code class="sig-name descname">ApplyGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">pad_mode</span><span class="o">=</span><span class="default_value">'zeros'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ApplyGridFilter.html#ApplyGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
+<dl class="py method">
 <dt id="StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">interp_mode</span><span class="o">=</span><span class="default_value">'bilinear'</span></em>, <em class="sig-param"><span class="n">pad_mode</span><span class="o">=</span><span class="default_value">'zeros'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/ApplyGridFilter.html#ApplyGrid.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.ApplyGridFilter.ApplyGrid.Create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an Apply Grid Filter that contained a deformation field that can be applied to type <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> and adds all attributes to the appropriate memory device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world coordinates relative to the spacing and origin of the grid.</p></li>
-<li><p><strong>interp_mode</strong> (<em>str</em>) – Resampling interpolation mode to be used when applying the defromation - one of ‘bilinear’ or ‘nearest’.  Default: ‘bilinear’</p></li>
-<li><p><strong>pad_mode</strong> (<em>str</em>) – padding mode for outside grid values - one of ‘zeros’, ‘border’, or ‘reflection’. Default: ‘zeros’</p></li>
-<li><p><strong>device</strong> (<em>str</em>) – Memory location for the created Apply Grid Filter - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier. Default: ‘cpu’</p></li>
-<li><p><strong>dtype</strong> (<em>str</em>) – Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default: ‘torch.float32’</p></li>
+<li><p><strong>grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world
+coordinates relative to the spacing and origin of the grid.</p></li>
+<li><p><strong>interp_mode</strong> (<em>str</em>) – Resampling interpolation mode to be used when applying the defromation - one of ‘bilinear’
+or ‘nearest’.  Default: ‘bilinear’</p></li>
+<li><p><strong>pad_mode</strong> (<em>str</em>) – padding mode for outside grid values - one of ‘zeros’, ‘border’, or ‘reflection’.
+Default: ‘zeros’</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Memory location for the created Apply Grid Filter - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X
+specifies the device identifier. Default: ‘cpu’</p></li>
+<li><p><strong>dtype</strong> (<em>str</em>) – Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default:
+‘torch.float32’</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When mode=’bilinear’ and the input is 5-D, the interpolation mode used internally will actually be trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.</p>
+<p>When mode=’bilinear’ and the input is 5-D, the interpolation mode used internally will actually be
+trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -333,7 +341,8 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="py class">
 <dt id="StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian">
 <em class="property">class </em><code class="sig-name descname">Gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channels</span></em>, <em class="sig-param"><span class="n">kernel_size</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GaussianFilter.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
+<dl class="py method">
 <dt id="StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channels</span></em>, <em class="sig-param"><span class="n">kernel_size</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GaussianFilter.html#Gaussian.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -360,7 +369,8 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="py class">
 <dt id="StructuredGridOperators.UnaryOperators.GradientFilter.Gradient">
 <em class="property">class </em><code class="sig-name descname">Gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientFilter.html#Gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientFilter.Gradient" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
+<dl class="py method">
 <dt id="StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/UnaryOperators/GradientFilter.html#Gradient.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>

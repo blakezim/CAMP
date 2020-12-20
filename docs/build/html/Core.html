@@ -82,15 +82,15 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Core</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-Core.Display">Display</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-Core.StructuredGridClass">Structured Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-Core.TriangleMeshClass">Triangle Mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-Core.Display">Display</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">StructuredGridTools package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="UnstructuredGridOperators.html">UnstructuredGridOperators package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">Structured Grid Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnstructuredGridOperators.html">Unstructured Grid Operators</a></li>
 </ul>
 
             
@@ -158,6 +158,320 @@
   <div class="section" id="core">
 <h1>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h1>
 <p>This is some test text in the core package</p>
+<div class="section" id="module-Core.StructuredGridClass">
+<span id="structured-grid"></span><h2>Structured Grid<a class="headerlink" href="#module-Core.StructuredGridClass" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="Core.StructuredGridClass.StructuredGrid">
+<em class="property">class </em><code class="sig-name descname">StructuredGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">spacing</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">origin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em>, <em class="sig-param"><span class="n">requires_grad</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>tensor</em>) – Size of the grid. Size is ordered [z],y,x ([] is optional).</p></li>
+<li><p><strong>spacing</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>tensor</em><em>, </em><em>optional</em>) – Spacing between the grid elements. Default is isotropic 1.0 spacing.</p></li>
+<li><p><strong>origin</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>tensor</em><em>, </em><em>optional</em>) – Real world location of the pixel (2D) or voxel (3D) with the minimum location value. The locations
+of the grid elements increase by the spacing in each relative direction from this voxel. Default pleaces the
+center of the grid at the origin.</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Memory location - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier.
+Default: ‘cpu’</p></li>
+<li><p><strong>dtype</strong> (<em>str</em><em>, </em><em>optional</em>) – Data type, specified from torch memory types. Default: ‘torch.float32’</p></li>
+<li><p><strong>requires_grad</strong> (<em>bool</em><em>, </em><em>optional</em>) – Track tensor for gradient operations. Default: False</p></li>
+<li><p><strong>tensor</strong> (<em>torch.tensor</em><em>, </em><em>optional</em>) – The underlying tensor for the data attribute. This allows <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGird</span></code> to be wrapped
+around alread-exisiting tensors. This tensor must be of size C,[z],y,x where [z],y,x are the same as ‘size’ and
+C is equal to Channels. If not provided, the data attribute will be initialized to size C,[z],y,x with zeros.</p></li>
+<li><p><strong>channels</strong> (<em>int</em>) – Number of channels for the grid. For example, black and white images must have 1 channel
+and RGB images have 3 channels. Channels can be any integer number.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.FromGrid">
+<em class="property">static </em><code class="sig-name descname">FromGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.FromGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.FromGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a new <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> from a reference <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> (for the size, spacing,
+origin, device, dtype, requires_grad) and a torch tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> (<a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>) – Reference <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> with the reference attributes.</p></li>
+<li><p><strong>tensor</strong> (<em>tensor</em>) – Torch tensor to wrap into the new <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>. Must have size [z],y,x from the
+reference <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> and the number of specific channels.</p></li>
+<li><p><strong>channels</strong> (<em>int</em>) – Channels of the input tensor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> wrapped around the input tensor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.clone">
+<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of the <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Copy of <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of the <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Copy of <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.extract_slice">
+<code class="sig-name descname">extract_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.extract_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.extract_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a slice from a 3D volume. Updates the origin to maintain the world coordinate system location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<em>int</em>) – Slice index to extract.</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Dimension along which to extract the slice.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Extracted slice.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.get_subvol">
+<code class="sig-name descname">get_subvol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">zrng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yrng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xrng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.get_subvol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.get_subvol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a sub volume. The coordiantes for the sub volume are in index coordiantes.
+Updates the origin to maintain the world coordinate system location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zrng</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>optional</em>) – Tuple or list of 2 values between [0, size[0]]. If no range is provided, the size stays the same.</p></li>
+<li><p><strong>yrng</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>optional</em>) – Tuple or list of 2 values between [0, size[1]]. If no range is provided, the size stays the same.</p></li>
+<li><p><strong>xrng</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>optional</em>) – Tuple or list of 2 values between [0, size[2]]. If no range is provided, the size stays the same.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sub volume with updated origin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.max">
+<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max of the data attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>data.max()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.min">
+<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Min of the data attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>data.min()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.minmax">
+<code class="sig-name descname">minmax</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.minmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Min and Max of the data attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>[data.min(), data.max()]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_origin_">
+<code class="sig-name descname">set_origin_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_origin_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_origin_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the origin. Does not change the spacing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>origin</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>tensor</em>) – New origin.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_size">
+<code class="sig-name descname">set_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the size of the <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>. This will update the spacing and origin of the
+<a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> to maintain the original real world FOV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>torch.tensor</em>) – New size for the <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> [z],y,x</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Perform the resize operation in place. Default=True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If inplace==True then returns a new <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_spacing_">
+<code class="sig-name descname">set_spacing_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">spacing</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_spacing_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_spacing_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the spacing. Does not change the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spacing</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>tensor</em><em>,</em>) – New spacing.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_">
+<code class="sig-name descname">set_to_identity_lut_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_to_identity_lut_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the tensor to an real world identity look-up table (LUT) using the spacing and origin of the
+<a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>. The number of channels will be set to the number of dimensions in size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> as a real world identity LUT.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.shape">
+<code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape of the data attribute, including the channels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>data.shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.sum">
+<code class="sig-name descname">sum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum of the data attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>data.sum()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.to_">
+<code class="sig-name descname">to_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.to_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.to_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the memory device of the <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – New memory location - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.StructuredGridClass.StructuredGrid.to_type_">
+<code class="sig-name descname">to_type_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.to_type_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.to_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the data type of the <a class="reference internal" href="#Core.StructuredGridClass.StructuredGrid" title="Core.StructuredGridClass.StructuredGrid"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></a> attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype</strong> (<em>str</em><em>, </em><em>optional</em>) – Data type, specified from torch memory types. Default: ‘torch.float32’</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Core.TriangleMeshClass">
+<span id="triangle-mesh"></span><h2>Triangle Mesh<a class="headerlink" href="#module-Core.TriangleMeshClass" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="Core.TriangleMeshClass.TriangleMesh">
+<em class="property">class </em><code class="sig-name descname">TriangleMesh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">per_vert_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">per_index_values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triangle mesh class that inherits from the unstructured grid class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertices</strong> (<em>tensor</em>) – Vertices of the mesh object (x,y,z)</p></li>
+<li><p><strong>indices</strong> (<em>long tensor</em>) – Indices of the mesh object</p></li>
+<li><p><strong>per_vert_values</strong> (<em>tensor</em><em>, </em><em>optional</em>) – Values associated with each vertex of the triangle mesh.</p></li>
+<li><p><strong>per_index_values</strong> (<em>str</em><em>, </em><em>optional</em>) – Values associated with the indices (or faces) of the triangle mesh.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.add_surface_">
+<code class="sig-name descname">add_surface_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.add_surface_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.add_surface_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate two triangle mesh objects. This does not connect the two objects with faces, it just concatenates
+the vertices and indices of the two surfaces into one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.calc_centers">
+<code class="sig-name descname">calc_centers</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.calc_centers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.calc_centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Caluclate the face centers of the triangle mesh using the vertices and indices to populate the centers
+attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.calc_normals">
+<code class="sig-name descname">calc_normals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.calc_normals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.calc_normals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Caluclate the face normals of the triangle mesh using the vertices and indices to populate the normals
+attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Core.TriangleMeshClass.TriangleMesh.flip_normals_">
+<code class="sig-name descname">flip_normals_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.flip_normals_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.flip_normals_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flip the face normals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-Core.Display">
 <span id="display"></span><h2>Display<a class="headerlink" href="#module-Core.Display" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
@@ -239,160 +553,6 @@ off-dimension</p>
 <dt id="Core.Display.PlotSurface">
 <code class="sig-name descname">PlotSurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em>, <em class="sig-param"><span class="n">faces</span></em>, <em class="sig-param"><span class="n">fig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norms</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">0, 0, 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/Display.html#PlotSurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.Display.PlotSurface" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-</div>
-<div class="section" id="module-Core.StructuredGridClass">
-<span id="structured-grid"></span><h2>Structured Grid<a class="headerlink" href="#module-Core.StructuredGridClass" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="Core.StructuredGridClass.StructuredGrid">
-<em class="property">class </em><code class="sig-name descname">StructuredGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">spacing</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">origin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em>, <em class="sig-param"><span class="n">requires_grad</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This is a conceptual class representation of a simple BLE device
-(GATT Server). It is essentially an extended combination of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">bluepy.btle.Peripheral</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">bluepy.btle.ScanEntry</span></code> classes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> (class:<cite>simpleble.SimpleBleClient</cite>) – A handle to the <code class="xref py py-class docutils literal notranslate"><span class="pre">simpleble.SimpleBleClient</span></code> client
-object that detected the device</p></li>
-<li><p><strong>addr</strong> (<em>str</em><em>, </em><em>optional</em>) – Device MAC address, defaults to None</p></li>
-<li><p><strong>addrType</strong> (<em>str</em><em>, </em><em>optional</em>) – Device address type - one of ADDR_TYPE_PUBLIC or
-ADDR_TYPE_RANDOM, defaults to ADDR_TYPE_PUBLIC</p></li>
-<li><p><strong>iface</strong> (<em>int</em><em>, </em><em>optional</em>) – Bluetooth interface number (0 = /dev/hci0) used for the
-connection, defaults to 0</p></li>
-<li><p><strong>data</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of tuples (adtype, description, value) containing the
-AD type code, human-readable description and value for all available
-advertising data items, defaults to None</p></li>
-<li><p><strong>rssi</strong> (<em>int</em><em>, </em><em>optional</em>) – Received Signal Strength Indication for the last received
-broadcast from the device. This is an integer value measured in dB,
-where 0 dB is the maximum (theoretical) signal strength, and more
-negative numbers indicate a weaker signal, defaults to 0</p></li>
-<li><p><strong>connectable</strong> (<em>bool</em><em>, </em><em>optional</em>) – <cite>True</cite> if the device supports connections, and <cite>False</cite>
-otherwise (typically used for advertising ‘beacons’).,
-defaults to <cite>False</cite></p></li>
-<li><p><strong>updateCount</strong> (<em>int</em><em>, </em><em>optional</em>) – Integer count of the number of advertising packets
-received from the device so far, defaults to 0</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.FromGrid">
-<em class="property">static </em><code class="sig-name descname">FromGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">tensor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.FromGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.FromGrid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.clone">
-<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.clone" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.copy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.extract_slice">
-<code class="sig-name descname">extract_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.extract_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.extract_slice" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.get_subvol">
-<code class="sig-name descname">get_subvol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">zrng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yrng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xrng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.get_subvol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.get_subvol" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.max">
-<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.min">
-<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.min" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.minmax">
-<code class="sig-name descname">minmax</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.minmax" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.set_origin_">
-<code class="sig-name descname">set_origin_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_origin_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_origin_" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.set_size">
-<code class="sig-name descname">set_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.set_spacing_">
-<code class="sig-name descname">set_spacing_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">spacing</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_spacing_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_spacing_" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_">
-<code class="sig-name descname">set_to_identity_lut_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.set_to_identity_lut_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.set_to_identity_lut_" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Input</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.shape">
-<code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.shape" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.sum">
-<code class="sig-name descname">sum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.sum" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.to_">
-<code class="sig-name descname">to_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.to_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.to_" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.StructuredGridClass.StructuredGrid.to_type_">
-<code class="sig-name descname">to_type_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/StructuredGridClass.html#StructuredGrid.to_type_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.StructuredGridClass.StructuredGrid.to_type_" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-Core.TriangleMeshClass">
-<span id="triangle-mesh"></span><h2>Triangle Mesh<a class="headerlink" href="#module-Core.TriangleMeshClass" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="Core.TriangleMeshClass.TriangleMesh">
-<em class="property">class </em><code class="sig-name descname">TriangleMesh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">per_vert_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">per_index_values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Core._UnstructuredGridClass.UnstructuredGrid</span></code></p>
-<dl class="py method">
-<dt id="Core.TriangleMeshClass.TriangleMesh.add_surface_">
-<code class="sig-name descname">add_surface_</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.add_surface_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.add_surface_" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.TriangleMeshClass.TriangleMesh.calc_centers">
-<code class="sig-name descname">calc_centers</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.calc_centers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.calc_centers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.TriangleMeshClass.TriangleMesh.calc_normals">
-<code class="sig-name descname">calc_normals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.calc_normals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.calc_normals" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="Core.TriangleMeshClass.TriangleMesh.flip_normals_">
-<code class="sig-name descname">flip_normals_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Core/TriangleMeshClass.html#TriangleMesh.flip_normals_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Core.TriangleMeshClass.TriangleMesh.flip_normals_" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
 
 </div>
 </div>

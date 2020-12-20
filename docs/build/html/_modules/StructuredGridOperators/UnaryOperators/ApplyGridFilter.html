@@ -173,22 +173,28 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an Apply Grid Filter that contained a deformation field that can be applied to type :class:`~Core.StructuredGrid` and adds all attributes to the appropriate memory device.</span>
 
-<span class="sd">        :param grid: The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world coordinates relative to the spacing and origin of the grid.</span>
+<span class="sd">        :param grid: The deformation field to be applied by the Apply Grid Filter. This is assumed to be in real-world</span>
+<span class="sd">            coordinates relative to the spacing and origin of the grid.</span>
 <span class="sd">        :type grid: :class:`~Core.StructuredGrid`</span>
 
-<span class="sd">        :param interp_mode: Resampling interpolation mode to be used when applying the defromation - one of &#39;bilinear&#39; or &#39;nearest&#39;.  Default: &#39;bilinear&#39;</span>
+<span class="sd">        :param interp_mode: Resampling interpolation mode to be used when applying the defromation - one of &#39;bilinear&#39;</span>
+<span class="sd">            or &#39;nearest&#39;.  Default: &#39;bilinear&#39;</span>
 <span class="sd">        :type interp_mode: str</span>
 
-<span class="sd">        :param pad_mode: padding mode for outside grid values - one of &#39;zeros&#39;, &#39;border&#39;, or &#39;reflection&#39;. Default: &#39;zeros&#39;</span>
+<span class="sd">        :param pad_mode: padding mode for outside grid values - one of &#39;zeros&#39;, &#39;border&#39;, or &#39;reflection&#39;.</span>
+<span class="sd">            Default: &#39;zeros&#39;</span>
 <span class="sd">        :type pad_mode: str</span>
 
-<span class="sd">        :param device: Memory location for the created Apply Grid Filter - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X specifies the device identifier. Default: &#39;cpu&#39;</span>
+<span class="sd">        :param device: Memory location for the created Apply Grid Filter - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X</span>
+<span class="sd">            specifies the device identifier. Default: &#39;cpu&#39;</span>
 <span class="sd">        :type device: str</span>
 
-<span class="sd">        :param dtype: Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default: &#39;torch.float32&#39;</span>
+<span class="sd">        :param dtype: Data type for the Apply Grid Filter attributes. Specified from torch memory types. Default:</span>
+<span class="sd">            &#39;torch.float32&#39;</span>
 <span class="sd">        :type dtype: str</span>
 
-<span class="sd">        .. note:: When mode=&#39;bilinear&#39; and the input is 5-D, the interpolation mode used internally will actually be trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.</span>
+<span class="sd">        .. note:: When mode=&#39;bilinear&#39; and the input is 5-D, the interpolation mode used internally will actually be</span>
+<span class="sd">            trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.</span>
 
 <span class="sd">        :return: Apply Grid Filter with the specified parameters.</span>
 

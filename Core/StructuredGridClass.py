@@ -3,38 +3,31 @@ import torch.nn.functional as F
 
 
 class StructuredGrid:
-    """This is a conceptual class representation of a simple BLE device
-    (GATT Server). It is essentially an extended combination of the
-    :class:`bluepy.btle.Peripheral` and :class:`bluepy.btle.ScanEntry` classes
+    """ This is the base class for grid structured data such as images, look-up tables (luts), vector fields, etc.
 
-    :param client: A handle to the :class:`simpleble.SimpleBleClient` client
-        object that detected the device
-    :type client: class:`simpleble.SimpleBleClient`
-    :param addr: Device MAC address, defaults to None
-    :type addr: str, optional
-    :param addrType: Device address type - one of ADDR_TYPE_PUBLIC or
-        ADDR_TYPE_RANDOM, defaults to ADDR_TYPE_PUBLIC
-    :type addrType: str, optional
-    :param iface: Bluetooth interface number (0 = /dev/hci0) used for the
-        connection, defaults to 0
-    :type iface: int, optional
-    :param data: A list of tuples (adtype, description, value) containing the
-        AD type code, human-readable description and value for all available
-        advertising data items, defaults to None
-    :type data: list, optional
-    :param rssi: Received Signal Strength Indication for the last received
-        broadcast from the device. This is an integer value measured in dB,
-        where 0 dB is the maximum (theoretical) signal strength, and more
-        negative numbers indicate a weaker signal, defaults to 0
-    :type rssi: int, optional
-    :param connectable: `True` if the device supports connections, and `False`
-        otherwise (typically used for advertising ‘beacons’).,
-        defaults to `False`
-    :type connectable: bool, optional
-    :param updateCount: Integer count of the number of advertising packets
-        received from the device so far, defaults to 0
-    :type updateCount: int, optional
-        """
+    :param size: Size of the grid. Size is ordered [z],y,x ([] is optional).
+    :type size: list, tuple, tensor
+    :param spacing: Spacing between the grid elements. Default is isotropic 1.0 spacing.
+    :type spacing: list, tuple, tensor, optional
+    :param origin: Real world location of the pixel (2D) or voxel (3D) with the minimum location value. The locations
+        of the grid elements increase by the spacing in each relative direction from this voxel. Default pleaces the
+        center of the grid at the origin.
+    :type origin: list, tuple, tensor, optional
+    :param device: Memory location - one of 'cpu', 'cuda', or 'cuda:X' where X specifies the device identifier.
+        Default: 'cpu'
+    :type device: str, optional
+    :param dtype: Data type, specified from torch memory types. Default: 'torch.float32'
+    :type dtype: str, optional
+    :param requires_grad: Track tensor for gradient operations. Default: False
+    :type requires_grad: bool, optional
+    :param tensor: The underlying tensor for the data attribute. This allows :class:`StructuredGird` to be wrapped
+        around alread-exisiting tensors. This tensor must be of size C,[z],y,x where [z],y,x are the same as 'size' and
+        C is equal to Channels. If not provided, the data attribute will be initialized to size C,[z],y,x with zeros.
+    :type tensor: torch.tensor, optional
+    :param channels: Number of channels for the grid. For example, black and white images must have 1 channel
+        and RGB images have 3 channels. Channels can be any integer number.
+    :type channels: int
+    """
 
     def __init__(self, size, spacing=None, origin=None,
                  device='cpu', dtype=torch.float32, requires_grad=False,
@@ -88,13 +81,28 @@ class StructuredGrid:
 
     @staticmethod
     def FromGrid(grid, tensor=None, channels=1):
+        """
+        Construct a new :class:`StructuredGrid` from a reference :class:`StructuredGrid` (for the size, spacing,
+        origin, device, dtype, requires_grad) and a torch tensor.
+
+        :param grid: Reference :class:`StructuredGrid` with the reference attributes.
+        :type grid: :class:`StructuredGrid`
+        :param tensor: Torch tensor to wrap into the new :class:`StructuredGrid`. Must have size [z],y,x from the
+            reference :class:`StructuredGrid` and the number of specific channels.
+        :type tensor: tensor
+        :param channels: Channels of the input tensor.
+        :type channels: int
+        :return: New :class:`StructuredGrid` wrapped around the input tensor.
+        """
         return StructuredGrid(grid.size, grid.spacing, grid.origin, grid.device,
                               grid.dtype, grid.requires_grad, tensor, channels)
 
     def set_to_identity_lut_(self):
         """
-        :input: None
-        :return: None
+        Set the tensor to an real world identity look-up table (LUT) using the spacing and origin of the
+        :class:`StructuredGrid`. The number of channels will be set to the number of dimensions in size.
+
+        :return: :class:`StructuredGrid` as a real world identity LUT.
         """
         # Create the vectors to be gridded
         vecs = [torch.linspace(-1, 1, int(self.size[x])) for x in range(0, len(self.size))]
@@ -113,7 +121,16 @@ class StructuredGrid:
         self.channels = len(field)
 
     def set_size(self, size, inplace=True):
+        """
+        Set the size of the :class:`StructuredGrid`. This will update the spacing and origin of the
+        :class:`StructuredGrid` to maintain the original real world FOV.
 
+        :param size: New size for the :class:`StructuredGrid` [z],y,x
+        :type size: torch.tensor
+        :param inplace: Perform the resize operation in place. Default=True.
+        :type inplace: bool
+        :return: If inplace==True then returns a new :class:`StructuredGrid`.
+        """
         old_size = self.size.clone()
 
         if type(size).__name__ == 'Tensor':
@@ -153,6 +170,13 @@ class StructuredGrid:
             )
 
     def set_spacing_(self, spacing):
+        """
+        Set the spacing. Does not change the origin.
+
+        :param spacing:  New spacing.
+        :type spacing: list, tuple, tensor,
+        :return: None
+        """
         if type(spacing).__name__ == 'Tensor':
             self.spacing = spacing.clone()
         else:
@@ -162,6 +186,13 @@ class StructuredGrid:
                                         device=self.device)
 
     def set_origin_(self, origin):
+        """
+        Set the origin. Does not change the spacing.
+
+        :param origin:  New origin.
+        :type origin: list, tuple, tensor
+        :return: None
+        """
         if type(origin).__name__ == 'Tensor':
             self.origin = origin.clone()
         else:
@@ -171,6 +202,19 @@ class StructuredGrid:
                                        device=self.device)
 
     def get_subvol(self, zrng=None, yrng=None, xrng=None):
+
+        """
+        Extract a sub volume. The coordiantes for the sub volume are in index coordiantes.
+        Updates the origin to maintain the world coordinate system location.
+
+        :param zrng: Tuple or list of 2 values between [0, size[0]]. If no range is provided, the size stays the same.
+        :type zrng: list, tuple, optional
+        :param yrng: Tuple or list of 2 values between [0, size[1]]. If no range is provided, the size stays the same.
+        :type yrng: list, tuple, optional
+        :param xrng: Tuple or list of 2 values between [0, size[2]]. If no range is provided, the size stays the same.
+        :type xrng: list, tuple, optional
+        :return: Sub volume with updated origin.
+        """
 
         new_origin = self.origin.clone()
 
@@ -209,6 +253,16 @@ class StructuredGrid:
         return new_grid
 
     def extract_slice(self, index, dim):
+        """
+        Extract a slice from a 3D volume. Updates the origin to maintain the world coordinate system location.
+
+        :param index: Slice index to extract.
+        :type index: int
+        :param dim: Dimension along which to extract the slice.
+        :type dim: int
+        :return: Extracted slice.
+        """
+
         # Create a tuple of slice types with none
         slices = [slice(None, None, None)] * len(self.shape())
         slices[dim + 1] = slice(index, index + 1, None)
@@ -234,6 +288,14 @@ class StructuredGrid:
         )
 
     def to_(self, device):
+        """
+        Change the memory device of the :class:`StructuredGrid`.
+
+        :param device: New memory location - one of 'cpu', 'cuda', or 'cuda:X' where X specifies the device identifier.
+        :type device: str, optional
+        :return: None
+        """
+
         for attr, val in self.__dict__.items():
             if type(val).__name__ == 'Tensor':
                 self.__setattr__(attr, val.to(device))
@@ -242,6 +304,14 @@ class StructuredGrid:
         self.device = device
 
     def to_type_(self, new_type):
+        """
+        Change the data type of the :class:`StructuredGrid` attributes.
+
+        :param dtype: Data type, specified from torch memory types. Default: 'torch.float32'
+        :type dtype: str, optional
+        :return: None
+        """
+
         for attr, val in self.__dict__.items():
             if type(val).__name__ == 'Tensor':
                 self.__setattr__(attr, val.type(new_type))
@@ -250,24 +320,59 @@ class StructuredGrid:
         self.dtype = new_type
 
     def copy(self):
+        """
+        Create a copy of the :class:`StructuredGrid`.
+
+        :return: Copy of :class:`StructuredGrid`.
+        """
         return self.__copy__()
 
     def clone(self):
+        """
+        Create a copy of the :class:`StructuredGrid`.
+
+        :return: Copy of :class:`StructuredGrid`.
+        """
         return self.__copy__()
 
     def sum(self):
+        """
+        Sum of the data attribute.
+
+        :return: data.sum()
+        """
         return self.data.sum()
 
     def min(self):
+        """
+        Min of the data attribute.
+
+        :return: data.min()
+        """
         return self.data.min()
 
     def max(self):
+        """
+        Max of the data attribute.
+
+        :return: data.max()
+        """
         return self.data.max()
 
     def minmax(self):
+        """
+        Min and Max of the data attribute.
+
+        :return: [data.min(), data.max()]
+        """
         return torch.tensor([self.data.min(), self.data.max()], device=self.device)
 
     def shape(self):
+        """
+        Returns the shape of the data attribute, including the channels.
+
+        :return: data.shape
+        """
         return self.data.shape
     
     def __add__(self, other):

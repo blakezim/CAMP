@@ -153,6 +153,17 @@
 
 
 <div class="viewcode-block" id="TriangleMesh"><a class="viewcode-back" href="../../Core.html#Core.TriangleMeshClass.TriangleMesh">[docs]</a><span class="k">class</span> <span class="nc">TriangleMesh</span><span class="p">(</span><span class="n">UnstructuredGrid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Triangle mesh class that inherits from the unstructured grid class.</span>
+
+<span class="sd">    :param vertices: Vertices of the mesh object (x,y,z)</span>
+<span class="sd">    :type vertices: tensor</span>
+<span class="sd">    :param indices: Indices of the mesh object</span>
+<span class="sd">    :type indices: long tensor</span>
+<span class="sd">    :param per_vert_values: Values associated with each vertex of the triangle mesh.</span>
+<span class="sd">    :type per_vert_values: tensor, optional</span>
+<span class="sd">    :param per_index_values: Values associated with the indices (or faces) of the triangle mesh.</span>
+<span class="sd">    :type per_index_values: str, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_index_values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TriangleMesh</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="p">,</span> <span class="n">per_index_values</span><span class="p">)</span>
 
@@ -165,6 +176,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">flipped_normals</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="TriangleMesh.calc_normals"><a class="viewcode-back" href="../../Core.html#Core.TriangleMeshClass.TriangleMesh.calc_normals">[docs]</a>    <span class="k">def</span> <span class="nf">calc_normals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Caluclate the face normals of the triangle mesh using the vertices and indices to populate the normals</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tris</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
 
         <span class="n">a</span> <span class="o">=</span> <span class="n">tris</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
@@ -174,15 +191,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cross</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">c</span> <span class="o">-</span> <span class="n">b</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TriangleMesh.calc_centers"><a class="viewcode-back" href="../../Core.html#Core.TriangleMeshClass.TriangleMesh.calc_centers">[docs]</a>    <span class="k">def</span> <span class="nf">calc_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Caluclate the face centers of the triangle mesh using the vertices and indices to populate the centers</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tris</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centers</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">tris</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TriangleMesh.flip_normals_"><a class="viewcode-back" href="../../Core.html#Core.TriangleMeshClass.TriangleMesh.flip_normals_">[docs]</a>    <span class="k">def</span> <span class="nf">flip_normals_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flip the face normals.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_normals</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flipped_normals</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="TriangleMesh.add_surface_"><a class="viewcode-back" href="../../Core.html#Core.TriangleMeshClass.TriangleMesh.add_surface_">[docs]</a>    <span class="k">def</span> <span class="nf">add_surface_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verts</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Concatenate two triangle mesh objects. This does not connect the two objects with faces, it just concatenates</span>
+<span class="sd">        the vertices and indices of the two surfaces into one. </span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">length_one</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span>
         <span class="n">updated_faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="n">length_one</span>
         <span class="n">comb_vertices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">verts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
