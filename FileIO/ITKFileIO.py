@@ -5,7 +5,15 @@ from Core import *
 
 
 def LoadITKFile(filename, device='cpu', dtype=torch.float32):
-    # TODO Need to check when loading NRRD - for some reason loading Sara's volumes was backwards
+
+    """
+    Load a volume using the SimpleITK package into a :class:`StructuredGrid` object.
+
+    :param filename: File path 
+    :param device:
+    :param dtype:
+    :return:
+    """
 
     itk_image = sitk.ReadImage(filename)
 
