@@ -9,7 +9,7 @@ def LoadITKFile(filename, device='cpu', dtype=torch.float32):
     """
     Load a volume using the SimpleITK package into a :class:`StructuredGrid` object.
 
-    :param filename: File path 
+    :param filename: File path
     :param device:
     :param dtype:
     :return:
