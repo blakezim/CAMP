@@ -154,7 +154,19 @@
 
 
 <div class="viewcode-block" id="LoadITKFile"><a class="viewcode-back" href="../../FileIO.html#FileIO.ITKFileIO.LoadITKFile">[docs]</a><span class="k">def</span> <span class="nf">LoadITKFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
-    <span class="c1"># TODO Need to check when loading NRRD - for some reason loading Sara&#39;s volumes was backwards</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load an ITK compatible file using the SimpleITK package into a :class:`StructuredGrid` object.</span>
+
+<span class="sd">    :param filename: File path</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param device: Memory location - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X specifies the device identifier.</span>
+<span class="sd">        Default: &#39;cpu&#39;</span>
+<span class="sd">    :type device: str, optional</span>
+<span class="sd">    :param dtype: Data type, specified from torch memory types. Default: &#39;torch.float32&#39;</span>
+<span class="sd">    :type dtype: str, optional</span>
+<span class="sd">    :return: Loaded :class:`StructuredGrid`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">itk_image</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
@@ -193,6 +205,15 @@
 
 
 <div class="viewcode-block" id="SaveITKFile"><a class="viewcode-back" href="../../FileIO.html#FileIO.ITKFileIO.SaveITKFile">[docs]</a><span class="k">def</span> <span class="nf">SaveITKFile</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">f_name</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save a :class:`StructuredGrid` object to an ITK compatible file using the SimpleITK package.</span>
+
+<span class="sd">    :param grid: :class:`StructuredGrid` to be saved.</span>
+<span class="sd">    :param f_name: File path</span>
+<span class="sd">    :type f_name: str</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 

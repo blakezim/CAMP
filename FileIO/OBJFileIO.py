@@ -3,6 +3,18 @@ import numpy as np
 
 
 def ReadOBJ(file, device='cpu'):
+
+    """
+    Read a triangle mesh OBJ file into vertex and index tensors.
+
+    :param file: File path
+    :type file: str
+    :param device: Memory location - one of 'cpu', 'cuda', or 'cuda:X' where X specifies the device identifier.
+        Default: 'cpu'
+    :type device: str, optional
+    :return: [Vertices, Faces]
+    """
+
     with open(file) as f:
         lines = f.readlines()
         verts = np.array([list(map(float, line.split()[1:4])) for line in lines if line.startswith('v ')])
@@ -18,6 +30,19 @@ def ReadOBJ(file, device='cpu'):
 
 
 def WriteOBJ(vert, faces, file):
+
+    """
+    Write a triangle mesh object defined by verts and faces to an OBJ file.
+
+    :param vert: Output vertices (must be on the CPU).
+    :type vert: tensor
+    :param faces: Output indices (must be on the CPU).
+    :type faces: tensor
+    :param file: OBJ file to be written.
+    :type file: str
+    :return: None
+    """
+
     with open(file, 'w') as f:
         f.write("# OBJ file\n")
         for v in vert.tolist():
