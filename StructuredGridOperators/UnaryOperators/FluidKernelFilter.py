@@ -91,7 +91,7 @@ class FluidKernel(Filter):
             dtype=self.dtype
         )
 
-    def solve_cholskey(self, x):
+    def _solve_cholskey(self, x):
         # back-solve Gt = x to get a temporary vector t
         # back-solve G'y = t to get answer in y
         # [G(0, 0)     0       0  ]     [t(0)] = x(0)
@@ -132,8 +132,8 @@ class FluidKernel(Filter):
 
         # Cholskey solve for the inverse operator
         if inverse:
-            real_app = self.solve_cholskey(real)
-            imag_app = self.solve_cholskey(imag)
+            real_app = self._solve_cholskey(real)
+            imag_app = self._solve_cholskey(imag)
 
         # Otherwise apply the forward operator via matrix multiply
         else:

@@ -154,7 +154,6 @@
 
 
 <div class="viewcode-block" id="LoadITKFile"><a class="viewcode-back" href="../../FileIO.html#FileIO.ITKFileIO.LoadITKFile">[docs]</a><span class="k">def</span> <span class="nf">LoadITKFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
-
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load an ITK compatible file using the SimpleITK package into a :class:`StructuredGrid` object.</span>
 
@@ -165,7 +164,7 @@
 <span class="sd">    :type device: str, optional</span>
 <span class="sd">    :param dtype: Data type, specified from torch memory types. Default: &#39;torch.float32&#39;</span>
 <span class="sd">    :type dtype: str, optional</span>
-<span class="sd">    :return: Loaded :class:`StructuredGrid`</span>
+<span class="sd">    :return: :class:`StructuredGrid`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">itk_image</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -205,7 +204,6 @@
 
 
 <div class="viewcode-block" id="SaveITKFile"><a class="viewcode-back" href="../../FileIO.html#FileIO.ITKFileIO.SaveITKFile">[docs]</a><span class="k">def</span> <span class="nf">SaveITKFile</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">f_name</span><span class="p">):</span>
-
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save a :class:`StructuredGrid` object to an ITK compatible file using the SimpleITK package.</span>
 

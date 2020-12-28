@@ -380,7 +380,6 @@ def EnergyPlot(energy, title='Energy', new_figure=True, legend=None):
 
 
 def PlotSurface(verts, faces, fig=None, norms=None, cents=None, ax=None, color=(0, 0, 1)):
-
     """
     Plot a triangle mesh object.
 

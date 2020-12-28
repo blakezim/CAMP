@@ -172,25 +172,48 @@
 <dd><dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.Create" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.apply_affine">
-<code class="sig-name descname">apply_affine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity.apply_affine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.apply_affine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Object for registering two structured grids with an affine transformation. The affine and translation are
+optimized independently. This Affine Intensity filter must be on the same device as the target and moving
+structured grids. The affine and translation attributes have requires_grad=True so they can be added to a
+torch optimizer and updated with autograd functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>similarity</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Filter</span></code>) – This is the similiarty filter used to compare the two structured grids to be registered.
+This filter is usually a Binary Operator (ie. L2 Image Similarity)</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Dimensionality of the structured grids to be registered (not including channels).</p></li>
+<li><p><strong>init_affine</strong> (<em>tensor</em><em>, </em><em>optional</em>) – Initial affine to apply to the moving structured grid.</p></li>
+<li><p><strong>init_translation</strong> (<em>tensor</em><em>, </em><em>optional</em>) – Initial translation to apply to the moving structured grid.</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Memory location - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier.
+Default: ‘cpu’</p></li>
+<li><p><strong>dtype</strong> (<em>str</em>) – Data type for the attributes. Specified from torch memory types. Default: ‘torch.float32’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Affine Intensity Filter Object</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/AffineIntensityFilter.html#AffineIntensity.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.AffineIntensityFilter.AffineIntensity.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>Apply the forward affine operation applied to the moving image and calculate the resulting similarity measure
+between the target and moving images. The gradients on the affine and translation attributes are tracked
+through this forward operation so that the gradient update can be applied to update the affine and translation.
+This function is meant to be used iteratively in the registration process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Target structured grid. Does not get updated or changed.</p></li>
+<li><p><strong>moving</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Moving structured grid. Affine and translation are applied this structured grid before the
+similarity calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Energy from the similarity evaluation (usually a single float).</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -204,20 +227,36 @@ registered hooks while the latter silently ignores them.</p>
 <dd><dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">padding_mode</span><span class="o">=</span><span class="default_value">'border'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/ComposeGridsFilter.html#ComposeGrids.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.Create" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Object to compose <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> look-up table fields into one grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pad_mode</strong> (<em>str</em>) – padding mode for outside grid values - one of ‘zeros’, ‘border’, or ‘reflection’.
+Default: ‘zeros’</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Memory location - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier.
+Default: ‘cpu’</p></li>
+<li><p><strong>dtype</strong> (<em>str</em>) – Data type for the attributes. Specified from torch memory types. Default: ‘torch.float32’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Object to compose a list of look-up tables.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/ComposeGridsFilter.html#ComposeGrids.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">L</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/ComposeGridsFilter.html#ComposeGrids.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> look-up tables L = [L0, L1, L2] returns a composed look-up table
+comp_field = L2(L1(L0(x))) of type <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>L</strong> (<em>list</em><em>, </em><em>tuple</em>) – List of look-up tables. All fields in the list must be on the same memory device.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Composed look-up tables Comp_filed</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -231,25 +270,56 @@ registered hooks while the latter silently ignores them.</p>
 <dd><dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.Create">
 <em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.Create" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compare two <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> objects using an L2 similarity metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<em>int</em>) – Dimensionality of the <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> to be compared (not including channels).</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – Memory location - one of ‘cpu’, ‘cuda’, or ‘cuda:X’ where X specifies the device identifier.
+Default: ‘cpu’</p></li>
+<li><p><strong>dtype</strong> (<em>str</em>) – Data type for the attributes. Specified from torch memory types. Default: ‘torch.float32’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>L2 comparision object.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.c1">
 <code class="sig-name descname">c1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em>, <em class="sig-param"><span class="n">grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity.c1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.c1" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>First derivative of the L2 similarity metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Structured Grid 1</p></li>
+<li><p><strong>moving</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Structured Grid 2</p></li>
+<li><p><strong>grads</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Gradients of the moving image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">moving</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridOperators/BinaryOperators/L2ImageSimilarity.html#L2Similarity.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>Compare two <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code> with L2 similarity metric. This is often used for registration so the
+variables are labeled as target and moving. This function preserves the dimensionality of the original grids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Structured Grid 1</p></li>
+<li><p><strong>moving</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code>) – Structured Grid 2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>L2 similarity as <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGrid</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

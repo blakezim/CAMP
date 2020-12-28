@@ -183,6 +183,39 @@
 <div class="viewcode-block" id="AffineTransform.Create"><a class="viewcode-back" href="../../../StructuredGridOperators.UnaryOperators.html#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.Create">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">Create</span><span class="p">(</span><span class="n">target_landmarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_landmarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rigid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                <span class="n">interp_mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns an Affine Transform Filter that can be applied to type :class:`~Core.StructuredGrid`. This can be</span>
+<span class="sd">        initiated using a pair of landmarks (target and source) or with a pre-defined affine transformation (affine).</span>
+<span class="sd">        Either both target and source landmarks must be provided OR a pre-defined affine.</span>
+
+<span class="sd">        :param target_landmarks: Target or unmoving landmarks selected in the target space. This tensor should be of</span>
+<span class="sd">            size Nxdim where N is the number of landmarks and dim is the dimensionality of the</span>
+<span class="sd">            :class:`~Core.StructuredGrid` the affine will be applied to.</span>
+<span class="sd">        :type target_landmarks: tensor, optional</span>
+<span class="sd">        :param source_landmarks: Source or moving landmarks selected in the source space. This tensor should be of</span>
+<span class="sd">            size Nxdim where N is the number of landmarks and dim is the dimensionality of the</span>
+<span class="sd">            :class:`~Core.StructuredGrid` the affine will be applied to.</span>
+<span class="sd">        :type source_landmarks: tensor, optional</span>
+<span class="sd">        :param affine: Pre-defined affine. This should be of shape (dim + 1)x(dim + 1) where the added dimension</span>
+<span class="sd">            stores the translation.</span>
+<span class="sd">        :type affine: tensor, optional</span>
+<span class="sd">        :param rigid: If the affine should be reduced to rigid transform only. Default is False.</span>
+<span class="sd">        :type rigid: bool</span>
+<span class="sd">        :param interp_mode: Resampling interpolation mode to be used when applying the defromation - one of &#39;bilinear&#39;</span>
+<span class="sd">            or &#39;nearest&#39;.  Default: &#39;bilinear&#39;</span>
+<span class="sd">        :type interp_mode: str</span>
+<span class="sd">        :param device: Memory location for the created filter - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X</span>
+<span class="sd">            specifies the device identifier. Default: &#39;cpu&#39;</span>
+<span class="sd">        :type device: str</span>
+<span class="sd">        :param dtype: Data type for the filter attributes. Specified from torch memory types. Default:</span>
+<span class="sd">            &#39;torch.float32&#39;</span>
+<span class="sd">        :type dtype: str</span>
+
+<span class="sd">        .. note:: When mode=&#39;bilinear&#39; and the input is 5-D, the interpolation mode used internally will actually be</span>
+<span class="sd">            trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.</span>
+
+<span class="sd">        :return: Affine transform filter object with the specified parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">aff</span> <span class="o">=</span> <span class="n">AffineTransform</span><span class="p">(</span><span class="n">target_landmarks</span><span class="p">,</span> <span class="n">source_landmarks</span><span class="p">,</span> <span class="n">affine</span><span class="p">,</span> <span class="n">rigid</span><span class="p">,</span> <span class="n">interp_mode</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">aff</span> <span class="o">=</span> <span class="n">aff</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">aff</span> <span class="o">=</span> <span class="n">aff</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
@@ -226,6 +259,19 @@
                                                                         <span class="bp">self</span><span class="o">.</span><span class="n">source_landmarks</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">t</span><span class="p">())</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AffineTransform.forward"><a class="viewcode-back" href="../../../StructuredGridOperators.UnaryOperators.html#StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">out_grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xyz_affine</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resamples the :class:`Core.StructuredGrid` through the affine attribute onto the same grid or the out_grid if</span>
+<span class="sd">        out_grid is provided.</span>
+
+<span class="sd">        :param x: :class:`StructuredGrid` to be transformed by the affine attribute.</span>
+<span class="sd">        :type x: :class:`Core.StructuredGrid`</span>
+<span class="sd">        :param out_grid: An optional additional grid that specifies the output grid. If not specified, the output grid</span>
+<span class="sd">            will be the same as the input grid (x).</span>
+<span class="sd">        :type out_grid: :class:`Core.StructuredGrid`, optional</span>
+<span class="sd">        :param xyz_affine: Is affine xyz ordered instead of zyx?</span>
+<span class="sd">        :type xyz_affine: bool, optional</span>
+<span class="sd">        :return: Affine transformed :class:`StructredGrid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Create the grid</span>
         <span class="k">if</span> <span class="n">out_grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

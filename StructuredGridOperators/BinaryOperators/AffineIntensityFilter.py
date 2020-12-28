@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
 
-from Core import *
-# from CAMP.Core import StructuredGrid
-from StructuredGridOperators.UnaryOperators.AffineTransformFilter import ApplyGrid
-from ._BinaryFilter import Filter
+# from Core import *
+# # from CAMP.Core import StructuredGrid
+# from StructuredGridOperators.UnaryOperators.AffineTransformFilter import ApplyGrid
+# from ._BinaryFilter import Filter
 
 
 class AffineIntensity(nn.Module):
@@ -31,6 +31,28 @@ class AffineIntensity(nn.Module):
 
     @staticmethod
     def Create(similarity,  dim=2, init_affine=None, init_translation=None, device='cpu', dtype=torch.float32):
+        """
+        Object for registering two structured grids with an affine transformation. The affine and translation are
+        optimized independently. This Affine Intensity filter must be on the same device as the target and moving
+        structured grids. The affine and translation attributes have requires_grad=True so they can be added to a
+        torch optimizer and updated with autograd functions.
+
+        :param similarity: This is the similiarty filter used to compare the two structured grids to be registered.
+            This filter is usually a Binary Operator (ie. L2 Image Similarity)
+        :type similarity: :class:`Filter`
+        :param dim: Dimensionality of the structured grids to be registered (not including channels).
+        :type dim: int
+        :param init_affine: Initial affine to apply to the moving structured grid.
+        :type init_affine: tensor, optional
+        :param init_translation: Initial translation to apply to the moving structured grid.
+        :type init_translation: tensor, optional
+        :param device: Memory location - one of 'cpu', 'cuda', or 'cuda:X' where X specifies the device identifier.
+            Default: 'cpu'
+        :type device: str
+        :param dtype: Data type for the attributes. Specified from torch memory types. Default: 'torch.float32'
+        :type dtype: str
+        :return: Affine Intensity Filter Object
+        """
         filt = AffineIntensity(similarity,  dim, init_affine, init_translation, device, dtype)
         filt = filt.to(device=device, dtype=dtype)
 
@@ -44,7 +66,7 @@ class AffineIntensity(nn.Module):
 
         return filt
 
-    def apply_affine(self, moving):
+    def _apply_affine(self, moving):
 
         affine = torch.cat([self.affine, self.translation[:, None]], 1)
 
@@ -63,7 +85,20 @@ class AffineIntensity(nn.Module):
         return out_im
 
     def forward(self, target, moving):
+        """
+        Apply the forward affine operation applied to the moving image and calculate the resulting similarity measure
+        between the target and moving images. The gradients on the affine and translation attributes are tracked
+        through this forward operation so that the gradient update can be applied to update the affine and translation.
+        This function is meant to be used iteratively in the registration process.
 
-        aff_moving = self.apply_affine(moving)
+        :param target: Target structured grid. Does not get updated or changed.
+        :type target: :class:`StructuredGrid`
+        :param moving: Moving structured grid. Affine and translation are applied this structured grid before the
+            similarity calculation.
+        :type moving: :class:`StructuredGrid`
+        :return: Energy from the similarity evaluation (usually a single float).
+        """
+
+        aff_moving = self._apply_affine(moving)
 
         return self.similarity(target, aff_moving).sum()

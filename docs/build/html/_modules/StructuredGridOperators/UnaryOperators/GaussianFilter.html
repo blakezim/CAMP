@@ -211,6 +211,29 @@
 
 <div class="viewcode-block" id="Gaussian.Create"><a class="viewcode-back" href="../../../StructuredGridOperators.UnaryOperators.html#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.Create">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">Create</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a filter to gaussian blur a :class:`StructuredGrid` with the specified number of channels.</span>
+
+<span class="sd">        :param channels: Number of channels in the :class:`StructuredGrid` to be blurred.</span>
+<span class="sd">        :type channels: int</span>
+<span class="sd">        :param kernel_size: Size of the kernel to use.</span>
+<span class="sd">        :type kernel_size: int</span>
+<span class="sd">        :param sigma: Sigma of the gaussian kernel.</span>
+<span class="sd">        :type sigma: int</span>
+<span class="sd">        :param dim: Number of dimensions in the :class:`StructuredGrid` the filter will be applied to (not including</span>
+<span class="sd">            channels).</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :param device: Memory location for the created filter - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X</span>
+<span class="sd">            specifies the device identifier. Default: &#39;cpu&#39;</span>
+<span class="sd">        :type device: str</span>
+<span class="sd">        :param dtype: Data type for the filter attributes. Specified from torch memory types. Default:</span>
+<span class="sd">            &#39;torch.float32&#39;</span>
+<span class="sd">        :type dtype: str</span>
+
+<span class="sd">        :return: Gaussian filter object with the specified parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">gauss</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">gauss</span> <span class="o">=</span> <span class="n">gauss</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">gauss</span> <span class="o">=</span> <span class="n">gauss</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
@@ -226,6 +249,15 @@
         <span class="k">return</span> <span class="n">gauss</span></div>
 
 <div class="viewcode-block" id="Gaussian.forward"><a class="viewcode-back" href="../../../StructuredGridOperators.UnaryOperators.html#StructuredGridOperators.UnaryOperators.GaussianFilter.Gaussian.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply the gaussian filter to the input :class:`StructuredGrid` x.</span>
+
+<span class="sd">        :param x: :class:`StructuredGrid` to apply the gaussian to.</span>
+<span class="sd">        :type x: :class:`StructuredGrid`</span>
+
+<span class="sd">        :return: Gaussian filtered :class:`StructuredGrid`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">out_tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])),</span>

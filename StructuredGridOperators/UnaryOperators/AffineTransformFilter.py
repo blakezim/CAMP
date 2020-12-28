@@ -34,6 +34,39 @@ class AffineTransform(Filter):
     @staticmethod
     def Create(target_landmarks=None, source_landmarks=None, affine=None, rigid=False,
                interp_mode='bilinear', device='cpu', dtype=torch.float32):
+        """
+        Returns an Affine Transform Filter that can be applied to type :class:`~Core.StructuredGrid`. This can be
+        initiated using a pair of landmarks (target and source) or with a pre-defined affine transformation (affine).
+        Either both target and source landmarks must be provided OR a pre-defined affine.
+
+        :param target_landmarks: Target or unmoving landmarks selected in the target space. This tensor should be of
+            size Nxdim where N is the number of landmarks and dim is the dimensionality of the
+            :class:`~Core.StructuredGrid` the affine will be applied to.
+        :type target_landmarks: tensor, optional
+        :param source_landmarks: Source or moving landmarks selected in the source space. This tensor should be of
+            size Nxdim where N is the number of landmarks and dim is the dimensionality of the
+            :class:`~Core.StructuredGrid` the affine will be applied to.
+        :type source_landmarks: tensor, optional
+        :param affine: Pre-defined affine. This should be of shape (dim + 1)x(dim + 1) where the added dimension
+            stores the translation.
+        :type affine: tensor, optional
+        :param rigid: If the affine should be reduced to rigid transform only. Default is False.
+        :type rigid: bool
+        :param interp_mode: Resampling interpolation mode to be used when applying the defromation - one of 'bilinear'
+            or 'nearest'.  Default: 'bilinear'
+        :type interp_mode: str
+        :param device: Memory location for the created filter - one of 'cpu', 'cuda', or 'cuda:X' where X
+            specifies the device identifier. Default: 'cpu'
+        :type device: str
+        :param dtype: Data type for the filter attributes. Specified from torch memory types. Default:
+            'torch.float32'
+        :type dtype: str
+
+        .. note:: When mode='bilinear' and the input is 5-D, the interpolation mode used internally will actually be
+            trilinear. However, when the input is 4-D, the interpolation mode will legitimately be bilinear.
+
+        :return: Affine transform filter object with the specified parameters.
+        """
         aff = AffineTransform(target_landmarks, source_landmarks, affine, rigid, interp_mode, device, dtype)
         aff = aff.to(device)
         aff = aff.type(dtype)
@@ -77,6 +110,19 @@ class AffineTransform(Filter):
                                                                         self.source_landmarks.mean(0).t()).t()
 
     def forward(self, x, out_grid=None, xyz_affine=False):
+        """
+        Resamples the :class:`Core.StructuredGrid` through the affine attribute onto the same grid or the out_grid if
+        out_grid is provided.
+
+        :param x: :class:`StructuredGrid` to be transformed by the affine attribute.
+        :type x: :class:`Core.StructuredGrid`
+        :param out_grid: An optional additional grid that specifies the output grid. If not specified, the output grid
+            will be the same as the input grid (x).
+        :type out_grid: :class:`Core.StructuredGrid`, optional
+        :param xyz_affine: Is affine xyz ordered instead of zyx?
+        :type xyz_affine: bool, optional
+        :return: Affine transformed :class:`StructredGrid`
+        """
 
         # Create the grid
         if out_grid is not None:

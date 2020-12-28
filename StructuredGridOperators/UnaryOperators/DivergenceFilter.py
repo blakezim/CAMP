@@ -26,6 +26,22 @@ class Divergence(Filter):
 
     @staticmethod
     def Create(dim=2, device='cpu', dtype=torch.float32):
+
+        """
+        Create a object to calculate the divergence of a look-up table field :class:`StructuredGrid`.
+
+        :param dim: Dimension of the :class:`StructuredGrid` the filter will be applied to (not including channels).
+        :type dim: int
+        :param device: Memory location for the created filter - one of 'cpu', 'cuda', or 'cuda:X' where X
+            specifies the device identifier. Default: 'cpu'
+        :type device: str
+        :param dtype: Data type for the filter attributes. Specified from torch memory types. Default:
+            'torch.float32'
+        :type dtype: str
+
+        :return: Divergence filter object with the specified parameters.
+        """
+
         div = Divergence(dim, device, dtype)
         div = div.to(device)
         div = div.type(dtype)

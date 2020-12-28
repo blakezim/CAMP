@@ -3,7 +3,6 @@ import numpy as np
 
 
 def ReadOBJ(file, device='cpu'):
-
     """
     Read a triangle mesh OBJ file into vertex and index tensors.
 
@@ -30,7 +29,6 @@ def ReadOBJ(file, device='cpu'):
 
 
 def WriteOBJ(vert, faces, file):
-
     """
     Write a triangle mesh object defined by verts and faces to an OBJ file.
 

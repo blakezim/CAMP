@@ -164,28 +164,50 @@
 
 <div class="viewcode-block" id="ComposeGrids.Create"><a class="viewcode-back" href="../../../StructuredGridOperators.BinaryOperators.html#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.Create">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">Create</span><span class="p">(</span><span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;border&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Object to compose :class:`StructuredGrid` look-up table fields into one grid.</span>
+
+<span class="sd">        :param pad_mode: padding mode for outside grid values - one of &#39;zeros&#39;, &#39;border&#39;, or &#39;reflection&#39;.</span>
+<span class="sd">            Default: &#39;zeros&#39;</span>
+<span class="sd">        :type pad_mode: str</span>
+<span class="sd">        :param device: Memory location - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X specifies the device identifier.</span>
+<span class="sd">            Default: &#39;cpu&#39;</span>
+<span class="sd">        :type device: str</span>
+<span class="sd">        :param dtype: Data type for the attributes. Specified from torch memory types. Default: &#39;torch.float32&#39;</span>
+<span class="sd">        :type dtype: str</span>
+<span class="sd">        :return: Object to compose a list of look-up tables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">comp</span> <span class="o">=</span> <span class="n">ComposeGrids</span><span class="p">(</span><span class="n">padding_mode</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">comp</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">comp</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">comp</span></div>
 
-<div class="viewcode-block" id="ComposeGrids.forward"><a class="viewcode-back" href="../../../StructuredGridOperators.BinaryOperators.html#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ComposeGrids.forward"><a class="viewcode-back" href="../../../StructuredGridOperators.BinaryOperators.html#StructuredGridOperators.BinaryOperators.ComposeGridsFilter.ComposeGrids.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
 
         <span class="c1"># TODO need to fix the enumerate method so that &#39;f&#39; is on GPU</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a list of :class:`StructuredGrid` look-up tables L = [L0, L1, L2] returns a composed look-up table</span>
+<span class="sd">        comp_field = L2(L1(L0(x))) of type :class:`StructuredGrid`.</span>
+<span class="sd">        </span>
+<span class="sd">        :param L: List of look-up tables. All fields in the list must be on the same memory device.</span>
+<span class="sd">        :type L: list, tuple</span>
+<span class="sd">        :return: Composed look-up tables Comp_filed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">temp_field</span> <span class="o">=</span> <span class="n">StructuredGrid</span><span class="o">.</span><span class="n">FromGrid</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">temp_field</span><span class="o">.</span><span class="n">set_to_identity_lut_</span><span class="p">()</span>
+        <span class="n">comp_field</span> <span class="o">=</span> <span class="n">StructuredGrid</span><span class="o">.</span><span class="n">FromGrid</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">comp_field</span><span class="o">.</span><span class="n">set_to_identity_lut_</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
-            <span class="n">temp_field</span> <span class="o">=</span> <span class="n">ApplyGrid</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span>
-                <span class="n">temp_field</span><span class="p">,</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">L</span><span class="p">:</span>
+            <span class="n">comp_field</span> <span class="o">=</span> <span class="n">ApplyGrid</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span>
+                <span class="n">comp_field</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
                 <span class="n">pad_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">padding_mode</span>
-            <span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">temp_field</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">comp_field</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">temp_field</span></div></div>
+        <span class="k">return</span> <span class="n">comp_field</span></div></div>
 </pre></div>
 
            </div>

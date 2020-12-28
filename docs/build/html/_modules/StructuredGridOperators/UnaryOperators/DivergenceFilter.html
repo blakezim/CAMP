@@ -175,6 +175,22 @@
 
 <div class="viewcode-block" id="Divergence.Create"><a class="viewcode-back" href="../../../StructuredGridOperators.UnaryOperators.html#StructuredGridOperators.UnaryOperators.DivergenceFilter.Divergence.Create">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">Create</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a object to calculate the divergence of a look-up table field :class:`StructuredGrid`.</span>
+
+<span class="sd">        :param dim: Dimension of the :class:`StructuredGrid` the filter will be applied to (not including channels).</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :param device: Memory location for the created filter - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X</span>
+<span class="sd">            specifies the device identifier. Default: &#39;cpu&#39;</span>
+<span class="sd">        :type device: str</span>
+<span class="sd">        :param dtype: Data type for the filter attributes. Specified from torch memory types. Default:</span>
+<span class="sd">            &#39;torch.float32&#39;</span>
+<span class="sd">        :type dtype: str</span>
+
+<span class="sd">        :return: Divergence filter object with the specified parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">div</span> <span class="o">=</span> <span class="n">Divergence</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">div</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">div</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>

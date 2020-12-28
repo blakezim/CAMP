@@ -5,7 +5,6 @@ from Core import *
 
 
 def LoadITKFile(filename, device='cpu', dtype=torch.float32):
-
     """
     Load an ITK compatible file using the SimpleITK package into a :class:`StructuredGrid` object.
 
@@ -16,7 +15,7 @@ def LoadITKFile(filename, device='cpu', dtype=torch.float32):
     :type device: str, optional
     :param dtype: Data type, specified from torch memory types. Default: 'torch.float32'
     :type dtype: str, optional
-    :return: Loaded :class:`StructuredGrid`
+    :return: :class:`StructuredGrid`
     """
 
     itk_image = sitk.ReadImage(filename)
@@ -56,7 +55,6 @@ def LoadITKFile(filename, device='cpu', dtype=torch.float32):
 
 
 def SaveITKFile(grid, f_name):
-
     """
     Save a :class:`StructuredGrid` object to an ITK compatible file using the SimpleITK package.
 

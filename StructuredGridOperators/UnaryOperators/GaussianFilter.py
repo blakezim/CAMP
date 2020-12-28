@@ -62,6 +62,29 @@ class Gaussian(Filter):
 
     @staticmethod
     def Create(channels, kernel_size, sigma, dim=2, device='cpu', dtype=torch.float32):
+
+        """
+        Create a filter to gaussian blur a :class:`StructuredGrid` with the specified number of channels.
+
+        :param channels: Number of channels in the :class:`StructuredGrid` to be blurred.
+        :type channels: int
+        :param kernel_size: Size of the kernel to use.
+        :type kernel_size: int
+        :param sigma: Sigma of the gaussian kernel.
+        :type sigma: int
+        :param dim: Number of dimensions in the :class:`StructuredGrid` the filter will be applied to (not including
+            channels).
+        :type dim: int
+        :param device: Memory location for the created filter - one of 'cpu', 'cuda', or 'cuda:X' where X
+            specifies the device identifier. Default: 'cpu'
+        :type device: str
+        :param dtype: Data type for the filter attributes. Specified from torch memory types. Default:
+            'torch.float32'
+        :type dtype: str
+
+        :return: Gaussian filter object with the specified parameters.
+        """
+
         gauss = Gaussian(channels, kernel_size, sigma, dim, device, dtype)
         gauss = gauss.to(device)
         gauss = gauss.type(dtype)
@@ -77,6 +100,15 @@ class Gaussian(Filter):
         return gauss
 
     def forward(self, x):
+
+        """
+        Apply the gaussian filter to the input :class:`StructuredGrid` x.
+
+        :param x: :class:`StructuredGrid` to apply the gaussian to.
+        :type x: :class:`StructuredGrid`
+
+        :return: Gaussian filtered :class:`StructuredGrid`.
+        """
 
         out_tensor = self.conv(
                 self.padding(x.data.view(x.data.shape[0], 1, *x.data.shape[1:])),

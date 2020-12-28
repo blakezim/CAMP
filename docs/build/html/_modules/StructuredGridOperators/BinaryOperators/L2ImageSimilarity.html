@@ -163,6 +163,20 @@
 
 <div class="viewcode-block" id="L2Similarity.Create"><a class="viewcode-back" href="../../../StructuredGridOperators.BinaryOperators.html#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.Create">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">Create</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare two :class:`StructuredGrid` objects using an L2 similarity metric.</span>
+
+<span class="sd">        :param dim: Dimensionality of the :class:`StructuredGrid` to be compared (not including channels).</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :param device: Memory location - one of &#39;cpu&#39;, &#39;cuda&#39;, or &#39;cuda:X&#39; where X specifies the device identifier.</span>
+<span class="sd">            Default: &#39;cpu&#39;</span>
+<span class="sd">        :type device: str</span>
+<span class="sd">        :param dtype: Data type for the attributes. Specified from torch memory types. Default: &#39;torch.float32&#39;</span>
+<span class="sd">        :type dtype: str</span>
+<span class="sd">        :return: L2 comparision object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">filt</span> <span class="o">=</span> <span class="n">L2Similarity</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">filt</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">filt</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
@@ -178,9 +192,32 @@
         <span class="k">return</span> <span class="n">filt</span></div>
 
 <div class="viewcode-block" id="L2Similarity.forward"><a class="viewcode-back" href="../../../StructuredGridOperators.BinaryOperators.html#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">moving</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare two :class:`StructuredGrid` with L2 similarity metric. This is often used for registration so the</span>
+<span class="sd">        variables are labeled as target and moving. This function preserves the dimensionality of the original grids.</span>
+
+<span class="sd">        :param target: Structured Grid 1</span>
+<span class="sd">        :type target: :class:`StructuredGrid`</span>
+<span class="sd">        :param moving: Structured Grid 2</span>
+<span class="sd">        :type moving: :class:`StructuredGrid`</span>
+<span class="sd">        :return: L2 similarity as :class:`StructuredGrid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">moving</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="L2Similarity.c1"><a class="viewcode-back" href="../../../StructuredGridOperators.BinaryOperators.html#StructuredGridOperators.BinaryOperators.L2ImageSimilarity.L2Similarity.c1">[docs]</a>    <span class="k">def</span> <span class="nf">c1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">moving</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        First derivative of the L2 similarity metric.</span>
+
+<span class="sd">        :param target: Structured Grid 1</span>
+<span class="sd">        :type target: :class:`StructuredGrid`</span>
+<span class="sd">        :param moving: Structured Grid 2</span>
+<span class="sd">        :type moving: :class:`StructuredGrid`</span>
+<span class="sd">        :param grads: Gradients of the moving image.</span>
+<span class="sd">        :type grads: :class:`StructuredGrid`</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># grads = self.gradient_operator(moving)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">moving</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">*</span> <span class="n">grads</span></div></div>
 </pre></div>
