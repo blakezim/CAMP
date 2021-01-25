@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Unary Operators &mdash; CAMP  documentation</title>
+  <title>Unary Operators &mdash; camp  documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> CAMP
+            <a href="index.html" class="icon icon-home"> camp
           
 
           
@@ -83,12 +83,12 @@
 <li class="toctree-l1"><a class="reference internal" href="Core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">StructuredGridTools package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">Structured Grid Tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="UnstructuredGridOperators.html">Unstructured Grid Operators</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="UnstructuredGridOperators.BinaryOperators.html">Binary Operators</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Unary Operators</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.UnaryOperators.AffineTransformFilter">Affine Transform Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter">Gaussian Smoothing Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter">Affine Transform Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter">Gaussian Smoothing Filter</a></li>
 </ul>
 </li>
 </ul>
@@ -107,7 +107,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">CAMP</a>
+          <a href="index.html">camp</a>
         
       </nav>
 
@@ -161,20 +161,20 @@
             
   <div class="section" id="unary-operators">
 <h1>Unary Operators<a class="headerlink" href="#unary-operators" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-UnstructuredGridOperators.UnaryOperators.AffineTransformFilter">
-<span id="affine-transform-filter"></span><h2>Affine Transform Filter<a class="headerlink" href="#module-UnstructuredGridOperators.UnaryOperators.AffineTransformFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter">
+<span id="affine-transform-filter"></span><h2>Affine Transform Filter<a class="headerlink" href="#module-camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface">
-<em class="property">class </em><code class="sig-name descname">AffineTransformSurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affine</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransformSurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UnstructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
+<dt id="camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface">
+<em class="property">class </em><code class="sig-name descname">AffineTransformSurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affine</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransformSurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">camp.UnstructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
 <dl class="py method">
-<dt id="UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affine</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransformSurface.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affine</span></em>, <em class="sig-param"><span class="n">rigid</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransformSurface.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj_in</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransformSurface.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj_in</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/UnaryOperators/AffineTransformFilter.html#AffineTransformSurface.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransformSurface.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -189,20 +189,20 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter">
-<span id="gaussian-smoothing-filter"></span><h2>Gaussian Smoothing Filter<a class="headerlink" href="#module-UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter">
+<span id="gaussian-smoothing-filter"></span><h2>Gaussian Smoothing Filter<a class="headerlink" href="#module-camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing">
-<em class="property">class </em><code class="sig-name descname">GaussianSmoothing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/UnaryOperators/GaussianSmoothingFilter.html#GaussianSmoothing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UnstructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
+<dt id="camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing">
+<em class="property">class </em><code class="sig-name descname">GaussianSmoothing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/UnaryOperators/GaussianSmoothingFilter.html#GaussianSmoothing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">camp.UnstructuredGridOperators.UnaryOperators._UnaryFilter.Filter</span></code></p>
 <dl class="py method">
-<dt id="UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/UnaryOperators/GaussianSmoothingFilter.html#GaussianSmoothing.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/UnaryOperators/GaussianSmoothingFilter.html#GaussianSmoothing.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/UnaryOperators/GaussianSmoothingFilter.html#GaussianSmoothing.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/UnaryOperators/GaussianSmoothingFilter.html#GaussianSmoothing.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter.GaussianSmoothing.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">

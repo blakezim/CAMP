@@ -4,7 +4,7 @@ Unary Operators
 Affine Transform Filter
 -----------------------
 
-.. automodule:: UnstructuredGridOperators.UnaryOperators.AffineTransformFilter
+.. automodule:: camp.UnstructuredGridOperators.UnaryOperators.AffineTransformFilter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ Affine Transform Filter
 Gaussian Smoothing Filter
 -------------------------
 
-.. automodule:: UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter
+.. automodule:: camp.UnstructuredGridOperators.UnaryOperators.GaussianSmoothingFilter
    :members:
    :undoc-members:
    :show-inheritance:

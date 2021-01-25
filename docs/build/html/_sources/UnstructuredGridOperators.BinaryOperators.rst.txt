@@ -4,7 +4,7 @@ Binary Operators
 Affine Currents
 ---------------
 
-.. automodule:: UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter
+.. automodule:: camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ Affine Currents
 Currents Energy Filter
 ----------------------
 
-.. automodule:: UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter
+.. automodule:: camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,7 +20,7 @@ Currents Energy Filter
 Deformable Currents Filter
 --------------------------
 
-.. automodule:: UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter
+.. automodule:: camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -28,7 +28,7 @@ Deformable Currents Filter
 Single Angle Affine Currents Filter
 -----------------------------------
 
-.. automodule:: UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter
+.. automodule:: camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,7 +36,7 @@ Single Angle Affine Currents Filter
 Stitching Currents Filter
 -------------------------
 
-.. automodule:: UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter
+.. automodule:: camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter
    :members:
    :undoc-members:
    :show-inheritance:

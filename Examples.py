@@ -1,7 +1,10 @@
 import torch
-from Core import *
-from StructuredGridOperators import *
-from StructuredGridTools import *
+import torch.optim as optim
+from camp.Core import *
+from camp.FileIO import *
+from camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter import DeformableCurrents
+# from StructuredGridOperators import *
+# from StructuredGridTools import *
 
 import matplotlib
 matplotlib.use('qt5agg')
@@ -123,5 +126,101 @@ def circle_and_elipse():
     print('All Done')
 
 
+def deformable_register(tar_surface, src_surface, deformable_lr=1.0e-04, currents_sigma=None, prop_sigma=None,
+                        converge=0.3, device='cpu', iters=200):
+    if currents_sigma is None:
+        currents_sigma = [0.5]
+    if prop_sigma is None:
+        prop_sigma = [1.5, 1.5, 0.5]
+
+    def _prop_gradients(prop_locations, grads, verts, prop_sigma):
+        d = ((prop_locations.unsqueeze(1) - verts.unsqueeze(0)) ** 2).sum(-1, keepdim=True)
+        d = torch.exp(-d / (2 * prop_sigma[None, None, :] ** 3))
+        return (grads[None, :, :].repeat(len(d), 1, 1) * d).sum(1)
+
+    prop_sigma = torch.tensor(prop_sigma, device=device)
+
+    for i, sigma in enumerate(currents_sigma):
+
+        # Create the deformable model
+        model = DeformableCurrents.Create(
+            src_surface.copy(),
+            tar_surface.copy(),
+            sigma=sigma,
+            kernel='cauchy',
+            device=device
+        )
+
+        # Set up the optimizer
+        optimizer = optim.SGD([
+            {'params': [model.src_vertices], 'lr': deformable_lr[i]}], momentum=0.9, nesterov=True
+        )
+
+        # Now iterate
+        energy = []
+        for epoch in range(0, iters):
+            optimizer.zero_grad()
+            loss = model()
+
+            print(f'===> Iteration {epoch:3} Energy: {loss.item():.6f} ')
+            energy.append(loss.item())
+
+            loss.backward()  # Compute the gradients
+
+            with torch.no_grad():
+
+                # Create a single array of the gradients to be propagated
+                concat_grad = model.src_vertices.grad.clone()
+                concat_vert = model.src_vertices.clone()
+
+                # Propagate the gradients to the register surfaces
+                model.src_vertices.grad = _prop_gradients(model.src_vertices, concat_grad, concat_vert, prop_sigma)
+
+                optimizer.step()
+
+            if epoch > 10 and np.mean(energy[-7:]) - energy[-1] < converge:
+                break
+
+        # Update the surfaces
+        src_surface.vertices = model.src_vertices.detach().clone()
+
+    return src_surface
+
+
+def monkey_surface():
+    device = 'cuda:1'
+    # Load the two surfaces
+    surface_dir = '/home/sci/blakez/code/CampExamples/'
+    src_vert, src_edges = ReadOBJ(f'{surface_dir}/Monkey_Source.obj')
+    tar_vert, tar_edges = ReadOBJ(f'{surface_dir}/Monkey_Target.obj')
+
+    src_surface = TriangleMesh(src_vert, src_edges)
+    tar_surface = TriangleMesh(tar_vert, tar_edges)
+    src_surface.to_(device)
+    src_surface.to_(device)
+
+    params = {
+        'currents_sigma': [0.5, 0.075],
+        'propagation_sigma': [0.75, 0.75, 0.75],
+        'deformable_lr': [2.0e-03, 1.0e-02],
+        'converge': 0.00001,
+        'niter': 500
+    }
+
+    def_surface = deformable_register(
+        tar_surface.copy(),
+        src_surface.copy(),
+        currents_sigma=params['currents_sigma'],
+        prop_sigma=params['propagation_sigma'],
+        deformable_lr=params['deformable_lr'],
+        converge=params['converge'],
+        device=device,
+        iters=params['niter']
+    )
+
+    WriteOBJ(def_surface.vertices, def_surface.indices, '/home/sci/blakez/test_monkey.obj')
+
+
 if __name__ == '__main__':
-    circle_and_elipse()
+    # circle_and_elipse()
+    monkey_surface()

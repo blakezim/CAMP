@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# CAMP documentation build configuration file, created by
+# camp documentation build configuration file, created by
 # sphinx-quickstart on Sat Dec 19 11:42:52 2020.
 #
 # This file is execfile()d with the current directory set to its
@@ -19,7 +19,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 
 # -- General configuration ------------------------------------------------
@@ -48,7 +48,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'CAMP'
+project = 'camp'
 copyright = '2020, Blake Zimmerman'
 author = 'Blake Zimmerman'
 
@@ -142,7 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'CAMP.tex', 'CAMP Documentation',
+    (master_doc, 'camp.tex', 'camp Documentation',
      'Blake Zimmerman', 'manual'),
 ]
 
@@ -152,7 +152,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'camp', 'CAMP Documentation',
+    (master_doc, 'camp', 'camp Documentation',
      [author], 1)
 ]
 
@@ -163,8 +163,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'CAMP', 'CAMP Documentation',
-     author, 'CAMP', 'One line description of project.',
+    (master_doc, 'camp', 'camp Documentation',
+     author, 'camp', 'One line description of project.',
      'Miscellaneous'),
 ]
 

@@ -4,7 +4,7 @@ Unary Operators
 Affine Transform Filter
 -----------------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.AffineTransformFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.AffineTransformFilter
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,7 +12,7 @@ Affine Transform Filter
 Apply Grid Filter
 -----------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.ApplyGridFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.ApplyGridFilter
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,21 +20,21 @@ Apply Grid Filter
 Divergence Filter
 -----------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.DivergenceFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.DivergenceFilter
     :members:
     :undoc-members:
 
 Fluid Kernel Filter
 -------------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.FluidKernelFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.FluidKernelFilter
     :members:
     :undoc-members:
 
 Gaussian Filter
 ---------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.GaussianFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.GaussianFilter
     :members:
     :undoc-members:
     :show-inheritance:
@@ -42,7 +42,7 @@ Gaussian Filter
 Gradient Filter
 ---------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.GradientFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.GradientFilter
     :members:
     :undoc-members:
     :show-inheritance:
@@ -50,14 +50,14 @@ Gradient Filter
 Gradient Regularizer
 --------------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.GradientRegularizer
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.GradientRegularizer
     :members:
     :undoc-members:
 
 Jacobian Determinant Filter
 ---------------------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter
     :members:
     :undoc-members:
 
@@ -71,13 +71,13 @@ Radial Basis Filter
 Resample World Filter
 ---------------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.ResampleWorldFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.ResampleWorldFilter
     :members:
     :undoc-members:
 
 Variance Equalize Filter
 ------------------------
 
-.. automodule:: StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter
+.. automodule:: camp.StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter
     :members:
     :undoc-members:

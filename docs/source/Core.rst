@@ -10,20 +10,20 @@ structured grid data and triangle mesh objects.
 Structured Grid
 ---------------
 
-.. automodule:: Core.StructuredGridClass
+.. automodule:: camp.Core.StructuredGridClass
    :members:
    :undoc-members:
 
 Triangle Mesh
 -------------
 
-.. automodule:: Core.TriangleMeshClass
+.. automodule:: camp.Core.TriangleMeshClass
    :members:
    :undoc-members:
 
 Display
 -------
 
-.. automodule:: Core.Display
+.. automodule:: camp.Core.Display
    :members:
    :undoc-members:

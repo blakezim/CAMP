@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>camp.Core.TriangleMeshClass &mdash; camp  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> camp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FileIO.html">File Input/Output (IO)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../StructuredGridOperators.html">Structured Grid Operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../StructuredGridTools.html">Structured Grid Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../UnstructuredGridOperators.html">Unstructured Grid Operators</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">camp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>camp.Core.TriangleMeshClass</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for camp.Core.TriangleMeshClass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">._UnstructuredGridClass</span> <span class="k">import</span> <span class="n">UnstructuredGrid</span>
+
+
+<div class="viewcode-block" id="TriangleMesh"><a class="viewcode-back" href="../../../Core.html#camp.Core.TriangleMeshClass.TriangleMesh">[docs]</a><span class="k">class</span> <span class="nc">TriangleMesh</span><span class="p">(</span><span class="n">UnstructuredGrid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Triangle mesh class that inherits from the unstructured grid class.</span>
+
+<span class="sd">    :param vertices: Vertices of the mesh object (x,y,z)</span>
+<span class="sd">    :type vertices: tensor</span>
+<span class="sd">    :param indices: Indices of the mesh object</span>
+<span class="sd">    :type indices: long tensor</span>
+<span class="sd">    :param per_vert_values: Values associated with each vertex of the triangle mesh.</span>
+<span class="sd">    :type per_vert_values: tensor, optional</span>
+<span class="sd">    :param per_index_values: Values associated with the indices (or faces) of the triangle mesh.</span>
+<span class="sd">    :type per_index_values: str, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_index_values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TriangleMesh</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="p">,</span> <span class="n">per_index_values</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centers</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_normals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_centers</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flipped_normals</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="TriangleMesh.calc_normals"><a class="viewcode-back" href="../../../Core.html#camp.Core.TriangleMeshClass.TriangleMesh.calc_normals">[docs]</a>    <span class="k">def</span> <span class="nf">calc_normals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Caluclate the face normals of the triangle mesh using the vertices and indices to populate the normals</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tris</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">tris</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">tris</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">tris</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cross</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">c</span> <span class="o">-</span> <span class="n">b</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TriangleMesh.calc_centers"><a class="viewcode-back" href="../../../Core.html#camp.Core.TriangleMeshClass.TriangleMesh.calc_centers">[docs]</a>    <span class="k">def</span> <span class="nf">calc_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Caluclate the face centers of the triangle mesh using the vertices and indices to populate the centers</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tris</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centers</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">tris</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TriangleMesh.flip_normals_"><a class="viewcode-back" href="../../../Core.html#camp.Core.TriangleMeshClass.TriangleMesh.flip_normals_">[docs]</a>    <span class="k">def</span> <span class="nf">flip_normals_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flip the face normals.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_normals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flipped_normals</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TriangleMesh.add_surface_"><a class="viewcode-back" href="../../../Core.html#camp.Core.TriangleMeshClass.TriangleMesh.add_surface_">[docs]</a>    <span class="k">def</span> <span class="nf">add_surface_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verts</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Concatenate two triangle mesh objects. This does not connect the two objects with faces, it just concatenates</span>
+<span class="sd">        the vertices and indices of the two surfaces into one.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length_one</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span>
+        <span class="n">updated_faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="n">length_one</span>
+        <span class="n">comb_vertices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">verts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">comb_faces</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">indices</span><span class="p">,</span> <span class="n">updated_faces</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">comb_vertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">comb_faces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_normals</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_centers</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;Triangle Mesh Object - Vertices: {len(self.vertices)}  Faces: {len(self.faces)}&quot;</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Blake Zimmerman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -4,28 +4,28 @@ Binary Operators
 Affine Intensity Filter
 -----------------------
 
-.. automodule:: StructuredGridOperators.BinaryOperators.AffineIntensityFilter
+.. automodule:: camp.StructuredGridOperators.BinaryOperators.AffineIntensityFilter
     :members:
     :undoc-members:
 
 Compose Grids Filter
 --------------------
 
-.. automodule:: StructuredGridOperators.BinaryOperators.ComposeGridsFilter
+.. automodule:: camp.StructuredGridOperators.BinaryOperators.ComposeGridsFilter
     :members:
     :undoc-members:
 
 L2 Image Similarity
 -------------------
 
-.. automodule:: StructuredGridOperators.BinaryOperators.L2ImageSimilarity
+.. automodule:: camp.StructuredGridOperators.BinaryOperators.L2ImageSimilarity
     :members:
     :undoc-members:
 
 Normalized Cross Correlation Filter
 -----------------------------------
 
-.. automodule:: StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter
+.. automodule:: camp.StructuredGridOperators.BinaryOperators.NormalizedCrossCorrelationFilter
     :members:
     :undoc-members:
 

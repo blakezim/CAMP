@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Structured Grid Tools &mdash; CAMP  documentation</title>
+  <title>Structured Grid Tools &mdash; camp  documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> CAMP
+            <a href="index.html" class="icon icon-home"> camp
           
 
           
@@ -85,7 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Structured Grid Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-StructuredGridTools.GradientFlowFilter">Gradient Flow Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-camp.StructuredGridTools.GradientFlowFilter">Gradient Flow Filter</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="UnstructuredGridOperators.html">Unstructured Grid Operators</a></li>
@@ -103,7 +103,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">CAMP</a>
+          <a href="index.html">camp</a>
         
       </nav>
 
@@ -155,35 +155,35 @@
             
   <div class="section" id="structured-grid-tools">
 <h1>Structured Grid Tools<a class="headerlink" href="#structured-grid-tools" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-StructuredGridTools.GradientFlowFilter">
-<span id="gradient-flow-filter"></span><h2>Gradient Flow Filter<a class="headerlink" href="#module-StructuredGridTools.GradientFlowFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.StructuredGridTools.GradientFlowFilter">
+<span id="gradient-flow-filter"></span><h2>Gradient Flow Filter<a class="headerlink" href="#module-camp.StructuredGridTools.GradientFlowFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="StructuredGridTools.GradientFlowFilter.IterativeMatch">
-<em class="property">class </em><code class="sig-name descname">IterativeMatch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">regularization</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">step_size</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">incompressible</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridTools/GradientFlowFilter.html#IterativeMatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridTools.GradientFlowFilter.IterativeMatch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridTools._BaseTool.Filter</span></code></p>
+<dt id="camp.StructuredGridTools.GradientFlowFilter.IterativeMatch">
+<em class="property">class </em><code class="sig-name descname">IterativeMatch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">regularization</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">step_size</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">incompressible</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/StructuredGridTools/GradientFlowFilter.html#IterativeMatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">camp.StructuredGridTools._BaseTool.Filter</span></code></p>
 <dl class="py method">
-<dt id="StructuredGridTools.GradientFlowFilter.IterativeMatch.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">regularization</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">step_size</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">incompressible</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridTools.GradientFlowFilter.IterativeMatch.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">similarity</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">regularization</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">step_size</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">incompressible</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="StructuredGridTools.GradientFlowFilter.IterativeMatch.energy">
-<code class="sig-name descname">energy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridTools.GradientFlowFilter.IterativeMatch.energy" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.energy">
+<code class="sig-name descname">energy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.energy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="StructuredGridTools.GradientFlowFilter.IterativeMatch.get_field">
-<code class="sig-name descname">get_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridTools.GradientFlowFilter.IterativeMatch.get_field" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.get_field">
+<code class="sig-name descname">get_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.get_field" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="StructuredGridTools.GradientFlowFilter.IterativeMatch.get_image">
-<code class="sig-name descname">get_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.get_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridTools.GradientFlowFilter.IterativeMatch.get_image" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.get_image">
+<code class="sig-name descname">get_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.get_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.get_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="StructuredGridTools.GradientFlowFilter.IterativeMatch.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#StructuredGridTools.GradientFlowFilter.IterativeMatch.step" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/StructuredGridTools/GradientFlowFilter.html#IterativeMatch.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch.step" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -1,0 +1,3 @@
+numpy==1.16.4
+SimpleITK==1.2.0
+torch==1.3.0

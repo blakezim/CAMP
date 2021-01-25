@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Binary Operators &mdash; CAMP  documentation</title>
+  <title>Binary Operators &mdash; camp  documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> CAMP
+            <a href="index.html" class="icon icon-home"> camp
           
 
           
@@ -84,14 +84,14 @@
 <li class="toctree-l1"><a class="reference internal" href="Core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FileIO.html">File Input/Output (IO)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="StructuredGridOperators.html">Structured Grid Operators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">StructuredGridTools package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StructuredGridTools.html">Structured Grid Tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="UnstructuredGridOperators.html">Unstructured Grid Operators</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Binary Operators</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter">Affine Currents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter">Currents Energy Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter">Deformable Currents Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter">Single Angle Affine Currents Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter">Stitching Currents Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter">Affine Currents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter">Currents Energy Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter">Deformable Currents Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter">Single Angle Affine Currents Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter">Stitching Currents Filter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="UnstructuredGridOperators.UnaryOperators.html">Unary Operators</a></li>
@@ -111,7 +111,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">CAMP</a>
+          <a href="index.html">camp</a>
         
       </nav>
 
@@ -165,20 +165,20 @@
             
   <div class="section" id="binary-operators">
 <h1>Binary Operators<a class="headerlink" href="#binary-operators" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter">
-<span id="affine-currents"></span><h2>Affine Currents<a class="headerlink" href="#module-UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter">
+<span id="affine-currents"></span><h2>Affine Currents<a class="headerlink" href="#module-camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents">
-<em class="property">class </em><code class="sig-name descname">AffineCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/AffineCurrentsFilter.html#AffineCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents">
+<em class="property">class </em><code class="sig-name descname">AffineCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/AffineCurrentsFilter.html#AffineCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/AffineCurrentsFilter.html#AffineCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_affine</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/AffineCurrentsFilter.html#AffineCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/AffineCurrentsFilter.html#AffineCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/AffineCurrentsFilter.html#AffineCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.AffineCurrentsFilter.AffineCurrents.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -193,35 +193,35 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter">
-<span id="currents-energy-filter"></span><h2>Currents Energy Filter<a class="headerlink" href="#module-UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter">
+<span id="currents-energy-filter"></span><h2>Currents Energy Filter<a class="headerlink" href="#module-camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy">
-<em class="property">class </em><code class="sig-name descname">CurrentsEnergy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy">
+<em class="property">class </em><code class="sig-name descname">CurrentsEnergy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.cauchy">
-<em class="property">static </em><code class="sig-name descname">cauchy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.cauchy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.cauchy" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.cauchy">
+<em class="property">static </em><code class="sig-name descname">cauchy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.cauchy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.cauchy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.colordiff">
-<em class="property">static </em><code class="sig-name descname">colordiff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_colors</span></em>, <em class="sig-param"><span class="n">tar_colors</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.colordiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.colordiff" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.colordiff">
+<em class="property">static </em><code class="sig-name descname">colordiff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_colors</span></em>, <em class="sig-param"><span class="n">tar_colors</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.colordiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.colordiff" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.distance">
-<em class="property">static </em><code class="sig-name descname">distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.distance" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.distance">
+<em class="property">static </em><code class="sig-name descname">distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.distance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -234,60 +234,27 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.gaussian">
-<em class="property">static </em><code class="sig-name descname">gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.gaussian" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.gaussian">
+<em class="property">static </em><code class="sig-name descname">gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/CurrentsEnergyFilter.html#CurrentsEnergy.gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy.gaussian" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter">
-<span id="deformable-currents-filter"></span><h2>Deformable Currents Filter<a class="headerlink" href="#module-UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter">
+<span id="deformable-currents-filter"></span><h2>Deformable Currents Filter<a class="headerlink" href="#module-camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents">
-<em class="property">class </em><code class="sig-name descname">DeformableCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/DeformableCurrentsFilter.html#DeformableCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents">
+<em class="property">class </em><code class="sig-name descname">DeformableCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/DeformableCurrentsFilter.html#DeformableCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/DeformableCurrentsFilter.html#DeformableCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/DeformableCurrentsFilter.html#DeformableCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/DeformableCurrentsFilter.html#DeformableCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter">
-<span id="single-angle-affine-currents-filter"></span><h2>Single Angle Affine Currents Filter<a class="headerlink" href="#module-UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents">
-<em class="property">class </em><code class="sig-name descname">SingleAngleCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.Create" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.build_matrix">
-<code class="sig-name descname">build_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents.build_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.build_matrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/DeformableCurrentsFilter.html#DeformableCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter.DeformableCurrents.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -302,35 +269,68 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter">
-<span id="stitching-currents-filter"></span><h2>Stitching Currents Filter<a class="headerlink" href="#module-UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter">
+<span id="single-angle-affine-currents-filter"></span><h2>Single Angle Affine Currents Filter<a class="headerlink" href="#module-camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents">
-<em class="property">class </em><code class="sig-name descname">StitchingCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">reference_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents">
+<em class="property">class </em><code class="sig-name descname">SingleAngleCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.Create">
-<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">ref_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.Create" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">init_angle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_translation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.cauchy">
-<em class="property">static </em><code class="sig-name descname">cauchy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.cauchy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.cauchy" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.build_matrix">
+<code class="sig-name descname">build_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents.build_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.build_matrix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.distance">
-<em class="property">static </em><code class="sig-name descname">distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.distance" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/SingleAngleAffineCurrentsFilter.html#SingleAngleCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.SingleAngleAffineCurrentsFilter.SingleAngleCurrents.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter">
+<span id="stitching-currents-filter"></span><h2>Stitching Currents Filter<a class="headerlink" href="#module-camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents">
+<em class="property">class </em><code class="sig-name descname">StitchingCurrents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">reference_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="py method">
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.Create">
+<em class="property">static </em><code class="sig-name descname">Create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_surface</span></em>, <em class="sig-param"><span class="n">tar_surface</span></em>, <em class="sig-param"><span class="n">ref_surface</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">kernel</span><span class="o">=</span><span class="default_value">'cauchy'</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">torch.float32</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.Create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.Create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.energy">
-<code class="sig-name descname">energy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.energy" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.cauchy">
+<em class="property">static </em><code class="sig-name descname">cauchy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.cauchy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.cauchy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.distance">
+<em class="property">static </em><code class="sig-name descname">distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.energy">
+<code class="sig-name descname">energy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_normals</span></em>, <em class="sig-param"><span class="n">src_centers</span></em>, <em class="sig-param"><span class="n">tar_normals</span></em>, <em class="sig-param"><span class="n">tar_centers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.energy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -343,8 +343,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.gaussian">
-<em class="property">static </em><code class="sig-name descname">gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.gaussian" title="Permalink to this definition">¶</a></dt>
+<dt id="camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.gaussian">
+<em class="property">static </em><code class="sig-name descname">gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/camp/UnstructuredGridOperators/BinaryOperators/StitchingCurrentsFilter.html#StitchingCurrents.gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#camp.UnstructuredGridOperators.BinaryOperators.StitchingCurrentsFilter.StitchingCurrents.gaussian" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -4,7 +4,7 @@ File Input/Output (IO)
 ITK IO
 ------
 
-.. automodule:: FileIO.ITKFileIO
+.. automodule:: camp.FileIO.ITKFileIO
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ ITK IO
 Object IO
 ---------
 
-.. automodule:: FileIO.OBJFileIO
+.. automodule:: camp.FileIO.OBJFileIO
    :members:
    :undoc-members:
    :show-inheritance:

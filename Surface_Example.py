@@ -1,10 +1,10 @@
-import torch
-import numpy as np
+# import torch
+# import numpy as np
 import torch.optim as optim
 
 from FileIO import *
-from CAMP.Core import *
-from CAMP.UnstructuredGridOperators import *
+from camp.Core import *
+# from camp.UnstructuredGridOperators import *
 
 
 import matplotlib
