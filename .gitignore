@@ -4,3 +4,9 @@ __pycache__/
 *.xml
 __pycache__/*
 __pycache__
+
+dist/*
+dist/
+
+camp.egg-info/*
+camp.egg-info/
