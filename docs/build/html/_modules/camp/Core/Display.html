@@ -148,9 +148,9 @@
             
   <h1>Source code for camp.Core.Display</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="kn">from</span> <span class="nn">..StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter</span> <span class="k">import</span> <span class="n">JacobianDeterminant</span>
+<span class="kn">from</span> <span class="nn">..StructuredGridOperators.UnaryOperators.JacobianDeterminantFilter</span> <span class="kn">import</span> <span class="n">JacobianDeterminant</span>
 
 
 <div class="viewcode-block" id="DisplayException"><a class="viewcode-back" href="../../../Core.html#camp.Core.Display.DisplayException">[docs]</a><span class="k">class</span> <span class="nc">DisplayException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -308,7 +308,7 @@
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Image</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;StructuredGrid&#39;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Can only plot StructuredGrid types - received {type(Image).__name__}&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Can only plot StructuredGrid types - received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Image</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
 
     <span class="c1"># Make sure the image is only 2D at this point</span>
@@ -397,7 +397,7 @@
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Field</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;StructuredGrid&#39;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Can only plot StructuredGrid types - received {type(Field).__name__}&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Can only plot StructuredGrid types - received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Field</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
     <span class="n">Field</span><span class="o">.</span><span class="n">to_</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 
@@ -435,7 +435,7 @@
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Field</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;StructuredGrid&#39;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Can only plot StructuredGrid types - received {type(Field).__name__}&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Can only plot StructuredGrid types - received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">Field</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
 
     <span class="c1"># Make sure the image is only 2D at this point</span>
@@ -559,7 +559,7 @@
         <span class="k">return</span> <span class="n">color</span><span class="p">[</span><span class="n">faces</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
 
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.art3d</span> <span class="k">import</span> <span class="n">Poly3DCollection</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.art3d</span> <span class="kn">import</span> <span class="n">Poly3DCollection</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fig</span><span class="p">:</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>

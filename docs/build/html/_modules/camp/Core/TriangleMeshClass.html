@@ -149,7 +149,7 @@
   <h1>Source code for camp.Core.TriangleMeshClass</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">._UnstructuredGridClass</span> <span class="k">import</span> <span class="n">UnstructuredGrid</span>
+<span class="kn">from</span> <span class="nn">._UnstructuredGridClass</span> <span class="kn">import</span> <span class="n">UnstructuredGrid</span>
 
 
 <div class="viewcode-block" id="TriangleMesh"><a class="viewcode-back" href="../../../Core.html#camp.Core.TriangleMeshClass.TriangleMesh">[docs]</a><span class="k">class</span> <span class="nc">TriangleMesh</span><span class="p">(</span><span class="n">UnstructuredGrid</span><span class="p">):</span>
@@ -164,7 +164,7 @@
 <span class="sd">    :param per_index_values: Values associated with the indices (or faces) of the triangle mesh.</span>
 <span class="sd">    :type per_index_values: str, optional</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_index_values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_index_values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TriangleMesh</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">per_vert_values</span><span class="p">,</span> <span class="n">per_index_values</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="kc">None</span>
@@ -227,8 +227,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_normals</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_centers</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;Triangle Mesh Object - Vertices: {len(self.vertices)}  Faces: {len(self.faces)}&quot;</span></div>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Triangle Mesh Object - Vertices: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span><span class="si">}</span><span class="s2">  Faces: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span></div>
 </pre></div>
 
            </div>

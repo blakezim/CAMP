@@ -149,10 +149,10 @@
   <h1>Source code for camp.StructuredGridTools.GradientFlowFilter</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">..StructuredGridOperators.UnaryOperators.GradientFilter</span> <span class="k">import</span> <span class="n">Gradient</span>
-<span class="kn">from</span> <span class="nn">..Core.StructuredGridClass</span> <span class="k">import</span> <span class="n">StructuredGrid</span>
+<span class="kn">from</span> <span class="nn">..StructuredGridOperators.UnaryOperators.GradientFilter</span> <span class="kn">import</span> <span class="n">Gradient</span>
+<span class="kn">from</span> <span class="nn">..Core.StructuredGridClass</span> <span class="kn">import</span> <span class="n">StructuredGrid</span>
 
-<span class="kn">from</span> <span class="nn">._BaseTool</span> <span class="k">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">._BaseTool</span> <span class="kn">import</span> <span class="n">Filter</span>
 
 
 <span class="c1"># TODO Multiscale matching</span>
@@ -160,23 +160,23 @@
 <span class="c1"># TODO Check for memery saving and computation saving areas</span>
 
 <div class="viewcode-block" id="IterativeMatch"><a class="viewcode-back" href="../../../StructuredGridTools.html#camp.StructuredGridTools.GradientFlowFilter.IterativeMatch">[docs]</a><span class="k">class</span> <span class="nc">IterativeMatch</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">similarity</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">regularization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">similarity</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">regularization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
                  <span class="n">incompressible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">IterativeMatch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;StructuredGrid&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;Only type &quot;StructuredGrid&quot; for source is accepted, got {type(source).__name__}&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Only type &quot;StructuredGrid&quot; for source is accepted, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;StructuredGrid&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;Only type &quot;StructuredGrid&quot; for target is accepted, got {type(target).__name__}&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Only type &quot;StructuredGrid&quot; for target is accepted, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">source</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">size</span><span class="p">))]):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;Images must have the same size - Target Size: </span><span class="si">{target.size}</span><span class="s1">, Source Size: </span><span class="si">{source.size}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Images must have the same size - Target Size: </span><span class="si">{</span><span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">, Source Size: </span><span class="si">{</span><span class="n">source</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>

@@ -150,12 +150,12 @@
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<span class="kn">from</span> <span class="nn">...Core.StructuredGridClass</span> <span class="k">import</span> <span class="n">StructuredGrid</span>
-<span class="kn">from</span> <span class="nn">._UnaryFilter</span> <span class="k">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">...Core.StructuredGridClass</span> <span class="kn">import</span> <span class="n">StructuredGrid</span>
+<span class="kn">from</span> <span class="nn">._UnaryFilter</span> <span class="kn">import</span> <span class="n">Filter</span>
 
 
 <div class="viewcode-block" id="Gradient"><a class="viewcode-back" href="../../../../StructuredGridOperators.UnaryOperators.html#camp.StructuredGridOperators.UnaryOperators.GradientFilter.Gradient">[docs]</a><span class="k">class</span> <span class="nc">Gradient</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Gradient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
@@ -176,7 +176,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">conv3d</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;Only 1, 2 and 3 dimensions are supported. Received </span><span class="si">{dim}</span><span class="s1">.&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Only 1, 2 and 3 dimensions are supported. Received </span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s1">.&#39;</span>
             <span class="p">)</span>
 
 <div class="viewcode-block" id="Gradient.Create"><a class="viewcode-back" href="../../../../StructuredGridOperators.UnaryOperators.html#camp.StructuredGridOperators.UnaryOperators.GradientFilter.Gradient.Create">[docs]</a>    <span class="nd">@staticmethod</span>

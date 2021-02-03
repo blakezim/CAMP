@@ -149,15 +149,15 @@
   <h1>Source code for camp.StructuredGridOperators.UnaryOperators.AffineTransformFilter</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">...Core.StructuredGridClass</span> <span class="k">import</span> <span class="n">StructuredGrid</span>
-<span class="kn">from</span> <span class="nn">.ApplyGridFilter</span> <span class="k">import</span> <span class="n">ApplyGrid</span>
-<span class="kn">from</span> <span class="nn">._UnaryFilter</span> <span class="k">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">...Core.StructuredGridClass</span> <span class="kn">import</span> <span class="n">StructuredGrid</span>
+<span class="kn">from</span> <span class="nn">.ApplyGridFilter</span> <span class="kn">import</span> <span class="n">ApplyGrid</span>
+<span class="kn">from</span> <span class="nn">._UnaryFilter</span> <span class="kn">import</span> <span class="n">Filter</span>
 
 <span class="c1">#TODO Check this filter to make sure the affine and translation are correct</span>
 
 
 <div class="viewcode-block" id="AffineTransform"><a class="viewcode-back" href="../../../../StructuredGridOperators.UnaryOperators.html#camp.StructuredGridOperators.UnaryOperators.AffineTransformFilter.AffineTransform">[docs]</a><span class="k">class</span> <span class="nc">AffineTransform</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_landmarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_landmarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rigid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_landmarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_landmarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rigid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">interp_mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AffineTransform</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -170,7 +170,7 @@
             <span class="k">if</span> <span class="n">target_landmarks</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">source_landmarks</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s1">&#39;Shape of target and source landmarks do not match: &#39;</span>
-                    <span class="n">f</span><span class="s1">&#39; Target Shape: </span><span class="si">{target_landmarks.shape}</span><span class="s1">, Source Shape: </span><span class="si">{source_landmarks.shape}</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; Target Shape: </span><span class="si">{</span><span class="n">target_landmarks</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">, Source Shape: </span><span class="si">{</span><span class="n">source_landmarks</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">source_landmarks</span> <span class="o">=</span> <span class="n">source_landmarks</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target_landmarks</span> <span class="o">=</span> <span class="n">target_landmarks</span>

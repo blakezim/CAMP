@@ -153,7 +153,7 @@
 
 <div class="viewcode-block" id="CurrentsEnergy"><a class="viewcode-back" href="../../../../UnstructuredGridOperators.BinaryOperators.html#camp.UnstructuredGridOperators.BinaryOperators.CurrentsEnergyFilter.CurrentsEnergy">[docs]</a><span class="k">class</span> <span class="nc">CurrentsEnergy</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tar_normals</span><span class="p">,</span> <span class="n">tar_centers</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;cauchy&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tar_normals</span><span class="p">,</span> <span class="n">tar_centers</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;cauchy&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CurrentsEnergy</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">kernel</span> <span class="o">==</span> <span class="s1">&#39;cauchy&#39;</span><span class="p">:</span>
@@ -163,7 +163,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="ne">Exception</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Kernel of type </span><span class="si">{kernel}</span><span class="s1"> is not supported. Please use cauchy or gaussian.&#39;</span><span class="p">)</span>
+            <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Kernel of type </span><span class="si">{</span><span class="n">kernel</span><span class="si">}</span><span class="s1"> is not supported. Please use cauchy or gaussian.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>

@@ -8,6 +8,8 @@ Affine Intensity Filter
     :members:
     :undoc-members:
 
+.. _compose-grids-filter:
+
 Compose Grids Filter
 --------------------
 

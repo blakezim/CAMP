@@ -150,8 +150,8 @@
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="c1"># from Core.StructuredGridClass import StructuredGrid</span>
-<span class="kn">from</span> <span class="nn">._UnaryFilter</span> <span class="k">import</span> <span class="n">Filter</span>
-<span class="kn">from</span> <span class="nn">.GaussianFilter</span> <span class="k">import</span> <span class="n">Gaussian</span>
+<span class="kn">from</span> <span class="nn">._UnaryFilter</span> <span class="kn">import</span> <span class="n">Filter</span>
+<span class="kn">from</span> <span class="nn">.GaussianFilter</span> <span class="kn">import</span> <span class="n">Gaussian</span>
 
 
 <div class="viewcode-block" id="VarianceEqualize"><a class="viewcode-back" href="../../../../StructuredGridOperators.UnaryOperators.html#camp.StructuredGridOperators.UnaryOperators.VarianceEqualizeFilter.VarianceEqualize">[docs]</a><span class="k">class</span> <span class="nc">VarianceEqualize</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
@@ -170,7 +170,7 @@
 <span class="sd">    where I&#39; = I - k*I</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">VarianceEqualize</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>

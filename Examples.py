@@ -3,8 +3,8 @@ import torch.optim as optim
 from camp.Core import *
 from camp.FileIO import *
 from camp.UnstructuredGridOperators.BinaryOperators.DeformableCurrentsFilter import DeformableCurrents
-# from StructuredGridOperators import *
-# from StructuredGridTools import *
+from camp.StructuredGridOperators import *
+from camp.StructuredGridTools import *
 
 import matplotlib
 matplotlib.use('qt5agg')
@@ -33,7 +33,7 @@ def circle_and_elipse():
     alpha = 1.0
     beta = 0.0
     gamma = 0.001
-    device = 'cuda:1'
+    device = 'cpu'
 
     # Gaussian blur object for the images
     gauss_filt = Gaussian.Create(1, int(3*1.5), 1.5, device=device, dim=2)
@@ -188,11 +188,11 @@ def deformable_register(tar_surface, src_surface, deformable_lr=1.0e-04, current
 
 
 def monkey_surface():
-    device = 'cuda:1'
+    device = 'cpu'
+
     # Load the two surfaces
-    surface_dir = '/home/sci/blakez/code/CampExamples/'
-    src_vert, src_edges = ReadOBJ(f'{surface_dir}/Monkey_Source.obj')
-    tar_vert, tar_edges = ReadOBJ(f'{surface_dir}/Monkey_Target.obj')
+    src_vert, src_edges = ReadOBJ(f'example_files/Suzanne_Source.obj')
+    tar_vert, tar_edges = ReadOBJ(f'example_files/Suzanne_Target.obj')
 
     src_surface = TriangleMesh(src_vert, src_edges)
     tar_surface = TriangleMesh(tar_vert, tar_edges)
@@ -222,5 +222,5 @@ def monkey_surface():
 
 
 if __name__ == '__main__':
-    # circle_and_elipse()
-    monkey_surface()
+    circle_and_elipse()
+    # monkey_surface()

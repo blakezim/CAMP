@@ -31,6 +31,8 @@ Fluid Kernel Filter
     :members:
     :undoc-members:
 
+.. _gaussian-filter:
+
 Gaussian Filter
 ---------------
 
